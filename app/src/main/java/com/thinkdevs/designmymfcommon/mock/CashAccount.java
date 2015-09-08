@@ -8,13 +8,14 @@ public interface CashAccount {
 
     int getLogo();
 
-    boolean getType();
+    String getType();
 
     float getAmount();
 
     int getLogoCurrency();
 
-    Date getDateLastOperation();
+    String getDateLastOperation();
 
-    float getAmoutnLastOperation();
+    float getAmountLastOperation();
+
 }

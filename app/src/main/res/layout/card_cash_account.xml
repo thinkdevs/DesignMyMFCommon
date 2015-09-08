@@ -5,7 +5,9 @@
     card_view:cardCornerRadius="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:translationZ="8dp">
+    android:layout_marginBottom="8dp"
+    android:id="@+id/cv_cash_account"
+    android:elevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,38 +80,41 @@
             android:layout_width="165dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="100000000000"
+            android:text="36000"
             android:id="@+id/tv_money"
             android:textSize="24dp"
             android:layout_gravity="left|top"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:gravity="center|right" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="today"
+            android:text="12/12/12"
             android:id="@+id/tv_date"
+            android:gravity="center|left"
             android:layout_below="@+id/tv_money"
-            android:layout_alignEnd="@+id/iv_currency" />
+            android:layout_alignStart="@+id/iv_currency" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+ 500 000"
+            android:text="+ 100000"
             android:id="@+id/tv_operation"
             android:textSize="14dp"
+            android:gravity="center|right"
             android:layout_below="@+id/tv_money"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="40dp" />
+            android:layout_alignEnd="@+id/tv_money" />
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:id="@+id/iv_currency"
             android:src="@drawable/ic_attach_money_black_24dp"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/tv_money" />
+            android:layout_alignTop="@+id/tv_money"
+            android:layout_toEndOf="@+id/tv_money"
+            android:layout_marginStart="18dp" />
 
     </RelativeLayout>
 

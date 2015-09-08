@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.mock.CashAccount;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CashAccountsRecyclerViewActivity extends Activity {
     private RecyclerView mRecyclerView;
@@ -29,11 +29,10 @@ public class CashAccountsRecyclerViewActivity extends Activity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        ArrayList<CashAccount> accounts = new ArrayList<>();
+       List<CashAccount> accounts = Initializator.initializeCashAccounts();
 
         // specify an adapter (see also next example)
         mAdapter = new CashAccountsRecyclerViewAdapter(accounts);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 }

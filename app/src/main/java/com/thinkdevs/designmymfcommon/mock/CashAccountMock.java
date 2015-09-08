@@ -1,6 +1,7 @@
 package com.thinkdevs.designmymfcommon.mock;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class CashAccountMock implements CashAccount {
 
@@ -11,7 +12,7 @@ public class CashAccountMock implements CashAccount {
     private int logoCurrency; //Логотип валюты
     private Operation lastOperation; //Последняя операция
 
-    public CashAccountMock(String name, int logo, boolean type, float amount, int logoCurrency, OperationMock lastOperation) {
+    public CashAccountMock(String name, int logo, boolean type, float amount, int logoCurrency, Operation lastOperation) {
         this.name = name;
         this.logo = logo;
         this.type = type;
@@ -28,8 +29,9 @@ public class CashAccountMock implements CashAccount {
         return logo;
     }
 
-    public boolean getType() {
-        return type;
+    public String getType() {
+
+        return type ? "кошелек" : "карта";
     }
 
     public float getAmount() {
@@ -40,11 +42,13 @@ public class CashAccountMock implements CashAccount {
         return logoCurrency;
     }
 
-    public Date getDateLastOperation(){
-        return lastOperation.getDate();
+    //Форматируем отображение даты
+    public String getDateLastOperation(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return sdf.format(lastOperation.getDate());
     }
 
-    public float getAmoutnLastOperation(){
+    public float getAmountLastOperation(){
         return lastOperation.getAmount();
     }
 }

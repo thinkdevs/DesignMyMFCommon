@@ -4,6 +4,8 @@
     android:id="@+id/rv_cash_accounts"
     android:scrollbars="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="@android:color/darker_gray">
 
 </android.support.v7.widget.RecyclerView>

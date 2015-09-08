@@ -27,7 +27,7 @@ public class CashAccountsActivity extends Activity {
     private List<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
 
     // Use this to add items to the list that the ListPopupWindow will use
-    private void addItem(String title, int iconResourceId) {
+    public void addItem(String title, int iconResourceId) {
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(TITLE, title);
         map.put(ICON, iconResourceId);
