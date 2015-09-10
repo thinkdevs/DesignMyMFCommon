@@ -1,13 +1,17 @@
 <resources>
     <string name="app_name">Design MyMF Common</string>
 
-    <!--Main activity buttons-->
+    <!--Main activity buttons -->
     <string name="btn_accounts_name">Cash Accounts</string>
-
     <string name="empty">Empty</string>
-    <!-- ******************************** -->
 
-    <!-- Cash Accounts Activity-->
+
+    <!-- Cash Accounts Activity -->
     <string name="act_name_cash_accounts">Cash Accounts</string>
+
+
+    <!-- Card Cash Account -->
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
 
 </resources>

@@ -32,7 +32,7 @@ public class CashAccountsRecyclerViewActivity extends Activity {
        List<CashAccount> accounts = Initializator.initializeCashAccounts();
 
         // specify an adapter (see also next example)
-        mAdapter = new CashAccountsRecyclerViewAdapter(accounts);
+        mAdapter = new CashAccountsRecyclerViewAdapter(CashAccountsRecyclerViewActivity.this, accounts);
         mRecyclerView.setAdapter(mAdapter);
     }
 }
