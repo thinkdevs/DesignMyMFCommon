@@ -22,7 +22,7 @@ public class Initializator {
                 new CashAccountMock(
                 "Кошелек",
                 R.drawable.ic_account_balance_wallet_white_36dp,
-                false,
+                true,
                 666,
                 R.drawable.ic_attach_money_black_24dp,
                 operation));
