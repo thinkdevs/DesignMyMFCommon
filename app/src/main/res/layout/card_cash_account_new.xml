@@ -25,7 +25,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/iv_account_logo"
+            android:id="@+id/iv_category_logo"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:src="@drawable/ic_account_balance_wallet_white_36dp"
@@ -36,7 +36,7 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_toEndOf="@+id/iv_account_logo"
+            android:layout_toEndOf="@+id/iv_category_logo"
             android:gravity="center_vertical">
 
             <TextView

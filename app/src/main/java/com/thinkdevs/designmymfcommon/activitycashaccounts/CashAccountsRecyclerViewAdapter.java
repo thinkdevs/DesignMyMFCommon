@@ -44,7 +44,7 @@ public class CashAccountsRecyclerViewAdapter extends
         public CashAccountViewHolder(View itemView) {
             super(itemView);
             cardView      = (CardView)  itemView.findViewById(R.id.cv_cash_account);
-            tvAccountLogo = (ImageView) itemView.findViewById(R.id.iv_account_logo);
+            tvAccountLogo = (ImageView) itemView.findViewById(R.id.iv_category_logo);
             tvAccountName = (TextView)  itemView.findViewById(R.id.tv_account_name);
             tvAccountType = (TextView)  itemView.findViewById(R.id.tv_account_type);
             tvMoney       = (TextView)  itemView.findViewById(R.id.tv_money);
@@ -74,7 +74,6 @@ public class CashAccountsRecyclerViewAdapter extends
         return vh;
     }
 
-    // Заполняем view данными
     @Override
     public void onBindViewHolder(final CashAccountViewHolder viewHolder, int i) {
         viewHolder.tvAccountLogo.setImageResource(mDataset.get(i).getLogo());
@@ -93,7 +92,7 @@ public class CashAccountsRecyclerViewAdapter extends
 
                 final PopupWindow popupWindow = new PopupWindow(mContext);
                 popupWindow.setContentView(layout);
-                Button button = ((Button) layout.findViewById(R.id.button));
+                Button button = ((Button) layout.findViewById(R.id.btn_new));
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -101,8 +100,8 @@ public class CashAccountsRecyclerViewAdapter extends
                     }
                 });
                 DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-                int width = displayMetrics.widthPixels;
-                int height = displayMetrics.widthPixels/2;
+                int width = displayMetrics.widthPixels - 100;
+                int height = displayMetrics.heightPixels/2;
                 popupWindow.setWidth(width);
                 popupWindow.setHeight(height);
                 popupWindow.setElevation(30);
@@ -144,7 +143,6 @@ public class CashAccountsRecyclerViewAdapter extends
         });
     }
 
-    // Возвращает колличество элементов в списке
     @Override
     public int getItemCount() {
         return mDataset.size();

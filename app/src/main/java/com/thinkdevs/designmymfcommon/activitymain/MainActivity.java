@@ -7,8 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activitycashaccounts.CashAccountsActivity;
-import com.thinkdevs.designmymfcommon.activitycashaccounts.CashAccountsRecyclerViewActivity;
+import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -44,7 +43,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case  R.id.button_cash_account:
-                startActivity(new Intent(MainActivity.this, CashAccountsRecyclerViewActivity.class));
+                startActivity(new Intent(MainActivity.this, MainActivityNavigationDrawer.class));
                 break;
             case R.id.button2_empty:
 //                startActivity(new Intent());
