@@ -20,7 +20,7 @@
         android:layout_height="56dp"
         android:padding="8dp"
         android:background="#00BCD4"
-        android:id="@+id/rl_tittle_bar">
+        android:id="@+id/rl_title_bar">
 
         <ImageView
             android:layout_width="40dp"
@@ -107,12 +107,16 @@
             android:layout_below="@+id/tv_money"
             android:layout_alignEnd="@+id/tv_money" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/iv_currency"
-            android:src="@drawable/ic_attach_money_black_24dp"
-            android:layout_alignTop="@+id/tv_money"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="$"
+            android:id="@+id/tv_currency"
+            android:textSize="24dp"
+            android:layout_gravity="left|top"
+            android:gravity="center|right"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>

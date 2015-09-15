@@ -20,7 +20,7 @@
         android:layout_height="72dp"
         android:padding="16dp"
         android:background="#00BCD4"
-        android:id="@+id/rl_tittle_bar">
+        android:id="@+id/rl_title_bar">
 
         <ImageView
             android:layout_width="40dp"

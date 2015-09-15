@@ -26,6 +26,9 @@ public class Cash extends BaseModel {
     String name; //название счета
 
     @Column
+    String type; //тип счета
+
+    @Column
     float amount; //колличество средств
 
     @Column
@@ -86,13 +89,16 @@ public class Cash extends BaseModel {
         return profits;
     }
 
-
     public long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public float getAmount() {
@@ -111,19 +117,53 @@ public class Cash extends BaseModel {
         return color;
     }
 
-    public void setLogo(LogoCash logo) {
-        this.logo = logo;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setAmount(float amount) {
         this.amount = amount;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setLogo(LogoCash logo) {
+        this.logo = logo;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+
+
+
+    /**
+     * @return null if haven't operations
+     */
+    public Operation getLastOperation (){
+
+        List<Profit> profits = getProfits();
+        List<Expense> expenses = getExpenses();
+
+        if(profits.size() == 0 && expenses.size() == 0)
+            return null;
+        else if(profits.size() == 0)
+            return expenses.get(expenses.size() - 1);
+        else if(expenses.size() == 0)
+            return profits.get(profits.size() - 1);
+        else {
+            Profit  lastProfit  = profits.get(profits.size() - 1);
+            Expense lastExpense = expenses.get(expenses.size() - 1);
+            long timeProfit   = lastProfit.getDate().getTime();
+            long timeExpense  = lastExpense.getDate().getTime();
+            return timeProfit > timeExpense ? lastProfit : lastExpense;
+        }
     }
 }

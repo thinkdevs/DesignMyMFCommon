@@ -22,10 +22,6 @@
             android:label="@string/act_name_cash_accounts" >
         </activity>
         <activity
-            android:name=".activitycashaccounts.CashAccountsRecyclerViewActivity"
-            android:label="@string/act_name_cash_accounts" >
-        </activity>
-        <activity
             android:name=".activity.MainActivityNavigationDrawer"
             android:label="@string/act_name_cash_accounts" >
         </activity>

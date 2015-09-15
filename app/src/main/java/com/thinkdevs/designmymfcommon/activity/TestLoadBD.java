@@ -48,6 +48,8 @@ public class TestLoadBD {
         // Сохранение кошельков в Базу данных********************************
         Cash cash = new Cash();
         cash.setName("Кошелек");
+        cash.setType("Кошелек");
+        cash.setColor(colors.get(0));
         cash.setAmount(100);
         cash.setLogo(logos.get(0));
         cash.setCurrency(currency);
@@ -55,6 +57,8 @@ public class TestLoadBD {
 
         Cash cash1 = new Cash();
         cash1.setName("VISA");
+        cash1.setType("Карта");
+        cash1.setColor(colors.get(1));
         cash1.setAmount(300);
         cash1.setLogo(logos.get(1));
         cash1.setCurrency(currency1);
@@ -62,10 +66,31 @@ public class TestLoadBD {
 
         Cash cash2 = new Cash();
         cash2.setName("MasterCard");
+        cash2.setType("Карта");
+        cash2.setColor(colors.get(2));
         cash2.setAmount(800);
         cash2.setLogo(logos.get(1));
         cash2.setCurrency(currency2);
         cash2.save();
+
+        Cash cash3 = new Cash();
+        cash3.setName("Maestro");
+        cash3.setType("Карта");
+        cash3.setColor(colors.get(3));
+        cash3.setAmount(1000);
+        cash3.setLogo(logos.get(1));
+        cash3.setCurrency(currency1);
+        cash3.save();
+
+        Cash cash4 = new Cash();
+        cash4.setName("Viza Electron");
+        cash4.setType("Карта");
+        cash4.setColor(colors.get(4));
+        cash4.setAmount(123);
+        cash4.setLogo(logos.get(1));
+        cash4.setCurrency(currency);
+        cash4.save();
+
         // --------------------------------********************************
 
         // Сохранение категорий в Базу данных********************************
@@ -92,7 +117,7 @@ public class TestLoadBD {
 
         CategoryExpense categoryExpense1 = new CategoryExpense();
         categoryExpense1.setName("Автомобиль");
-        categoryExpense1.setColor(colors.get(5));
+        categoryExpense1.setColor(colors.get(2));
         categoryExpense1.setLogo(logos2.get(1));
         categoryExpense1.save();
 
@@ -109,11 +134,11 @@ public class TestLoadBD {
         CategoryExpense categoryExpense3 = new CategoryExpense();
         categoryExpense3.setName("Образование");
         categoryExpense3.setColor(colors.get(10));
-        categoryExpense3.setLogo(logos2.get(3));
+        categoryExpense3.setLogo(logos2.get(2));
         categoryExpense3.save();
 
         CategoryProfit categoryProfit = new CategoryProfit();
-        categoryProfit.setLogo(logos2.get(5));
+        categoryProfit.setLogo(logos2.get(2));
         categoryProfit.setColor(colors.get(15));
         categoryProfit.setName("Работа");
         categoryProfit.save();
@@ -129,7 +154,7 @@ public class TestLoadBD {
         subCategoryProfit1.save();
 
         CategoryProfit categoryProfit1 = new CategoryProfit();
-        categoryProfit1.setLogo(logos2.get(5));
+        categoryProfit1.setLogo(logos2.get(2));
         categoryProfit1.setColor(colors.get(19));
         categoryProfit1.setName("Халтура");
         categoryProfit1.save();
