@@ -33,7 +33,7 @@ public class ListColorAdapter extends ArrayAdapter<Color> {
 
         convertView.findViewById(R.id.tv_color)
                 .setBackgroundColor(res.getColor(color.getResourceId()));
-        convertView.setTag(color.getResourceId());
+        convertView.findViewById(R.id.tv_color).setTag(color.getResourceId());
 
         return convertView;
     }
