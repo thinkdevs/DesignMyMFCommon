@@ -7,7 +7,7 @@ import java.util.Locale;
 public class Formatter {
 
     private static SimpleDateFormat toTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    private static SimpleDateFormat toDate = new SimpleDateFormat("dd/mmm/yyyy", Locale.getDefault());
+    private static SimpleDateFormat toDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public static String formatDateTime(Date date){
         String dateOrTime;

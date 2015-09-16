@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.Color;
 
 import java.util.List;
@@ -27,10 +28,10 @@ public class ListColorAdapter extends ArrayAdapter<Color> {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
-                    .inflate(android.R.layout.simple_spinner_item, null);
+                    .inflate(R.layout.item_spinner_color, null);
         }
 
-        convertView.findViewById(android.R.id.text1)
+        convertView.findViewById(R.id.tv_color)
                 .setBackgroundColor(res.getColor(color.getResourceId()));
         convertView.setTag(color.getResourceId());
 

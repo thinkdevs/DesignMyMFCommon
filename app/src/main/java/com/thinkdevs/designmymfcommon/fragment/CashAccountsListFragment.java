@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
-import com.thinkdevs.designmymfcommon.activity.NewCashActivity;
+import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activitycashaccounts.CashAccountsRecyclerViewAdapter;
 import com.thinkdevs.designmymfcommon.database.Cash;
 
@@ -82,7 +82,7 @@ public class CashAccountsListFragment extends Fragment {
 //        floatingActionButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), NewCashActivity.class));
+//                startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
 //            }
 //        });
 
@@ -104,7 +104,7 @@ public class CashAccountsListFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_new_cash) {
-            startActivity(new Intent(getActivity(), NewCashActivity.class));
+            startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

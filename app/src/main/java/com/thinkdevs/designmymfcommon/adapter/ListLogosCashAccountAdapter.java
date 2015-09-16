@@ -16,11 +16,11 @@ import java.util.List;
 /**
  * Адаптер для таблицы с иконками счетов
  */
-public class ListLogoCashAdapter extends ArrayAdapter<LogoCash> {
+public class ListLogosCashAccountAdapter extends ArrayAdapter<LogoCash> {
 
     Resources res;
 
-    public ListLogoCashAdapter(Context context, List<LogoCash> logos){
+    public ListLogosCashAccountAdapter(Context context, List<LogoCash> logos){
         super(context, R.layout.item_cashes_list, logos);
         res = context.getResources();
     }
@@ -33,6 +33,8 @@ public class ListLogoCashAdapter extends ArrayAdapter<LogoCash> {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_cashes_list, null);
         }
+
+        convertView.setBackgroundColor(res.getColor(R.color.grey));
 
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView_logo));
         imageView.setImageResource(logo.getResourceId());

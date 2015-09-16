@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="36000"
-            android:id="@+id/tv_money"
+            android:id="@+id/tv_amount"
             android:textSize="24dp"
             android:layout_gravity="left|top"
             android:gravity="center|right"
@@ -94,7 +94,7 @@
             android:text="12/12/12"
             android:id="@+id/tv_date"
             android:gravity="center|left"
-            android:layout_below="@+id/tv_money"
+            android:layout_below="@+id/tv_amount"
             android:layout_alignParentEnd="true" />
 
         <TextView
@@ -104,8 +104,8 @@
             android:id="@+id/tv_operation"
             android:textSize="14dp"
             android:gravity="center|right"
-            android:layout_below="@+id/tv_money"
-            android:layout_alignEnd="@+id/tv_money" />
+            android:layout_below="@+id/tv_amount"
+            android:layout_alignEnd="@+id/tv_amount" />
 
         <TextView
             android:layout_width="wrap_content"

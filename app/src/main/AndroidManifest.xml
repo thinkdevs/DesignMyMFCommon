@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".activity.NewCashActivity"
+            android:name=".activity.NewCashAccountActivity"
             android:label="@string/title_activity_new_cash" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

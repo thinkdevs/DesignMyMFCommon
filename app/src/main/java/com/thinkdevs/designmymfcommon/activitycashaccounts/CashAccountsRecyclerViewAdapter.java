@@ -1,6 +1,7 @@
 package com.thinkdevs.designmymfcommon.activitycashaccounts;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -21,11 +22,13 @@ import android.widget.Toast;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
+import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.database.Cash;
 import com.thinkdevs.designmymfcommon.database.Cash$Table;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.Profit;
 import com.thinkdevs.designmymfcommon.utills.Formatter;
+import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.List;
 
@@ -40,10 +43,10 @@ public class CashAccountsRecyclerViewAdapter extends
         // each data item is just a string in this case
         public CardView       cardView;
         public RelativeLayout rlTitleBar;
-        public ImageView      tvAccountLogo;
+        public ImageView ivAccountLogo;
         public TextView       tvAccountName;
         public TextView       tvAccountType;
-        public TextView       tvMoney;
+        public TextView tvAmount;
         public TextView       tvDate;
         public TextView       tvOperation;
         public TextView       tvCurrency;
@@ -55,10 +58,10 @@ public class CashAccountsRecyclerViewAdapter extends
             super(itemView);
             cardView      = (CardView)       itemView.findViewById(R.id.cv_cash_account);
             rlTitleBar    = (RelativeLayout) itemView.findViewById(R.id.rl_title_bar);
-            tvAccountLogo = (ImageView)      itemView.findViewById(R.id.iv_category_logo);
+            ivAccountLogo = (ImageView)      itemView.findViewById(R.id.iv_category_logo);
             tvAccountName = (TextView)       itemView.findViewById(R.id.tv_account_name);
             tvAccountType = (TextView)       itemView.findViewById(R.id.tv_account_type);
-            tvMoney       = (TextView)       itemView.findViewById(R.id.tv_money);
+            tvAmount      = (TextView)       itemView.findViewById(R.id.tv_amount);
             tvDate        = (TextView)       itemView.findViewById(R.id.tv_date);
             tvOperation   = (TextView)       itemView.findViewById(R.id.tv_operation);
             tvCurrency    = (TextView)       itemView.findViewById(R.id.tv_currency);
@@ -87,14 +90,17 @@ public class CashAccountsRecyclerViewAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(final CashAccountViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final CashAccountViewHolder viewHolder, final int i) {
 
         viewHolder.rlTitleBar.   setBackgroundColor(
                 (mResources.getColor(mCashAccounts.get(i).getColor().getResourceId())));
-        viewHolder.tvAccountLogo.setImageResource(mCashAccounts.get(i).getLogo().getResourceId());
+        viewHolder.rlTitleBar.   setTag(
+                (mCashAccounts.get(i).getColor().getResourceId()));
+        viewHolder.ivAccountLogo.setImageResource(mCashAccounts.get(i).getLogo().getResourceId());
+        viewHolder.ivAccountLogo.setTag(mCashAccounts.get(i).getLogo().getResourceId());
         viewHolder.tvAccountName.setText(mCashAccounts.get(i).getName());
         viewHolder.tvAccountType.setText(mCashAccounts.get(i).getType());
-        viewHolder.tvMoney.      setText(String.valueOf(mCashAccounts.get(i).getAmount()));
+        viewHolder.tvAmount.      setText(String.valueOf(mCashAccounts.get(i).getAmount()));
         viewHolder.tvCurrency.   setText(mCashAccounts.get(i).getCurrency().getShortHand());
 
         Operation lastOperation = mCashAccounts.get(i).getLastOperation();
@@ -151,11 +157,15 @@ public class CashAccountsRecyclerViewAdapter extends
                         Toast toast;
                         switch (item.getItemId()){
                             case R.id.edit :
-                                toast = Toast.makeText(
-                                        mContext,
-                                        "Edit",
-                                        Toast.LENGTH_LONG);
-                                toast.show();
+
+                                Intent intent = new Intent(mContext, NewCashAccountActivity.class);
+                                intent.putExtra(NamesOfParametrs.CASH_TITLE, viewHolder.tvAccountName.getText());
+                                intent.putExtra(NamesOfParametrs.CASH_TYPE,  viewHolder.tvAccountType.getText());
+                                intent.putExtra(NamesOfParametrs.CASH_CURRENCY_SHORT_HAND, viewHolder.tvCurrency.getText());
+                                intent.putExtra(NamesOfParametrs.CASH_AMOUNT, viewHolder.tvAmount.getText());
+                                intent.putExtra(NamesOfParametrs.CASH_LOGO, (int) viewHolder.ivAccountLogo.getTag());
+                                intent.putExtra(NamesOfParametrs.CASH_COLOR, (int)viewHolder.rlTitleBar.getTag());
+                                mContext.startActivity(intent);
                                 return true;
                             case R.id.remove :
                                 toast = Toast.makeText(

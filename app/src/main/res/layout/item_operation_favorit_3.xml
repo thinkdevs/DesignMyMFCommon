@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="500 000"
-            android:id="@+id/tv_money"
+            android:id="@+id/tv_amount"
             android:textSize="24dp"
             android:layout_gravity="left|top"
             android:gravity="center|right"

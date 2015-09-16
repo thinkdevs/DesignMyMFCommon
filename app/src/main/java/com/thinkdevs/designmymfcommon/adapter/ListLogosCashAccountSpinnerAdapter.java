@@ -13,11 +13,11 @@ import com.thinkdevs.designmymfcommon.database.LogoCash;
 
 import java.util.List;
 
-public class ListLogoCashSpinnerAdapter extends ArrayAdapter<LogoCash> {
+public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<LogoCash> {
 
     Resources res;
 
-    public ListLogoCashSpinnerAdapter(Context context, List<LogoCash> logos){
+    public ListLogosCashAccountSpinnerAdapter(Context context, List<LogoCash> logos){
         super(context, R.layout.icon_item, logos);
         res = context.getResources();
     }
