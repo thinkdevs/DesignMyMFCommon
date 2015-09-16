@@ -34,8 +34,6 @@ public class ListLogosCashAccountAdapter extends ArrayAdapter<LogoCash> {
                     .inflate(R.layout.item_cashes_list, null);
         }
 
-        convertView.setBackgroundColor(res.getColor(R.color.grey));
-
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView_logo));
         imageView.setImageResource(logo.getResourceId());
         imageView.setTag(logo.getResourceId());

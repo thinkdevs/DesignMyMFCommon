@@ -137,7 +137,7 @@ public class NewCashAccountActivity extends Activity {
             LogoCash logoCash = new Select().from(LogoCash.class).where(Condition.column(LogoCash$Table.RESOURCEID).eq(logoId)).querySingle();
 
             // Получение Color
-            int colorId = ((int) ((TextView) spColor.getSelectedView().findViewById(android.R.id.text1)).getTag());
+            int colorId = ((int) ((TextView) spColor.getSelectedView().findViewById(R.id.tv_color)).getTag());
             Color color = new Select().from(Color.class).where(Condition.column(Color$Table.RESOURCEID).eq(colorId)).querySingle();
 
             // Получение Currency
