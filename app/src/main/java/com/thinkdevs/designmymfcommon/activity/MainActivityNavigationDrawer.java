@@ -76,6 +76,10 @@ public class MainActivityNavigationDrawer extends Activity
                     .replace(R.id.container, CategoriesListFragment.newInstance(position + 1))
                     .commit();
                 break;
+            case 4: fragmentManager.beginTransaction()
+                    .replace(R.id.container, CategoriesListFragment.newInstance(position + 1))
+                    .commit();
+                break;
         }
 
     }
@@ -108,6 +112,9 @@ public class MainActivityNavigationDrawer extends Activity
                 break;
             case 4:
                 mTitle = getString(R.string.title_section_categories);
+                break;
+            case 5:
+                mTitle = getString(R.string.title_section_favorite_operations);
                 break;
         }
     }

@@ -50,6 +50,10 @@ public class NewCashAccountActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_cash_account);
 
+        Bundle extras = getIntent().getExtras();
+        if(extras != null)
+            setTitle(extras.getString(NamesOfParametrs.NEW_CASH_ACTIVITY_TITLE));
+
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);

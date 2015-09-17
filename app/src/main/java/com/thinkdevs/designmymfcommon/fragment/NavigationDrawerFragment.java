@@ -115,13 +115,15 @@ public class NavigationDrawerFragment extends Fragment {
                 getString(R.string.title_section_wallets),
                 getString(R.string.title_section_expenses),
                 getString(R.string.title_section_profits),
-                getString(R.string.title_section_categories)};
+                getString(R.string.title_section_categories),
+                getString(R.string.title_section_favorite_operations)};
 
         int[] icons = {
                 R.drawable.wallet,
                 R.drawable.expense,
                 R.drawable.profit,
-                R.drawable.category};
+                R.drawable.category,
+                R.drawable.ic_description_black_24dp};
 
         ArrayList<Map<String,Object>> data = new ArrayList<>();
         Map<String,Object> attr;

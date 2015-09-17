@@ -47,7 +47,7 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<LogoCash> {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.icon_item, null);
         }
-
+        convertView.setBackgroundColor(res.getColor(R.color.blueGrey));
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));
         imageView.setImageResource(logo.getResourceId());
         imageView.setTag(logo.getResourceId());

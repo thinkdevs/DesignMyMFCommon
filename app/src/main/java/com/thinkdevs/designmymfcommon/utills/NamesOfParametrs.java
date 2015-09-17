@@ -8,5 +8,6 @@ public class NamesOfParametrs {
     public static String CASH_COLOR  = "color";
     public static String CASH_AMOUNT = "amount";
     public static String CASH_CURRENCY_SHORT_HAND = "amount";
+    public static String NEW_CASH_ACTIVITY_TITLE = "title_activity";
 
 }

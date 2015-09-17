@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
@@ -78,20 +79,20 @@ public class CashAccountsListFragment extends Fragment {
         mAdapter = new CashAccountsRecyclerViewAdapter(CashAccountsListFragment.this.getActivity(), cashes);
         mRecyclerView.setAdapter(mAdapter);
 
-//        FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
-//        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
-//            }
-//        });
+        FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
+            }
+        });
 
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.global, menu);
+//        inflater.inflate(R.menu.menu_cashes_list, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -4,23 +4,25 @@ import java.sql.Date;
 
 public interface Operation {
 
-    public void setSubCategory(SubCategory subCategory);
+    void delete();
 
-    public void setCash(Cash cash);
+    void setSubCategory(SubCategory subCategory);
 
-    public void setComment(String comment);
+    void setCash(Cash cash);
 
-    public void setAmount(float amount);
+    void setComment(String comment);
 
-    public void setDate(Date date);
+    void setAmount(float amount);
 
-    public Date getDate();
+    void setDate(Date date);
 
-    public float getAmount();
+    Date getDate();
 
-    public String getComment();
+    float getAmount();
 
-    public Cash getCash();
+    String getComment();
 
-    public SubCategory getSubCategory();
+    Cash getCash();
+
+    SubCategory getSubCategory();
 }
