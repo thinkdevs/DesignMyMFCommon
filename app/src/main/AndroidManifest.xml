@@ -24,10 +24,11 @@
         <activity
             android:name=".activity.MainActivityNavigationDrawer"
             android:label="@string/act_name_cash_accounts" >
-        </activity>
+        </activity>`
 
         <activity
             android:name=".activity.NewCashAccountActivity"
+            android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_cash" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

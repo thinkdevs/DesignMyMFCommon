@@ -8,10 +8,10 @@
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/fl"
         android:layout_marginRight="16dp"
-        android:background="#4CAF50"
+        android:background="@color/lightGreen"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingLeft="8dp"
@@ -23,7 +23,7 @@
                 android:id="@+id/iv_category_logo"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:src="@drawable/ic_shop_white_24dp"
+                android:src="@drawable/ic_home_white_24dp"
             android:visibility="visible" />
 
     </FrameLayout>
@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Хлеб, яйца, молоко"
+                android:text="Бензин"
                 android:id="@+id/tv_template_name"
                 android:textColor="@color/grey"
                 android:textSize="16dp"
@@ -51,7 +51,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Продукты"
+                android:text="Авто"
                 android:id="@+id/tv_category_name"
                 android:textColor="@color/grey"
                 android:textSize="14dp"
@@ -62,7 +62,7 @@
             android:layout_width="165dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="-300000000"
+            android:text="-302345"
             android:id="@+id/tv_amount"
             android:textSize="24dp"
             android:layout_gravity="left|top"
