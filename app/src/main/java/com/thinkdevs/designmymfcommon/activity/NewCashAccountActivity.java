@@ -52,7 +52,7 @@ public class NewCashAccountActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if(extras != null)
-            setTitle(extras.getString(NamesOfParametrs.NEW_CASH_ACTIVITY_TITLE));
+            setTitle(extras.getString(NamesOfParametrs.ACTIVITY_TITLE));
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -86,7 +86,7 @@ public class NewCashAccountActivity extends Activity {
             FLAG_NEW = false;
             etTitle. setText(bundle.getString(NamesOfParametrs.CASH_TITLE));
             etType.  setText(bundle.getString(NamesOfParametrs.CASH_TYPE));
-            etAmount.setText(bundle.getString(NamesOfParametrs.CASH_AMOUNT));
+            etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
             int logoId  = bundle.getInt(NamesOfParametrs.CASH_LOGO);
             int colorId = bundle.getInt(NamesOfParametrs.CASH_COLOR);
             String currencyShortHand = bundle.getString(NamesOfParametrs.CASH_CURRENCY_SHORT_HAND);
@@ -165,6 +165,12 @@ public class NewCashAccountActivity extends Activity {
             // Проверка условий и сохранение
             if(title == null || title.length() == 0){
                 Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
+            }
+            else if(new Select()
+                    .from(Cash.class)
+                    .where(Condition.column(Cash$Table.NAME).eq(title))
+                    .querySingle() != null){
+                Toast.makeText(this, "Счет с таким именем уже существует", Toast.LENGTH_LONG).show();
             }
             else {
                 Cash cash;

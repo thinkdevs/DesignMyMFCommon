@@ -4,6 +4,10 @@ public interface OperationFavorite {
 
     void delete();
 
+    void save();
+
+    void update();
+
     void setTitle(String title);
 
     String getTitle();
@@ -11,10 +15,6 @@ public interface OperationFavorite {
     void setAmount(float amount);
 
     float getAmount();
-
-    void setComment(String comment);
-
-    String getComment();
 
     void setSubCategory(SubCategory subCategory);
 

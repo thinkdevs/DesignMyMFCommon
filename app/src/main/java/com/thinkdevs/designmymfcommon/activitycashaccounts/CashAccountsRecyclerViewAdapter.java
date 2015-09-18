@@ -194,10 +194,10 @@ public class CashAccountsRecyclerViewAdapter extends
         intent.putExtra(NamesOfParametrs.CASH_TITLE, viewHolder.tvAccountName.getText());
         intent.putExtra(NamesOfParametrs.CASH_TYPE, viewHolder.tvAccountType.getText());
         intent.putExtra(NamesOfParametrs.CASH_CURRENCY_SHORT_HAND, viewHolder.tvCurrency.getText());
-        intent.putExtra(NamesOfParametrs.CASH_AMOUNT, viewHolder.tvAmount.getText());
+        intent.putExtra(NamesOfParametrs.AMOUNT, viewHolder.tvAmount.getText());
         intent.putExtra(NamesOfParametrs.CASH_LOGO, (int) viewHolder.ivAccountLogo.getTag());
         intent.putExtra(NamesOfParametrs.CASH_COLOR, (int) viewHolder.rlTitleBar.getTag());
-        intent.putExtra(NamesOfParametrs.NEW_CASH_ACTIVITY_TITLE, "Редактирование");
+        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
         mContext.startActivity(intent);
     }
 

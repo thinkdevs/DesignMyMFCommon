@@ -1,5 +1,6 @@
 package com.thinkdevs.designmymfcommon.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -24,6 +25,7 @@ import com.thinkdevs.designmymfcommon.database.SubCategoryExpense;
 import com.thinkdevs.designmymfcommon.database.SubCategoryExpense$Table;
 import com.thinkdevs.designmymfcommon.database.SubCategoryProfit;
 import com.thinkdevs.designmymfcommon.database.SubCategoryProfit$Table;
+import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -57,6 +59,13 @@ public class NewOperationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_operation);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null)
+            setTitle(extras.getString(NamesOfParametrs.ACTIVITY_TITLE));
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         radioGroupType = ((RadioGroup) findViewById(R.id.radioGroup_type_operation));
         typeCategory = (radioGroupType.getCheckedRadioButtonId() == R.id.radioButton_expense);
@@ -152,7 +161,6 @@ public class NewOperationActivity extends Activity {
         // ***************************** Сохранение операции ************************************
         if(id == R.id.action_save){
 
-
             Operation operation;
             if(typeCategory)
                 operation = new Expense();
@@ -215,8 +223,9 @@ public class NewOperationActivity extends Activity {
             }
 
             NavUtils.navigateUpFromSameTask(this);
-            return true;
+
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

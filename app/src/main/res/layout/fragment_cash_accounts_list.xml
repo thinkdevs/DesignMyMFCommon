@@ -22,8 +22,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/add"
-        fab:fab_colorNormal="#455A64"
+        fab:fab_colorNormal="#607D8B"
         fab:fab_colorPressed="#607D8B"
-        fab:fab_colorRipple="#607D8B" />
+        fab:fab_colorRipple="#455A64" />
 
 </FrameLayout>

@@ -38,7 +38,7 @@ public class Profit extends BaseModel implements Operation {
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "subCategoryExpense_id",
+            columnName = "subCategoryProfit_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)

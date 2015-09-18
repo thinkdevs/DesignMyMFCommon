@@ -17,6 +17,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.fragment.CashAccountsListFragment;
 import com.thinkdevs.designmymfcommon.fragment.CategoriesListFragment;
 import com.thinkdevs.designmymfcommon.fragment.NavigationDrawerFragment;
+import com.thinkdevs.designmymfcommon.fragment.OperationFavoritesListFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationListFragment;
 
 
@@ -77,7 +78,7 @@ public class MainActivityNavigationDrawer extends Activity
                     .commit();
                 break;
             case 4: fragmentManager.beginTransaction()
-                    .replace(R.id.container, CategoriesListFragment.newInstance(position + 1))
+                    .replace(R.id.container, OperationFavoritesListFragment.newInstance(position + 1))
                     .commit();
                 break;
         }

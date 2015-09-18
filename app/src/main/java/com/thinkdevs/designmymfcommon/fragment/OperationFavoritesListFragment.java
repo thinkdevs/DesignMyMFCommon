@@ -1,41 +1,42 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
 import android.app.Activity;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SimpleAdapter;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
-import com.thinkdevs.designmymfcommon.database.Cash;
+import com.thinkdevs.designmymfcommon.activity.NewFavoriteOperationActivity;
+import com.thinkdevs.designmymfcommon.activitycashaccounts.OperationFavoritesRecyclerViewAdapter;
+import com.thinkdevs.designmymfcommon.database.ExpenseFavorite;
+import com.thinkdevs.designmymfcommon.database.OperationFavorite;
+import com.thinkdevs.designmymfcommon.database.ProfitFavorite;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class CashesListFragment extends ListFragment {
+public class OperationFavoritesListFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    final String ATTRIBUTE_NAME_LOGO = "logo";
-//    final String ATTRIBUTE_NAME_COLOR = "color";
-    final String ATTRIBUTE_NAME_TITLE = "title";
-    final String ATTRIBUTE_NAME_SUM = "sum";
-    final String ATTRIBUTE_NAME_CURRENCY = "currency";
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,43 +45,10 @@ public class CashesListFragment extends ListFragment {
         // Включаем отображение меню
         setHasOptionsMenu(true);
 
-        List<Cash> cashList = new Select().from(Cash.class).queryList();
-        List<Integer> logos = new ArrayList<>(cashList.size());
-//        List<Integer> colours = new ArrayList<>(cashList.size());
-        List<String> titles = new ArrayList<>(cashList.size());
-        List<Float> amounts = new ArrayList<>(cashList.size());
-        List<String> currencies = new ArrayList<>(cashList.size());
-
-        for(Cash cash : cashList){
-            logos.add(cash.getLogo().getResourceId());
-//            colours.add(cash.getColor().getResourceId());
-            titles.add(cash.getName());
-            amounts.add(cash.getAmount());
-            currencies.add(cash.getCurrency().getShortHand());
-        }
-
-        ArrayList<Map<String,Object>> data = new ArrayList<>(cashList.size());
-        Map<String, Object> attr;
-        for(int i = 0; i < cashList.size(); i++){
-            attr = new HashMap<>();
-            attr.put(ATTRIBUTE_NAME_LOGO, logos.get(i));
-//            attr.put(ATTRIBUTE_NAME_COLOR, colours.get(i));
-            attr.put(ATTRIBUTE_NAME_TITLE, titles.get(i));
-            attr.put(ATTRIBUTE_NAME_SUM, amounts.get(i));
-            attr.put(ATTRIBUTE_NAME_CURRENCY, currencies.get(i));
-            data.add(attr);
-        }
-
-        String[] from =  {ATTRIBUTE_NAME_LOGO, ATTRIBUTE_NAME_TITLE, ATTRIBUTE_NAME_SUM,
-                        ATTRIBUTE_NAME_CURRENCY};
-        int [] to = {R.id.imageView_logo, R.id.textView_title, R.id.textView_sum, R.id.textView_currency};
-        SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(), data, R.layout.item_cashes_list, from, to);
-        this.setListAdapter(simpleAdapter);
-
     }
 
-    public static CashesListFragment newInstance(int sectionNumber) {
-        CashesListFragment fragment = new CashesListFragment();
+    public static OperationFavoritesListFragment newInstance(int sectionNumber) {
+        OperationFavoritesListFragment fragment = new OperationFavoritesListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -97,13 +65,31 @@ public class CashesListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_cash_accounts_list, container, false);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_cash_accounts);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(OperationFavoritesListFragment.this.getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        List<OperationFavorite> operationFavoriteList = new ArrayList<>();
+        operationFavoriteList.addAll(new Select().from(ProfitFavorite.class).queryList());
+        operationFavoriteList.addAll(new Select().from(ExpenseFavorite.class).queryList());
+
+        // specify an adapter (see also next example)
+        mAdapter = new OperationFavoritesRecyclerViewAdapter(OperationFavoritesListFragment.this.getActivity(), operationFavoriteList);
+        mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
+                startActivity(new Intent(getActivity(), NewFavoriteOperationActivity.class));
             }
         });
 
@@ -112,7 +98,7 @@ public class CashesListFragment extends ListFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.global, menu);
+//        inflater.inflate(R.menu.menu_cashes_list, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

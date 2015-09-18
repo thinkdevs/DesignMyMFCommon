@@ -44,7 +44,7 @@ public class SubCategoryProfit extends BaseModel implements SubCategory {
         if(profits == null){
             profits = new Select()
                     .from(Profit.class)
-                    .where(Condition.column(Profit$Table.SUBCATEGORYPROFIT_SUBCATEGORYEXPENSE_ID).is(this.id))
+                    .where(Condition.column(Profit$Table.SUBCATEGORYPROFIT_SUBCATEGORYPROFIT_ID).is(this.id))
                     .queryList();
         }
         return profits;

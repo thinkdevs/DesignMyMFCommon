@@ -43,6 +43,16 @@
         </activity>
         <activity
             android:name=".activity.NewOperationActivity"
+            android:fitsSystemWindows="true"
+            android:label="@string/title_activity_new_operation" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivityNavigationDrawer" />
+        </activity>
+
+        <activity
+            android:name=".activity.NewFavoriteOperationActivity"
+            android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_operation" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
