@@ -228,7 +228,7 @@ public class NewFavoriteOperationActivity extends Activity {
                                 .querySingle();
                     else
                         operationFavorite = new Select()
-                                        .from(ExpenseFavorite.class)
+                                        .from(ProfitFavorite.class)
                                         .where(Condition.column(ProfitFavorite$Table.NAME).is(title))
                                         .querySingle();
 
