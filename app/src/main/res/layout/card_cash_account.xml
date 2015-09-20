@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="cash"
+                android:text="cashAccount"
                 android:id="@+id/tv_account_type"
                 android:textColor="@android:color/background_light"
                 android:textSize="14dp"

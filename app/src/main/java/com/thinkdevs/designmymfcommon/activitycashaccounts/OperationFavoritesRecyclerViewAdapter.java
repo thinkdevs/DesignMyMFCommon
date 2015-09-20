@@ -2,27 +2,29 @@ package com.thinkdevs.designmymfcommon.activitycashaccounts;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.Cash;
-import com.thinkdevs.designmymfcommon.database.Cash$Table;
-import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.OperationFavorite;
-import com.thinkdevs.designmymfcommon.database.ProfitFavorite;
+import com.thinkdevs.designmymfcommon.activity.NewOperationTemplateActivity;
+import com.thinkdevs.designmymfcommon.database.OperationTemplate;
+import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.fragment.DialogDelete;
+import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OperationFavoritesRecyclerViewAdapter extends
@@ -31,12 +33,13 @@ public class OperationFavoritesRecyclerViewAdapter extends
 
     final String LOG_TAG = "mylog";
 
-    private List<OperationFavorite> mOperationFavorites;
+    private List<OperationTemplate> mOperationTemplate;
     private Activity mContext;
     private Resources mResources;
     private DialogFragment dialogDelete;
-    private int positionCashToDelete;
-    private String titleCashToDelete;
+    private int positionOperationFavoriteToDelete;
+    private String titleOperationFavoriteToDelete;
+    private boolean typeOperationTemplateToDelete;
 
     public static class OperationFavoriteViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -59,8 +62,8 @@ public class OperationFavoritesRecyclerViewAdapter extends
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public OperationFavoritesRecyclerViewAdapter(Activity context, List<OperationFavorite> cashAccounts) {
-        this.mOperationFavorites = cashAccounts;
+    public OperationFavoritesRecyclerViewAdapter(Activity context, List<OperationTemplate> cashAccounts) {
+        this.mOperationTemplate = cashAccounts;
         this.mContext = context;
         this.mResources = context.getResources();
     }
@@ -80,70 +83,95 @@ public class OperationFavoritesRecyclerViewAdapter extends
     public void onBindViewHolder(final OperationFavoriteViewHolder viewHolder, final int i) {
 
         viewHolder.flLogo.   setBackgroundColor(
-                (mResources.getColor(mOperationFavorites.get(i).getSubCategory().getCategory().getColor().getResourceId())));
+                (mResources.getColor(mOperationTemplate.get(i).getSubCategory().getCategory().getColor().getResourceId())));
         viewHolder.flLogo.   setTag(
-                (mOperationFavorites.get(i).getSubCategory().getCategory().getColor().getResourceId()));
-        viewHolder.ivCategoryLogo.setImageResource(mOperationFavorites.get(i).getSubCategory().getCategory().getLogo().getResourceId());
-        viewHolder.ivCategoryLogo.setTag(mOperationFavorites.get(i).getSubCategory().getCategory().getLogo().getResourceId());
-        viewHolder.tvTemplateName.setText(mOperationFavorites.get(i).getTitle());
-        viewHolder.tvCategoryName.setText(mOperationFavorites.get(i).getSubCategory().getName());
+                (mOperationTemplate.get(i).getSubCategory().getCategory().getColor().getResourceId()));
+        viewHolder.ivCategoryLogo.setImageResource(mOperationTemplate.get(i).getSubCategory().getCategory().getLogo().getResourceId());
+        viewHolder.ivCategoryLogo.setTag(mOperationTemplate.get(i).getSubCategory().getCategory().getLogo().getResourceId());
+        viewHolder.tvTemplateName.setText(mOperationTemplate.get(i).getTitle());
+        viewHolder.tvCategoryName.setText(mOperationTemplate.get(i).getSubCategory().getName());
 
             StringBuilder sbAmount  = new StringBuilder();
-            if(mOperationFavorites.get(i).getSubCategory() instanceof ProfitFavorite) {
-                sbAmount.append("+").append(mOperationFavorites.get(i).getAmount());
+            if(mOperationTemplate.get(i).getSubCategory().getCategory().getType().equals(OperationTemplate.TYPE_EXPENSE)) {
+                sbAmount.append("-").append(mOperationTemplate.get(i).getAmount());
                 viewHolder.tvAmount.setTextColor(mContext.getResources().getColor(R.color.red));
             }
             else {
-                sbAmount.append("+").append(mOperationFavorites.get(i).getAmount());
+                sbAmount.append("+").append(mOperationTemplate.get(i).getAmount());
                 viewHolder.tvAmount.setTextColor(mContext.getResources().getColor(R.color.green));
             }
         viewHolder.tvAmount.setText(sbAmount.toString());
+
+        View.OnLongClickListener listener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View v) {
+                final PopupMenu popupMenu = new PopupMenu(mContext, v.findViewById(R.id.tv_template_name));
+                popupMenu.inflate(R.menu.card_account_edit_menu);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.edit:
+                                startEditor(v);
+                                return true;
+                            case R.id.remove:
+                                dialogDelete = DialogDelete.newInstance(OperationFavoritesRecyclerViewAdapter.this, "");
+                                titleOperationFavoriteToDelete = ((TextView)v.findViewById(R.id.tv_template_name)).getText().toString();
+                                String subCategoryName = ((TextView) v.findViewById(R.id.tv_category_name)).getText().toString();
+                                Log.d(LOG_TAG, subCategoryName);
+                                typeOperationTemplateToDelete = (SubCategory.getExpenseSubCategoryByTitle(subCategoryName) != null);
+                                Log.d(LOG_TAG, String.valueOf(typeOperationTemplateToDelete));
+                                positionOperationFavoriteToDelete = i;
+                                dialogDelete.show(mContext.getFragmentManager(), "dialogDelete");
+                                Log.d(LOG_TAG, "button remove");
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+                return true;
+            }
+        };
+
+        viewHolder.cardView.setOnLongClickListener(listener);
     }
 
     @Override
     public int getItemCount() {
-        return mOperationFavorites.size();
+        return mOperationTemplate.size();
     }
 
-    private void startEditor (OperationFavoriteViewHolder viewHolder){
-//        Intent intent = new Intent(mContext, NewCashAccountActivity.class);
-//        intent.putExtra(NamesOfParametrs.CASH_TITLE, viewHolder.tvTemplateName.getText());
-//        intent.putExtra(NamesOfParametrs.CASH_TYPE, viewHolder.tvCategoryName.getText());
-//        intent.putExtra(NamesOfParametrs.CASH_CURRENCY_SHORT_HAND, viewHolder.tvCurrency.getText());
-//        intent.putExtra(NamesOfParametrs.AMOUNT, viewHolder.tvAmount.getText());
-//        intent.putExtra(NamesOfParametrs.CASH_LOGO, (int) viewHolder.ivCategoryLogo.getTag());
-//        intent.putExtra(NamesOfParametrs.CASH_COLOR, (int) viewHolder.rlTitleBar.getTag());
-//        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
-//        mContext.startActivity(intent);
+    private void startEditor (View view){
+        Intent intent = new Intent(mContext, NewOperationTemplateActivity.class);
+        intent.putExtra(NamesOfParametrs.TITLE, ((TextView) view.findViewById(R.id.tv_template_name)).getText());
+        String subCategoryName = ((TextView) view.findViewById(R.id.tv_category_name)).getText().toString();
+        Log.d(LOG_TAG, subCategoryName + " startEditor");
+        intent.putExtra(NamesOfParametrs.NAME_CATEGORY, subCategoryName);
+        boolean typeOperation = (SubCategory.getExpenseSubCategoryByTitle(subCategoryName) != null);
+        intent.putExtra(NamesOfParametrs.TYPE, typeOperation);
+        intent.putExtra(NamesOfParametrs.AMOUNT, ((TextView) view.findViewById(R.id.tv_amount)).getText().toString().substring(1));
+        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
+        mContext.startActivity(intent);
     }
 
-    private void deleteCashAccount(){
-        Cash cash = new Select().from(Cash.class).
-                where(Condition.column(Cash$Table.NAME)
-                        .is(titleCashToDelete))
-                .querySingle();
-        List<Operation> operations = new ArrayList<>();
-        operations.addAll(cash.getProfits());
-        operations.addAll(cash.getExpenses());
-
-        if(!operations.isEmpty()){
-            for(Operation operation : operations ){
-                operation.delete();
-            }
-        }
-        cash.delete();
+    private void deleteFavoriteOperation(){
+        OperationTemplate operationTemplate;
+        operationTemplate = OperationTemplate.getOperationTemplateByTitle(titleOperationFavoriteToDelete);
+        operationTemplate.delete();
     }
 
     private void updateRecycleViewAfterDelete(){
-        mOperationFavorites.remove(positionCashToDelete);
-        notifyItemRemoved(positionCashToDelete);
-        notifyItemRangeChanged(positionCashToDelete, getItemCount());
+        mOperationTemplate.remove(positionOperationFavoriteToDelete);
+        notifyItemRemoved(positionOperationFavoriteToDelete);
+        notifyItemRangeChanged(positionOperationFavoriteToDelete, getItemCount());
     }
 
 
     @Override
     public void onDialogPositiveClick() {
-        deleteCashAccount();
+        deleteFavoriteOperation();
         updateRecycleViewAfterDelete();
     }
 

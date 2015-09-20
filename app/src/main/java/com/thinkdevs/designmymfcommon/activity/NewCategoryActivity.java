@@ -15,23 +15,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogoCategorySpinnerAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.database.CategoryExpense;
-import com.thinkdevs.designmymfcommon.database.CategoryExpense$Table;
-import com.thinkdevs.designmymfcommon.database.CategoryProfit;
-import com.thinkdevs.designmymfcommon.database.CategoryProfit$Table;
 import com.thinkdevs.designmymfcommon.database.Color;
-import com.thinkdevs.designmymfcommon.database.Color$Table;
-import com.thinkdevs.designmymfcommon.database.LogoCategory;
-import com.thinkdevs.designmymfcommon.database.LogoCategory$Table;
+import com.thinkdevs.designmymfcommon.database.Logo;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
-import com.thinkdevs.designmymfcommon.database.SubCategoryExpense;
-import com.thinkdevs.designmymfcommon.database.SubCategoryProfit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +41,14 @@ public class NewCategoryActivity extends Activity {
     List<View> listViewsCategory; // Список элементов управления категорий
     List<View> listViewsSubCategory; // Cписок элементов управления подкатегорий
 
-    List<CategoryExpense> listCategoryExpense;
+    List<Category> listCategoryExpense;
     List<String> listNamesCategoriesExpense;
-    List<CategoryProfit> listCategoryProfit;
+    List<Category> listCategoryProfit;
     List<String> listNamesCategoriesProfit;
     List<Color> listColor;
-    List<LogoCategory> listLogoCategory;
+    List<Logo> listLogoCategory;
 
-    boolean type; //if TRUE then Category
+    boolean type; //if TRUE then CategoryInterface
     boolean typeCategory ; // if TRUE then Expensive
 
 
@@ -98,15 +88,15 @@ public class NewCategoryActivity extends Activity {
         listViewsSubCategory.add(textViewColor);
         listViewsSubCategory.add(spinnerColor);
 
-        listCategoryExpense = new Select().from(CategoryExpense.class).queryList();
-        listCategoryProfit = new Select().from(CategoryProfit.class).queryList();
-        listColor = new Select().from(Color.class).queryList();
-        listLogoCategory = new Select().from(LogoCategory.class).queryList();
+        listCategoryExpense = Category.getExpenseCategories();
+        listCategoryProfit = Category.getProfitCategories();
+        listColor = Color.getColors();
+        listLogoCategory = Logo.getAllCategoryLogos();
 
         listNamesCategoriesExpense = new ArrayList<>();
         if(listCategoryExpense.size() != 0){
-            for(CategoryExpense category : listCategoryExpense){
-                listNamesCategoriesExpense.add(category.getName());
+            for(Category category : listCategoryExpense){
+                listNamesCategoriesExpense.add(category.getTitle());
             }
         }
 
@@ -114,8 +104,8 @@ public class NewCategoryActivity extends Activity {
 
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoryProfit.size() != 0){
-            for(CategoryProfit category : listCategoryProfit){
-                listNamesCategoriesProfit.add(category.getName());
+            for(Category category : listCategoryProfit){
+                listNamesCategoriesProfit.add(category.getTitle());
             }
         }
 
@@ -166,7 +156,7 @@ public class NewCategoryActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -184,64 +174,51 @@ public class NewCategoryActivity extends Activity {
 
             // Сохранение как категории
             if(type){
-                Category category;
-                if(typeCategory)
-                    category = new CategoryExpense();
-                else
-                    category = new CategoryProfit();
-
+                Category category = new Category();
                 String title = String.valueOf(editTextTitle.getText());
+                String categoryType  = typeCategory ? Category.TYPE_EXPENSE : Category.TYPE_PROFIT;
+                category.setType(categoryType);
 
-                int logoId = ((int) (((ImageView) spinnerLogo.getSelectedView().findViewById(R.id.imageView))).getTag());
-                LogoCategory logo = new Select().from(LogoCategory.class).where(Condition.column(LogoCategory$Table.RESOURCEID).eq(logoId)).querySingle();
+                int  logoCategoryId = ((int) (((ImageView) spinnerLogo.getSelectedView().findViewById(R.id.imageView))).getTag());
+                Logo logoCategory = Logo.getLogoByResourceId(logoCategoryId);
 
-                int colorId = ((int) ((TextView) spinnerColor.getSelectedView().findViewById(android.R.id.text1)).getTag());
-                Color color = new Select().from(Color.class).where(Condition.column(Color$Table.RESOURCEID).eq(colorId)).querySingle();
+                int   colorId = ((int) ((TextView) spinnerColor.getSelectedView().findViewById(android.R.id.text1)).getTag());
+                Color color   = Color.getColorByResourceId(colorId);
 
                 // Проверка условий и сохранение
                 if(title == null || title.length() == 0){
                     Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
                 }
+                else if(Category.isExist(title, categoryType)){
+                    Toast.makeText(this, "Категория с таким именем уже существует", Toast.LENGTH_LONG).show();
+                }
                 else {
-                    category.setName(title);
+                    category.setTitle(title);
+                    category.setType(categoryType);
                     category.setColor(color);
-                    category.setLogo(logo);
-                    if(typeCategory)
-                        ((CategoryExpense)category).save();
-                    else
-                        ((CategoryProfit)category).save();
+                    category.setLogo(logoCategory);
+                    category.save();
                 }
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             }
             // Сохранение как подкатегории
             else {
-                SubCategory subCategory;
-                Category category;
-                String categoryString = String.valueOf(((TextView) spinnerCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
-
-                if(typeCategory){
-                    subCategory = new SubCategoryExpense();
-                    category = new Select().from(CategoryExpense.class).where(Condition.column(CategoryExpense$Table.NAME).eq(categoryString)).querySingle();
-                }
-                else {
-                    subCategory = new SubCategoryProfit();
-                    category = new Select().from(CategoryProfit.class).where(Condition.column(CategoryProfit$Table.NAME).eq(categoryString)).querySingle();
-                }
-
+                SubCategory subCategory = new SubCategory();
                 String title = String.valueOf(editTextTitle.getText());
-
+                String categoryString = String.valueOf(((TextView) spinnerCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
+                Category category  = typeCategory ? Category.getExpenseCategoryByTitle(title) : Category.getProfitCategoryByTitle(title);
                 // Проверка условий и сохранение
                 if(title == null || title.length() == 0){
                     Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
                 }
+                else if(SubCategory.isExist(title, category)){
+                    Toast.makeText(this, "Подкатегория с таким именем уже существует", Toast.LENGTH_LONG).show();
+                }
                 else {
                     subCategory.setName(title);
                     subCategory.setCategory(category);
-                    if(typeCategory)
-                        ((SubCategoryExpense)subCategory).save();
-                    else
-                        ((SubCategoryProfit)subCategory).save();
+                    subCategory.save();
                 }
                 NavUtils.navigateUpFromSameTask(this);
                 return true;

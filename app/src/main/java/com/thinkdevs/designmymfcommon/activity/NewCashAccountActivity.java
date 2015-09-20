@@ -8,7 +8,6 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,14 +18,11 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListCurrencyAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogosCashAccountSpinnerAdapter;
-import com.thinkdevs.designmymfcommon.database.Cash;
 import com.thinkdevs.designmymfcommon.database.Cash$Table;
+import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Color;
-import com.thinkdevs.designmymfcommon.database.Color$Table;
 import com.thinkdevs.designmymfcommon.database.Currency;
-import com.thinkdevs.designmymfcommon.database.Currency$Table;
-import com.thinkdevs.designmymfcommon.database.LogoCash;
-import com.thinkdevs.designmymfcommon.database.LogoCash$Table;
+import com.thinkdevs.designmymfcommon.database.Logo;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.List;
@@ -34,7 +30,7 @@ import java.util.List;
 
 public class NewCashAccountActivity extends Activity {
 
-    private boolean FLAG_NEW = true;
+    private boolean IS_NEW = true;
 
     EditText etTitle;
     EditText etType;
@@ -44,6 +40,7 @@ public class NewCashAccountActivity extends Activity {
     Spinner  spColor;
 
     Intent intent;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +62,7 @@ public class NewCashAccountActivity extends Activity {
         spColor    = (Spinner)findViewById(R.id.sp_colors);
         spCurrency = (Spinner)findViewById(R.id.sp_currency);
 
-        List<LogoCash> logosCashAccountList = new Select().from(LogoCash.class).queryList();
+        List<Logo> logosCashAccountList = new Select().from(Logo.class).queryList();
         List<Color> colorList = new Select().from(Color.class).queryList();
         List<Currency> currencyList = new Select().from(Currency.class).queryList();
 
@@ -81,11 +78,11 @@ public class NewCashAccountActivity extends Activity {
         spCurrency.setAdapter(currencyAdapter);
 
         intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        bundle = intent.getExtras();
         if(bundle != null){
-            FLAG_NEW = false;
-            etTitle. setText(bundle.getString(NamesOfParametrs.CASH_TITLE));
-            etType.  setText(bundle.getString(NamesOfParametrs.CASH_TYPE));
+            IS_NEW = false;
+            etTitle. setText(bundle.getString(NamesOfParametrs.TITLE));
+            etType.  setText(bundle.getString(NamesOfParametrs.TYPE));
             etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
             int logoId  = bundle.getInt(NamesOfParametrs.CASH_LOGO);
             int colorId = bundle.getInt(NamesOfParametrs.CASH_COLOR);
@@ -102,7 +99,7 @@ public class NewCashAccountActivity extends Activity {
             }
 
             for(int i = 0; i < currencyList.size(); i++){
-                if(currencyList.get(i).getShortHand().equals(currencyShortHand))
+                if(currencyList.get(i).getStrSymbol().equals(currencyShortHand))
                     spCurrency.setSelection(i);
             }
         }
@@ -119,7 +116,7 @@ public class NewCashAccountActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -136,17 +133,17 @@ public class NewCashAccountActivity extends Activity {
 
         if(id == R.id.action_save){
 
-            // Получение Logo
-            int logoId = (int) ((ImageView)(spLogo.getSelectedView().findViewById(R.id.imageView))).getTag();
-            LogoCash logoCash = new Select().from(LogoCash.class).where(Condition.column(LogoCash$Table.RESOURCEID).eq(logoId)).querySingle();
+            // Получение LogoInterface
+            int logoId = (int) spLogo.getSelectedView().findViewById(R.id.imageView).getTag();
+            Logo cashAccountLogo = Logo.getLogoByResourceId(logoId);
 
             // Получение Color
-            int colorId = ((int) ((TextView) spColor.getSelectedView().findViewById(R.id.tv_color)).getTag());
-            Color color = new Select().from(Color.class).where(Condition.column(Color$Table.RESOURCEID).eq(colorId)).querySingle();
+            int colorId = (int) spColor.getSelectedView().findViewById(R.id.tv_color).getTag();
+            Color color = Color.getColorByResourceId(id);
 
             // Получение Currency
-            String currencyString = String.valueOf(((TextView) spCurrency.getSelectedView().findViewById(android.R.id.text1)).getText());
-            Currency currency = new Select().from(Currency.class).where(Condition.column(Currency$Table.SHORTHAND).eq(currencyString)).querySingle();
+            String strSymbol = String.valueOf(((TextView) spCurrency.getSelectedView().findViewById(android.R.id.text1)).getText());
+            Currency currency = Currency.getCurrencyByStrSymbol(strSymbol);
 
             // Получение Названия
             String title = String.valueOf(etTitle.getText());
@@ -166,35 +163,32 @@ public class NewCashAccountActivity extends Activity {
             if(title == null || title.length() == 0){
                 Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
             }
-            else if(new Select()
-                    .from(Cash.class)
-                    .where(Condition.column(Cash$Table.NAME).eq(title))
-                    .querySingle() != null){
+            else if(IS_NEW && CashAccount.isExist(title)){
                 Toast.makeText(this, "Счет с таким именем уже существует", Toast.LENGTH_LONG).show();
             }
             else {
-                Cash cash;
-                if(FLAG_NEW)
-                    cash = new Cash();
+                CashAccount cashAccount;
+                if(IS_NEW)
+                    cashAccount = new CashAccount();
                 else
-                    cash = new Select()
-                            .from(Cash.class)
-                            .where(Condition.column(Cash$Table.NAME).is(title))
+                    cashAccount = new Select()
+                            .from(CashAccount.class)
+                            .where(Condition.column(Cash$Table.NAME).is(bundle.getString(NamesOfParametrs.TITLE)))
                             .querySingle();
-                cash.setLogo(logoCash);
-                cash.setColor(color);
-                cash.setCurrency(currency);
-                cash.setName(title);
+                cashAccount.setLogo(cashAccountLogo);
+                cashAccount.setColor(color);
+                cashAccount.setCurrency(currency);
+                cashAccount.setTitle(title);
                 if(type == null)
-                    cash.setType("");
+                    cashAccount.setComment("");
                 else
-                    cash.setType(type);
-                cash.setAmount(amount);
+                    cashAccount.setComment(type);
+                cashAccount.setAmount(amount);
 
-                if(FLAG_NEW)
-                    cash.save();
+                if(IS_NEW)
+                    cashAccount.save();
                 else
-                    cash.update();
+                    cashAccount.update();
 
                 NavUtils.navigateUpFromSameTask(this);
             }

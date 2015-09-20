@@ -3,6 +3,8 @@ package com.thinkdevs.designmymfcommon.database;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
@@ -16,24 +18,33 @@ public class Currency extends BaseModel {
     long id;
 
     @Column
-    String name; //название валюты
+    String title; //название валюты
 
     @Column
-    String shortHand; //короткая запись
+    String strSymbol; //короткая запись
 
-    public String getName() {
-        return name;
+    public long   getId() {
+        return id;
     }
 
-    public String getShortHand() {
-        return shortHand;
+    public String getTitle() {
+        return title;
+    }
+    public void   setTitle(String title) {
+        this.title = title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getStrSymbol() {
+        return strSymbol;
+    }
+    public void   setStrSymbol(String strSymbol) {
+        this.strSymbol = strSymbol;
     }
 
-    public void setShortHand(String shortHand) {
-        this.shortHand = shortHand;
+    public static Currency getCurrencyByStrSymbol(String strSymbol){
+        return new Select()
+                .from(Currency.class)
+                .where(Condition.column(Currency$Table.STRSYMBOL).eq(strSymbol))
+                .querySingle();
     }
 }

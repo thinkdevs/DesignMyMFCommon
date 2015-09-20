@@ -27,8 +27,8 @@ public class ListCurrencyAdapter extends ArrayAdapter<Currency> {
                     .inflate(android.R.layout.simple_list_item_2, null);
         }
 
-        ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getShortHand());
-        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getName());
+        ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getStrSymbol());
+        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getTitle());
 
         return convertView;
     }
@@ -42,8 +42,8 @@ public class ListCurrencyAdapter extends ArrayAdapter<Currency> {
                     .inflate(android.R.layout.simple_list_item_2, null);
         }
 
-        ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getShortHand());
-        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getName());
+        ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getStrSymbol());
+        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getTitle());
 
         return convertView;
     }

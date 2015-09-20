@@ -19,7 +19,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activitycashaccounts.CashAccountsRecyclerViewAdapter;
-import com.thinkdevs.designmymfcommon.database.Cash;
+import com.thinkdevs.designmymfcommon.database.CashAccount;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class CashAccountsListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(CashAccountsListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<Cash> cashes = new Select().from(Cash.class).queryList();
+        List<CashAccount> cashes = new Select().from(CashAccount.class).queryList();
 
         // specify an adapter (see also next example)
         mAdapter = new CashAccountsRecyclerViewAdapter(CashAccountsListFragment.this.getActivity(), cashes);
@@ -100,7 +100,7 @@ public class CashAccountsListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

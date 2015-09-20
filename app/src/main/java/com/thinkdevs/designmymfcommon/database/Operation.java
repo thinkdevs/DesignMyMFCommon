@@ -1,28 +1,119 @@
 package com.thinkdevs.designmymfcommon.database;
 
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import java.sql.Date;
+import java.util.List;
 
-public interface Operation {
+/**
+ * Таблица с операциями
+ */
+@Table(databaseName = MoneyFlowDataBase.NAME)
+public class Operation extends BaseModel {
 
-    void delete();
+    public static final String TYPE_EXPENSE = "expense";
+    public static final String TYPE_PROFIT  = "profit";
 
-    void setSubCategory(SubCategory subCategory);
+    @Column
+    @PrimaryKey(autoincrement = true)
+    long id;
 
-    void setCash(Cash cash);
+    @Column
+    String type;   //тип операции;
 
-    void setComment(String comment);
+    @Column
+    Date   date;   //дата расхода
 
-    void setAmount(float amount);
+    @Column
+    float  amount; //сумма
 
-    void setDate(Date date);
+    @Column
+    String comment; //комментарий к расходу
 
-    Date getDate();
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(
+            columnName = "cash_id",
+            columnType = Long.class,
+            foreignColumnName = "id")},
+            saveForeignKeyModel = false)
+    CashAccount cashAccount; // счет
 
-    float getAmount();
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(
+            columnName = "subCategory_id",
+            columnType = Long.class,
+            foreignColumnName = "id")},
+            saveForeignKeyModel = false)
+    SubCategory subCategory; //подкатегория
 
-    String getComment();
+    public long        getId() {
+        return id;
+    }
 
-    Cash getCash();
+    public String      getType() {
+        return type;
+    }
+    public void        setType(String type) {
+        this.type = type;
+    }
 
-    SubCategory getSubCategory();
+    public SubCategory getSubCategory() {
+        return subCategory;
+    }
+    public void        setSubCategory(SubCategory subCategory) {
+        this.subCategory = (SubCategory)subCategory;
+    }
+
+    public CashAccount getCashAccount() {
+        return cashAccount;
+    }
+    public void        setCashAccount(CashAccount cashAccount) {
+        this.cashAccount = cashAccount;
+    }
+
+    public String      getComment() {
+        return comment;
+    }
+    public void        setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public float       getAmount() {
+        return amount;
+    }
+    public void        setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public Date        getDate() {
+        return date;
+    }
+    public void        setDate(Date date) {
+        this.date = date;
+    }
+
+    public static List<Operation> getAllOperations(){
+        return new Select()
+                .from(Operation.class)
+                .queryList();
+    }
+    public static List<Operation> getExpenseOperations(){
+        return new Select()
+                .from(Operation.class)
+                .where(Condition.column(Operation$Table.TYPE).is(TYPE_EXPENSE))
+                .queryList();
+    }
+    public static List<Operation> getProfitOperations(){
+        return new Select()
+                .from(Operation.class)
+                .where(Condition.column(Operation$Table.TYPE).is(TYPE_PROFIT))
+                .queryList();
+    }
 }

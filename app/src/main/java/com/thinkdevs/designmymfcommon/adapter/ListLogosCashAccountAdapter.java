@@ -9,25 +9,25 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.LogoCash;
+import com.thinkdevs.designmymfcommon.database.Logo;
 
 import java.util.List;
 
 /**
  * Адаптер для таблицы с иконками счетов
  */
-public class ListLogosCashAccountAdapter extends ArrayAdapter<LogoCash> {
+public class ListLogosCashAccountAdapter extends ArrayAdapter<Logo> {
 
     Resources res;
 
-    public ListLogosCashAccountAdapter(Context context, List<LogoCash> logos){
+    public ListLogosCashAccountAdapter(Context context, List<Logo> logos){
         super(context, R.layout.item_cashes_list, logos);
         res = context.getResources();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LogoCash logo = getItem(position);
+        Logo logo = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())

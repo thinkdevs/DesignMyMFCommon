@@ -21,9 +21,6 @@ import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.ExpandableListCategoriesAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.database.CategoryExpense;
-import com.thinkdevs.designmymfcommon.database.CategoryProfit;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +44,7 @@ public class CategoriesListFragment extends Fragment {
     RadioGroup radioGroupType;
     ExpandableListView expandableListView;
 
-    List<CategoryExpense> categoryExpenses; //Список категорий расходов
+    List<Category> categoryExpenses; //Список категорий расходов
     List<CategoryProfit> categoryProfits; //Список категорий доходов
 
     @Override
@@ -130,7 +127,7 @@ public class CategoriesListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -151,10 +148,10 @@ public class CategoriesListFragment extends Fragment {
     private ExpandableListCategoriesAdapter getAdapter(boolean typeCategory){
 
         List<Integer> colors = new ArrayList<>();
-        List<? extends Category> categories;
+        List<? extends CategoryInterface> categories;
 
         if(typeCategory){
-            categories = new Select().from(CategoryExpense.class).queryList();
+            categories = new Select().from(Category.class).queryList();
         }
         else
             categories = new Select().from(CategoryProfit.class).queryList();
@@ -178,7 +175,7 @@ public class CategoriesListFragment extends Fragment {
         categoryData = new ArrayList<>();
         subCategoryData = new ArrayList<>();
 
-        for(Category category : categories){
+        for(CategoryInterface category : categories){
             atr = new HashMap<>();
 //            atr.put(ATTRIBUTE_NAME_LOGO, category.getLogo().getResourceId());
             atr.put(ATTRIBUTE_NAME_TITLE, category.getName());
@@ -187,7 +184,7 @@ public class CategoriesListFragment extends Fragment {
 
             subCategoryDataItem = new ArrayList<>();
 
-            for(SubCategory subCategory : category.getSubCategory()){
+            for(SubCategoryInterface subCategory : category.getSubCategory()){
                 atr = new HashMap<>();
                 atr.put(ATTRIBUTE_NAME_TITLE, subCategory.getName());
                 subCategoryDataItem.add(atr);

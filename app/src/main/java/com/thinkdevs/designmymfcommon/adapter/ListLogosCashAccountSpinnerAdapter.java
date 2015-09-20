@@ -9,22 +9,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.LogoCash;
+import com.thinkdevs.designmymfcommon.database.Logo;
 
 import java.util.List;
 
-public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<LogoCash> {
+public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
 
     Resources res;
 
-    public ListLogosCashAccountSpinnerAdapter(Context context, List<LogoCash> logos){
+    public ListLogosCashAccountSpinnerAdapter(Context context, List<Logo> logos){
         super(context, R.layout.icon_item, logos);
         res = context.getResources();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LogoCash logo = getItem(position);
+        Logo logo = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
@@ -41,7 +41,7 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<LogoCash> {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-        LogoCash logo = getItem(position);
+        Logo logo = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())

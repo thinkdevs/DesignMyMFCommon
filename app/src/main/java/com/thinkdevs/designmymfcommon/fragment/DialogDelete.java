@@ -13,6 +13,7 @@ public class DialogDelete extends DialogFragment implements DialogInterface.OnCl
 
     final String LOG_TAG = "myLogs";
     private static NoticeDialogListener listener;
+    private static String message;
 
     public interface NoticeDialogListener {
         void onDialogPositiveClick();
@@ -21,8 +22,9 @@ public class DialogDelete extends DialogFragment implements DialogInterface.OnCl
 
     private  CashAccountsRecyclerViewAdapter adapter;
 
-    public static final DialogDelete newInstance (NoticeDialogListener listener){
+    public static final DialogDelete newInstance (NoticeDialogListener listener, String message){
         DialogDelete.listener = listener;
+        DialogDelete.message = message;
         return new DialogDelete();
     }
 
@@ -30,7 +32,7 @@ public class DialogDelete extends DialogFragment implements DialogInterface.OnCl
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Удалить?");
-        adb.setMessage("При удалении счета будут удалены все операции");
+        adb.setMessage(message);
         adb.setPositiveButton("Да", this);
         adb.setNegativeButton("Нет", this);
         return adb.create();

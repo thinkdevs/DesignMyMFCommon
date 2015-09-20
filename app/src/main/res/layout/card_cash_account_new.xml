@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="cash"
+                android:text="cashAccount"
                 android:id="@+id/tv_account_type"
                 android:textColor="@android:color/background_light"
                 android:textSize="14dp"
@@ -148,7 +148,7 @@
             <Button
                 android:layout_width="90dp"
                 android:layout_height="36dp"
-                android:text="Expense"
+                android:text="РАСХОД"
                 android:id="@+id/btn_add_expense"
                 android:layout_marginRight="4dp"
                 style="?android:attr/borderlessButtonStyle"
@@ -158,7 +158,7 @@
             <Button
                 android:layout_width="90dp"
                 android:layout_height="36dp"
-                android:text="PROFIT"
+                android:text="ДОХОД"
                 android:id="@+id/btn_add_profit"
                 style="?android:attr/borderlessButtonStyle"
                 android:textColor="@android:color/holo_green_dark"

@@ -17,9 +17,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
-import com.thinkdevs.designmymfcommon.database.Expense;
 import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.Profit;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -57,7 +55,7 @@ public class OperationListFragment extends ListFragment {
 
         int itemLayout;
 
-        List<Expense> expenses = new Select().from(Expense.class).queryList();
+        List<Operation> expenses = new Select().from(Operation.class).queryList();
         List<Profit> profits = new Select().from(Profit.class).queryList();
 
         List<Integer> logoCategories = new ArrayList<>();
@@ -71,7 +69,7 @@ public class OperationListFragment extends ListFragment {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-        List<Operation> operations = new ArrayList<>();
+        List<OperationInterface> operations = new ArrayList<>();
         if(sectionNumber == 2){
             operations.addAll(expenses);
             itemLayout = R.layout.item_operation_expense_list;
@@ -81,13 +79,13 @@ public class OperationListFragment extends ListFragment {
             itemLayout = R.layout.item_operation_profit_list;
         }
 
-        for(Operation operation : operations){
+        for(OperationInterface operation : operations){
             logoCategories.add(operation.getSubCategory().getCategory().getLogo().getResourceId());
             categoryTitles.add(operation.getSubCategory().getName());
             amounts.add(operation.getAmount());
             currencies.add(operation.getCash().getCurrency().getShortHand());
             logoCashes.add(operation.getCash().getLogo().getResourceId());
-            cashTitles.add(operation.getCash().getName());
+            cashTitles.add(operation.getCash().getTitle());
             Date date  = operation.getDate();
             dates.add(sdf.format(date));
             comments.add(operation.getComment());
@@ -158,7 +156,7 @@ public class OperationListFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

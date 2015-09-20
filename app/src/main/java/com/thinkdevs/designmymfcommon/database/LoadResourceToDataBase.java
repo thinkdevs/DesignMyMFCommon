@@ -36,9 +36,9 @@ public class LoadResourceToDataBase {
         colorIds.add(R.color.grey);
         colorIds.add(R.color.blueGrey);
 
-        for(Integer integer : colorIds){
+        for(Integer id : colorIds){
             Color color = new Color();
-            color.resourceId = integer;
+            color.resourceId = id;
             color.save();
         }
     }
@@ -47,16 +47,16 @@ public class LoadResourceToDataBase {
      *  Добавление иконок счетов в таблицу базы данных
      */
     public static void loadLogoCash() {
-
         ArrayList<Integer> logoIds = new ArrayList<>();
 
         logoIds.add(R.drawable.ic_account_balance_wallet_white_36dp);
         logoIds.add(R.drawable.ic_credit_card_white_36dp);
 
-        for(Integer integer : logoIds){
-            LogoCash logoCash = new LogoCash();
-            logoCash.resourceId = integer;
-            logoCash.save();
+        for(Integer id : logoIds){
+            Logo logo = new Logo();
+            logo.resourceId = id;
+            logo.setType(Logo.TYPE_CASH_ACCOUNT);
+            logo.save();
         }
     }
 
@@ -64,17 +64,17 @@ public class LoadResourceToDataBase {
      *  Добавление иконок категорий в таблицу базы данных
      */
     public static void loadLogoCategory(){
-
         ArrayList<Integer> logoIds = new ArrayList<>();
 
         logoIds.add(R.drawable.ic_home_white_24dp);
         logoIds.add(R.drawable.ic_directions_car_white_24dp);
         logoIds.add(R.drawable.ic_shop_white_24dp);
 
-        for(Integer integer : logoIds){
-            LogoCategory logoCategory = new LogoCategory();
-            logoCategory.resourceId = integer;
-            logoCategory.save();
+        for(Integer id : logoIds){
+            Logo logo = new Logo();
+            logo.resourceId = id;
+            logo.setType(Logo.TYPE_CATEGORY);
+            logo.save();
         }
     }
 }

@@ -18,11 +18,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
-import com.thinkdevs.designmymfcommon.activity.NewFavoriteOperationActivity;
+import com.thinkdevs.designmymfcommon.activity.NewOperationTemplateActivity;
 import com.thinkdevs.designmymfcommon.activitycashaccounts.OperationFavoritesRecyclerViewAdapter;
-import com.thinkdevs.designmymfcommon.database.ExpenseFavorite;
-import com.thinkdevs.designmymfcommon.database.OperationFavorite;
-import com.thinkdevs.designmymfcommon.database.ProfitFavorite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +74,7 @@ public class OperationFavoritesListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(OperationFavoritesListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<OperationFavorite> operationFavoriteList = new ArrayList<>();
+        List<OperationFavoriteInterface> operationFavoriteList = new ArrayList<>();
         operationFavoriteList.addAll(new Select().from(ProfitFavorite.class).queryList());
         operationFavoriteList.addAll(new Select().from(ExpenseFavorite.class).queryList());
 
@@ -89,7 +86,7 @@ public class OperationFavoritesListFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NewFavoriteOperationActivity.class));
+                startActivity(new Intent(getActivity(), NewOperationTemplateActivity.class));
             }
         });
 
@@ -106,7 +103,7 @@ public class OperationFavoritesListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

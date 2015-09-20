@@ -21,19 +21,14 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
-import com.thinkdevs.designmymfcommon.database.Cash;
-import com.thinkdevs.designmymfcommon.database.Cash$Table;
+import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.Profit;
 import com.thinkdevs.designmymfcommon.fragment.DialogDelete;
 import com.thinkdevs.designmymfcommon.utills.Formatter;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CashAccountsRecyclerViewAdapter extends
@@ -42,7 +37,7 @@ public class CashAccountsRecyclerViewAdapter extends
 
     final String LOG_TAG = "mylog";
 
-    private List<Cash> mCashAccounts;
+    private List<CashAccount> mCashAccounts;
     private Activity mContext;
     private Resources mResources;
     private DialogFragment dialogDelete;
@@ -82,7 +77,7 @@ public class CashAccountsRecyclerViewAdapter extends
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public CashAccountsRecyclerViewAdapter(Activity context, List<Cash> cashAccounts) {
+    public CashAccountsRecyclerViewAdapter(Activity context, List<CashAccount> cashAccounts) {
         this.mCashAccounts = cashAccounts;
         this.mContext = context;
         this.mResources = context.getResources();
@@ -108,10 +103,10 @@ public class CashAccountsRecyclerViewAdapter extends
                 (mCashAccounts.get(i).getColor().getResourceId()));
         viewHolder.ivAccountLogo.setImageResource(mCashAccounts.get(i).getLogo().getResourceId());
         viewHolder.ivAccountLogo.setTag(mCashAccounts.get(i).getLogo().getResourceId());
-        viewHolder.tvAccountName.setText(mCashAccounts.get(i).getName());
-        viewHolder.tvAccountType.setText(mCashAccounts.get(i).getType());
+        viewHolder.tvAccountName.setText(mCashAccounts.get(i).getTitle());
+        viewHolder.tvAccountType.setText(mCashAccounts.get(i).getComment());
         viewHolder.tvAmount.      setText(String.valueOf(mCashAccounts.get(i).getAmount()));
-        viewHolder.tvCurrency.   setText(mCashAccounts.get(i).getCurrency().getShortHand());
+        viewHolder.tvCurrency.   setText(mCashAccounts.get(i).getCurrency().getStrSymbol());
 
         Operation lastOperation = mCashAccounts.get(i).getLastOperation();
         if(lastOperation == null){
@@ -120,7 +115,7 @@ public class CashAccountsRecyclerViewAdapter extends
         }
         else {
             StringBuilder operation  = new StringBuilder();
-            if(lastOperation instanceof Profit)
+            if(lastOperation.getType().equals(Operation.TYPE_PROFIT))
                 operation.append("+").append(lastOperation.getAmount());
             else
                 operation.append("-").append(lastOperation.getAmount());
@@ -159,8 +154,7 @@ public class CashAccountsRecyclerViewAdapter extends
             @Override
             public void onClick(View v) {
                 final PopupMenu popupMenu = new PopupMenu(mContext, v, Gravity.START);
-                popupMenu.inflate(R.menu.card_accoutn_edit_menu);
-                popupMenu.show();
+                popupMenu.inflate(R.menu.card_account_edit_menu);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -169,7 +163,7 @@ public class CashAccountsRecyclerViewAdapter extends
                                 startEditor(viewHolder);
                                 return true;
                             case R.id.remove:
-                                dialogDelete = DialogDelete.newInstance(CashAccountsRecyclerViewAdapter.this);
+                                dialogDelete = DialogDelete.newInstance(CashAccountsRecyclerViewAdapter.this, "При удалении счета будут удалены все операции");
                                 titleCashToDelete = viewHolder.tvAccountName.getText().toString();
                                 positionCashToDelete = i;
                                 dialogDelete.show(mContext.getFragmentManager(), "dialogDelete");
@@ -180,6 +174,7 @@ public class CashAccountsRecyclerViewAdapter extends
                         }
                     }
                 });
+                popupMenu.show();
             }
         });
     }
@@ -191,8 +186,8 @@ public class CashAccountsRecyclerViewAdapter extends
 
     private void startEditor (CashAccountViewHolder viewHolder){
         Intent intent = new Intent(mContext, NewCashAccountActivity.class);
-        intent.putExtra(NamesOfParametrs.CASH_TITLE, viewHolder.tvAccountName.getText());
-        intent.putExtra(NamesOfParametrs.CASH_TYPE, viewHolder.tvAccountType.getText());
+        intent.putExtra(NamesOfParametrs.TITLE, viewHolder.tvAccountName.getText());
+        intent.putExtra(NamesOfParametrs.TYPE, viewHolder.tvAccountType.getText());
         intent.putExtra(NamesOfParametrs.CASH_CURRENCY_SHORT_HAND, viewHolder.tvCurrency.getText());
         intent.putExtra(NamesOfParametrs.AMOUNT, viewHolder.tvAmount.getText());
         intent.putExtra(NamesOfParametrs.CASH_LOGO, (int) viewHolder.ivAccountLogo.getTag());
@@ -202,20 +197,15 @@ public class CashAccountsRecyclerViewAdapter extends
     }
 
     private void deleteCashAccount(){
-        Cash cash = new Select().from(Cash.class).
-                where(Condition.column(Cash$Table.NAME)
-                        .is(titleCashToDelete))
-                .querySingle();
-        List<Operation> operations = new ArrayList<>();
-        operations.addAll(cash.getProfits());
-        operations.addAll(cash.getExpenses());
+        CashAccount cashAccount = CashAccount.getCashAccountByTitle(titleCashToDelete);
+        List<Operation> operations = cashAccount.getAllOperations();
 
         if(!operations.isEmpty()){
             for(Operation operation : operations ){
                 operation.delete();
             }
         }
-        cash.delete();
+        cashAccount.delete();
     }
 
     private void updateRecycleViewAfterDelete(){

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -14,30 +15,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.Cash;
-import com.thinkdevs.designmymfcommon.database.Cash$Table;
-import com.thinkdevs.designmymfcommon.database.ExpenseFavorite;
-import com.thinkdevs.designmymfcommon.database.ExpenseFavorite$Table;
-import com.thinkdevs.designmymfcommon.database.OperationFavorite;
-import com.thinkdevs.designmymfcommon.database.ProfitFavorite;
-import com.thinkdevs.designmymfcommon.database.ProfitFavorite$Table;
+import com.thinkdevs.designmymfcommon.database.OperationTemplate;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
-import com.thinkdevs.designmymfcommon.database.SubCategoryExpense;
-import com.thinkdevs.designmymfcommon.database.SubCategoryExpense$Table;
-import com.thinkdevs.designmymfcommon.database.SubCategoryProfit;
-import com.thinkdevs.designmymfcommon.database.SubCategoryProfit$Table;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewFavoriteOperationActivity extends Activity {
+public class NewOperationTemplateActivity extends Activity {
 
-    private boolean FLAG_NEW = true;
+    private boolean IS_NEW = true;
+    private String LOG_TAG = "mylog";
 
     boolean typeOperation; // if TRUE then Expensive
 
@@ -46,8 +36,9 @@ public class NewFavoriteOperationActivity extends Activity {
     Spinner spSubCategory;
     EditText etAmount;
 
-    List<SubCategoryExpense> listSubCategoryExpense;
-    List<SubCategoryProfit> listSubCategoryProfits;
+
+    List<SubCategory> listSubCategoryExpense;
+    List<SubCategory> listSubCategoryProfits;
 
     List<String> listNamesSubCategoriesExpense; // Для адаптера
     List<String> listNamesSubCategoriesProfit; // Для адаптера
@@ -56,6 +47,7 @@ public class NewFavoriteOperationActivity extends Activity {
     ArrayAdapter<String> adapterProfit;  // Адаптер дохода
 
     Intent intent;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,29 +68,29 @@ public class NewFavoriteOperationActivity extends Activity {
         spSubCategory  = ((Spinner) findViewById(R.id.sp_category));
         etAmount       = (EditText)findViewById(R.id.et_amount);
 
-        listSubCategoryExpense = new Select().from(SubCategoryExpense.class).queryList();
+        listSubCategoryExpense = SubCategory.getExpenseSubCategories();
         listNamesSubCategoriesExpense = new ArrayList<>();
         if(listSubCategoryExpense.size() != 0){
-            for(SubCategoryExpense subCategoryExpense : listSubCategoryExpense){
+            for(SubCategory subCategoryExpense : listSubCategoryExpense){
                 listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
             }
         }
 
-        listSubCategoryProfits = new Select().from(SubCategoryProfit.class).queryList();
+        listSubCategoryProfits = SubCategory.getProfitSubCategories();
         listNamesSubCategoriesProfit = new ArrayList<>();
         if(listSubCategoryProfits.size() != 0){
-            for(SubCategoryProfit subCategoryProfit : listSubCategoryProfits){
+            for(SubCategory subCategoryProfit : listSubCategoryProfits){
                 listNamesSubCategoriesProfit.add(subCategoryProfit.getName());
             }
         }
 
         adapterExpense = new ArrayAdapter<String>(
-                NewFavoriteOperationActivity.this,
+                NewOperationTemplateActivity.this,
                 android.R.layout.simple_list_item_1,
                 listNamesSubCategoriesExpense);
 
         adapterProfit = new ArrayAdapter<String>(
-                NewFavoriteOperationActivity.this,
+                NewOperationTemplateActivity.this,
                 android.R.layout.simple_list_item_1,
                 listNamesSubCategoriesProfit);
 
@@ -115,6 +107,7 @@ public class NewFavoriteOperationActivity extends Activity {
                     case R.id.rb_profit:
                         typeOperation = false;
                         spSubCategory.setAdapter(adapterProfit);
+                        Log.d(LOG_TAG, "profit");
                         break;
                 }
             }
@@ -122,28 +115,31 @@ public class NewFavoriteOperationActivity extends Activity {
 
         intent = getIntent();
 
-        Bundle bundle = intent.getExtras();
+        bundle = intent.getExtras();
         if(bundle != null){
-            FLAG_NEW = false;
-            etTitle.        setText(bundle.getString(NamesOfParametrs.CASH_TITLE));
-            typeOperation = bundle.getBoolean(NamesOfParametrs.TYPE_OPERATION);
+            IS_NEW = false;
+            etTitle.        setText(bundle.getString(NamesOfParametrs.TITLE));
+            typeOperation = bundle.getBoolean(NamesOfParametrs.TYPE);
+            Log.d(LOG_TAG, String.valueOf(typeOperation) + " редактор");
             if(typeOperation)
                 radioGroupType.check(R.id.rb_expense);
             else
                 radioGroupType. check(R.id.rb_profit);
-            etAmount.       setText(bundle.getString(NamesOfParametrs.AMOUNT));
+
+            etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
 
             String categoryName = bundle.getString(NamesOfParametrs.NAME_CATEGORY);
 
+
             if(typeOperation){
                 for(int i = 0; i < listSubCategoryExpense.size(); i++){
-                    if(listSubCategoryExpense.get(i).getName() == categoryName)
+                    if(listSubCategoryExpense.get(i).getName().equals(categoryName))
                         spSubCategory.setSelection(i);
                 }
             }
             else {
                 for(int i = 0; i < listSubCategoryProfits.size(); i++){
-                    if(listSubCategoryProfits.get(i).getName() == categoryName)
+                    if(listSubCategoryProfits.get(i).getName().equals(categoryName))
                         spSubCategory.setSelection(i);
                 }
             }
@@ -161,7 +157,7 @@ public class NewFavoriteOperationActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -181,75 +177,54 @@ public class NewFavoriteOperationActivity extends Activity {
             // Получение Названия
             String title = String.valueOf(etTitle.getText());
 
-            // Получаем категорию
+            // Получаем подкатегорию
             String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            SubCategory subCategory;
-            if(typeOperation)
-                subCategory = new Select()
-                        .from(SubCategoryExpense.class)
-                        .where(Condition.column(SubCategoryExpense$Table.NAME)
-                                .eq(stringSubCategory))
-                        .querySingle();
-            else
-                subCategory = new Select()
-                        .from(SubCategoryProfit.class)
-                        .where(Condition.column(SubCategoryProfit$Table.NAME)
-                                .eq(stringSubCategory))
-                        .querySingle();
+            SubCategory subCategory = typeOperation
+                    ? SubCategory.getExpenseSubCategoryByTitle(stringSubCategory)
+                    : SubCategory.getProfitSubCategoryByTitle(stringSubCategory);
 
             // Получаем сумму
             String amountString = String.valueOf(etAmount.getText());
+
+            String strTypeOperation = typeOperation
+                    ? OperationTemplate.TYPE_EXPENSE
+                    : OperationTemplate.TYPE_PROFIT;
 
             // Проверка условий и сохранение
             if(title == null || title.length() == 0){
                 Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
             }
+            else if(IS_NEW && OperationTemplate.isExist(title, strTypeOperation)){
+                Toast.makeText(this, "Шаблон с таким именем уже существует", Toast.LENGTH_LONG).show();
+            }
             else if (amountString == null || amountString.length() == 0){
                 Toast.makeText(this, "Введите сумму", Toast.LENGTH_LONG).show();
             }
-            else if(new Select()
-                    .from(Cash.class)
-                    .where(Condition.column(Cash$Table.NAME).eq(title))
-                    .querySingle() != null){
-                Toast.makeText(this, "Шаблон с таким именем уже существует", Toast.LENGTH_LONG).show();
-            }
             else {
-                OperationFavorite operationFavorite;
-                if(FLAG_NEW)
-                    if(typeOperation)
-                        operationFavorite = new ExpenseFavorite();
-                    else
-                        operationFavorite = new ProfitFavorite();
+                OperationTemplate operationTemplate;
+                if(IS_NEW)
+                        operationTemplate = new OperationTemplate();
                 else
-                    if(typeOperation)
-                        operationFavorite = new Select()
-                                .from(ExpenseFavorite.class)
-                                .where(Condition.column(ExpenseFavorite$Table.NAME).is(title))
-                                .querySingle();
-                    else
-                        operationFavorite = new Select()
-                                        .from(ProfitFavorite.class)
-                                        .where(Condition.column(ProfitFavorite$Table.NAME).is(title))
-                                        .querySingle();
+                        operationTemplate = OperationTemplate.getOperationTemplateByTitle(bundle.getString(NamesOfParametrs.TITLE));
 
-                operationFavorite.setTitle(title);
+                operationTemplate.setTitle(title);
+                operationTemplate.setType(typeOperation ? OperationTemplate.TYPE_EXPENSE : OperationTemplate.TYPE_PROFIT);
 
                 float amount;
                 if(amountString.length() == 0)
                     amount = 0;
                 else
                     amount = Float.parseFloat(String.valueOf(amountString));
-                operationFavorite.setAmount(amount);
+                operationTemplate.setAmount(amount);
 
-                operationFavorite.setSubCategory(subCategory);
+                operationTemplate.setSubCategory(subCategory);
 
-                if(FLAG_NEW)
-                    operationFavorite.save();
+                if(IS_NEW)
+                    operationTemplate.save();
                 else
-                    operationFavorite.update();
+                    operationTemplate.update();
 
                 NavUtils.navigateUpFromSameTask(this);
-
                 }
 
             // Возвращаемся назад после сохранения
