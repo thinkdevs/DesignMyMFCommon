@@ -4,60 +4,54 @@
     package="com.thinkdevs.designmymfcommon">
 
     <application
-        android:title=".application.DBFlowApplication"
+        android:name=".application.DBFlowApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:title=".activitymain.MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:title="android.intent.action.MAIN" />
-                <category android:title="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <activity
-            android:title=".activitycashaccounts.CashAccountsActivity"
-            android:label="@string/act_name_cash_accounts" >
-        </activity>
-        <activity
-            android:title=".activity.MainActivityNavigationDrawer"
-            android:label="@string/act_name_cash_accounts" >
+            android:name=".activity.MainNavigationDrawerActivity"
+            android:label="@string/app_name_short" >
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.MAIN"/>
+                <category
+                    android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>`
 
         <activity
-            android:title=".activity.NewCashAccountActivity"
+            android:name=".activity.NewCashAccountActivity"
             android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_cash" >
             <meta-data
-                android:title="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivityNavigationDrawer" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainNavigationDrawerActivity" />
         </activity>
         <activity
-            android:title=".activity.NewCategoryActivity"
+            android:name=".activity.NewCategoryActivity"
             android:label="@string/title_activity_new_category" >
             <meta-data
-                android:title="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivityNavigationDrawer" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainNavigationDrawerActivity" />
         </activity>
         <activity
-            android:title=".activity.NewOperationActivity"
+            android:name=".activity.NewOperationActivity"
             android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_operation" >
             <meta-data
-                android:title="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivityNavigationDrawer" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainNavigationDrawerActivity" />
         </activity>
 
         <activity
-            android:title=".activity.NewOperationFavoriteActivity"
+            android:name=".activity.NewOperationTemplateActivity"
             android:fitsSystemWindows="true"
-            android:label="@string/title_activity_new_operation" >
+            android:label="@string/title_activity_new_operation_template" >
             <meta-data
-                android:title="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivityNavigationDrawer" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainNavigationDrawerActivity" />
         </activity>
 
     </application>

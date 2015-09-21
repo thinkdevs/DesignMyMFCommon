@@ -26,24 +26,24 @@ public class TestLoadBD {
 
         //Сохранение валют в базу данных ********************************
         Currency currency = new Currency();
-        currency.setTitle("Рубль");
+        currency.setName("Рубль");
         currency.setStrSymbol("РУБ");
         currency.save();
 
         Currency currency1 = new Currency();
-        currency1.setTitle("Dollar");
+        currency1.setName("Dollar");
         currency1.setStrSymbol("$");
         currency1.save();
 
         Currency currency2 = new Currency();
-        currency2.setTitle("Euro");
+        currency2.setName("Euro");
         currency2.setStrSymbol("€");
         currency2.save();
         //-------------------------------- ********************************
 
         // Сохранение кошельков в Базу данных********************************
         CashAccount cash = new CashAccount();
-        cash.setTitle("Кошелек");
+        cash.setName("Кошелек");
         cash.setComment("Кошелек");
         cash.setColor(colors.get(0));
         cash.setAmount(100);
@@ -52,7 +52,7 @@ public class TestLoadBD {
         cash.save();
 
         CashAccount cash1 = new CashAccount();
-        cash1.setTitle("VISA");
+        cash1.setName("VISA");
         cash1.setComment("Карта");
         cash1.setColor(colors.get(1));
         cash1.setAmount(300);
@@ -61,7 +61,7 @@ public class TestLoadBD {
         cash1.save();
 
         CashAccount cash2 = new CashAccount();
-        cash2.setTitle("MasterCard");
+        cash2.setName("MasterCard");
         cash2.setComment("Карта");
         cash2.setColor(colors.get(2));
         cash2.setAmount(800);
@@ -70,7 +70,7 @@ public class TestLoadBD {
         cash2.save();
 
         CashAccount cash3 = new CashAccount();
-        cash3.setTitle("Maestro");
+        cash3.setName("Maestro");
         cash3.setComment("Карта");
         cash3.setColor(colors.get(3));
         cash3.setAmount(1000);
@@ -79,7 +79,7 @@ public class TestLoadBD {
         cash3.save();
 
         CashAccount cash4 = new CashAccount();
-        cash4.setTitle("Viza Electron");
+        cash4.setName("Viza Electron");
         cash4.setComment("Карта");
         cash4.setColor(colors.get(4));
         cash4.setAmount(123);
@@ -92,7 +92,7 @@ public class TestLoadBD {
         // Сохранение категорий в Базу данных********************************
         Category categoryExpense = new Category();
         categoryExpense.setType(Category.TYPE_EXPENSE);
-        categoryExpense.setTitle("Дети");
+        categoryExpense.setName("Дети");
         categoryExpense.setColor(colors.get(0));
         categoryExpense.setLogo(categoryLogos.get(0));
         categoryExpense.save();
@@ -113,7 +113,7 @@ public class TestLoadBD {
         subCategoryExpense2.save();
 
         Category categoryExpense1 = new Category();
-        categoryExpense1.setTitle("Автомобиль");
+        categoryExpense1.setName("Автомобиль");
         categoryExpense1.setColor(colors.get(2));
         categoryExpense1.setLogo(categoryLogos.get(1));
         categoryExpense1.save();
@@ -129,7 +129,7 @@ public class TestLoadBD {
         subCategoryExpense4.save();
 
         Category categoryExpense3 = new Category();
-        categoryExpense3.setTitle("Образование");
+        categoryExpense3.setName("Образование");
         categoryExpense3.setType(Category.TYPE_EXPENSE);
         categoryExpense3.setColor(colors.get(10));
         categoryExpense3.setLogo(categoryLogos.get(2));
@@ -139,7 +139,7 @@ public class TestLoadBD {
         categoryProfit.setType(Category.TYPE_PROFIT);
         categoryProfit.setLogo(categoryLogos.get(2));
         categoryProfit.setColor(colors.get(15));
-        categoryProfit.setTitle("Работа");
+        categoryProfit.setName("Работа");
         categoryProfit.save();
 
         SubCategory subCategoryProfit = new SubCategory();
@@ -153,10 +153,10 @@ public class TestLoadBD {
         subCategoryProfit1.save();
 
         Category categoryProfit1 = new Category();
-        categoryProfit1.setTitle(Category.TYPE_PROFIT);
+        categoryProfit1.setName(Category.TYPE_PROFIT);
         categoryProfit1.setLogo(categoryLogos.get(2));
         categoryProfit1.setColor(colors.get(19));
-        categoryProfit1.setTitle("Халтура");
+        categoryProfit1.setName("Халтура");
         categoryProfit1.save();
         // --------------------------------********************************
     }

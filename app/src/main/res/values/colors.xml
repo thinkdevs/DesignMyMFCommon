@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Choose for categories, cashes ... and other apps elements-->
-        <color title="red">#F44336</color>
-        <color title="pink">#E91E63</color>
-        <color title="purple">#9C27B0</color>
-        <color title="deepPurple">#673AB7</color>
-        <color title="indigo">#3F51B5</color>
-        <color title="blue">#2196F3</color>
-        <color title="lightBlue">#03A9F4</color>
-        <color title="cyan">#00BCD4</color>
-        <color title="teal">#009688</color>
-        <color title="green">#4CAF50</color>
-        <color title="lightGreen">#8BC34A</color>
-        <color title="lime">#CDDC39</color>
-        <color title="yellow">#FFEB3B</color>
-        <color title="amber">#FFC107</color>
-        <color title="orange">#FF9800</color>
-        <color title="deepOrange">#FF5722</color>
-        <color title="brown">#795548</color>
-        <color title="grey">#9E9E9E</color>
-        <color title="blueGrey">#607D8B</color>
+        <color name="red">#F44336</color>
+        <color name="pink">#E91E63</color>
+        <color name="purple">#9C27B0</color>
+        <color name="deepPurple">#673AB7</color>
+        <color name="indigo">#3F51B5</color>
+        <color name="blue">#2196F3</color>
+        <color name="lightBlue">#03A9F4</color>
+        <color name="cyan">#00BCD4</color>
+        <color name="teal">#009688</color>
+        <color name="green">#4CAF50</color>
+        <color name="lightGreen">#8BC34A</color>
+        <color name="lime">#CDDC39</color>
+        <color name="yellow">#FFEB3B</color>
+        <color name="amber">#FFC107</color>
+        <color name="orange">#FF9800</color>
+        <color name="deepOrange">#FF5722</color>
+        <color name="brown">#795548</color>
+        <color name="grey">#9E9E9E</color>
+        <color name="blueGrey">#607D8B</color>
 </resources>

@@ -2,6 +2,7 @@ package com.thinkdevs.designmymfcommon.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
@@ -27,24 +28,29 @@ import java.util.List;
 public class NewOperationActivity extends Activity {
 
 
+    private boolean IS_NEW = true;
+
     boolean typeOperation; // if TRUE then Expensive
 
-    RadioGroup radioGroupType;
-    Spinner spinnerCash;
-    Spinner spinnerSubCategory;
-    EditText editTextAmount;
-    EditText editTextComment;
+    RadioGroup rgTypeOperation;
+    Spinner spCashAccount;
+    Spinner    spSubCategory;
+    EditText   etAmount;
+    EditText   etComment;
 
     List<SubCategory> listSubCategoryExpense;
     List<SubCategory> listSubCategoryProfits;
-    List<CashAccount> listCashes;
+    List<CashAccount> listCashAccounts;
 
     List<String> listNamesSubCategoriesExpense; // Для адаптера
     List<String> listNamesSubCategoriesProfit; // Для адаптера
-    List<String> listNamesCash; // Для адаптера
+    List<String> listCashAccountNames; // Для адаптера
 
     ArrayAdapter<String> adapterExpense; // Адаптер расхода
     ArrayAdapter<String> adapterProfit;  // Адаптер дохода
+
+    Intent intent;
+    Bundle bundle;
 
 
     @Override
@@ -56,16 +62,17 @@ public class NewOperationActivity extends Activity {
         if(extras != null)
             setTitle(extras.getString(NamesOfParametrs.ACTIVITY_TITLE));
 
+
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        radioGroupType = ((RadioGroup) findViewById(R.id.radioGroup_type_operation));
-        typeOperation = (radioGroupType.getCheckedRadioButtonId() == R.id.radioButton_expense);
+        rgTypeOperation = ((RadioGroup) findViewById(R.id.radioGroup_type_operation));
+        typeOperation = (rgTypeOperation.getCheckedRadioButtonId() == R.id.rb_operation_expense);
 
-        spinnerCash = ((Spinner) findViewById(R.id.spinner_cash));
-        spinnerSubCategory = ((Spinner) findViewById(R.id.spinner_category));
-        editTextAmount = ((EditText) findViewById(R.id.editText_sum));
-        editTextComment = ((EditText) findViewById(R.id.editText_comment));
+        spCashAccount = ((Spinner) findViewById(R.id.spinner_cash));
+        spSubCategory = ((Spinner) findViewById(R.id.spinner_category));
+        etAmount      = ((EditText) findViewById(R.id.editText_sum));
+        etComment     = ((EditText) findViewById(R.id.editText_comment));
 
         listSubCategoryExpense = SubCategory.getExpenseSubCategories();
         listNamesSubCategoriesExpense = new ArrayList<>();
@@ -83,11 +90,11 @@ public class NewOperationActivity extends Activity {
             }
         }
 
-        listCashes = new Select().from(CashAccount.class).queryList();
-        listNamesCash = new ArrayList<>();
-        if(listCashes.size() != 0){
-            for(CashAccount cash : listCashes){
-                listNamesCash.add(cash.getTitle());
+        listCashAccounts = new Select().from(CashAccount.class).queryList();
+        listCashAccountNames = new ArrayList<>();
+        if(listCashAccounts.size() != 0){
+            for(CashAccount cash : listCashAccounts){
+                listCashAccountNames.add(cash.getName());
             }
         }
 
@@ -101,28 +108,46 @@ public class NewOperationActivity extends Activity {
                 android.R.layout.simple_list_item_1,
                 listNamesSubCategoriesProfit);
 
-        spinnerSubCategory.setAdapter(adapterExpense);
+        spSubCategory.setAdapter(adapterExpense);
 
-        spinnerCash.setAdapter(
+        spCashAccount.setAdapter(
                 new ArrayAdapter<String>(NewOperationActivity.this,
-                android.R.layout.simple_list_item_1,
-                listNamesCash));
+                        android.R.layout.simple_list_item_1,
+                        listCashAccountNames));
 
-        radioGroupType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rgTypeOperation.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
-                    case R.id.radioButton_expense:
+                    case R.id.rb_operation_expense:
                         typeOperation = true;
-                        spinnerSubCategory.setAdapter(adapterExpense);
+                        spSubCategory.setAdapter(adapterExpense);
                         break;
-                    case R.id.radioButton_profit:
+                    case R.id.rb_operation_profit:
                         typeOperation = false;
-                        spinnerSubCategory.setAdapter(adapterProfit);
+                        spSubCategory.setAdapter(adapterProfit);
                         break;
                 }
             }
         });
+
+        intent = getIntent();
+        bundle = intent.getExtras();
+        if(bundle != null){
+            if(Operation.TYPE_EXPENSE.equals(bundle.getString(NamesOfParametrs.TYPE))){
+                typeOperation = true;
+                rgTypeOperation.check(R.id.rb_operation_expense);
+            }
+            else{
+                typeOperation = false;
+                rgTypeOperation.check(R.id.rb_operation_profit);
+            }
+
+            for(int i = 0; i < listCashAccountNames.size(); i++){
+                if(listCashAccountNames.get(i).equals(bundle.getString(NamesOfParametrs.NAME)))
+                    spCashAccount.setSelection(i);
+            }
+        }
 
     }
 
@@ -155,17 +180,17 @@ public class NewOperationActivity extends Activity {
 
             Operation operation = new Operation();
             // Получаем подкатегорию
-            String stringSubCategory = String.valueOf(((((TextView) spinnerSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
+            String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
             SubCategory subCategory = typeOperation
-                    ? SubCategory.getExpenseSubCategoryByTitle(stringSubCategory)
-                    : SubCategory.getProfitSubCategoryByTitle(stringSubCategory);
+                    ? SubCategory.getExpenseSubCategoryByName(stringSubCategory)
+                    : SubCategory.getProfitSubCategoryByName(stringSubCategory);
 
             // Получаем кошелек
-            String stringCash = String.valueOf(((((TextView) spinnerCash.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            CashAccount cashAccount = CashAccount.getCashAccountByTitle(stringCash);
+            String stringCash = String.valueOf(((((TextView) spCashAccount.getSelectedView().findViewById(android.R.id.text1))).getText()));
+            CashAccount cashAccount = CashAccount.getCashAccountByName(stringCash);
 
             // Получаем стоимость
-            String amountString = String.valueOf(editTextAmount.getText());
+            String amountString = String.valueOf(etAmount.getText());
             float amount;
             if(amountString.length() == 0)
                 amount = 0;
@@ -173,11 +198,12 @@ public class NewOperationActivity extends Activity {
                 amount = Float.parseFloat(String.valueOf(amountString));
 
             // Получаем комментарий
-            String comment = String.valueOf(editTextComment.getText());
+            String comment = String.valueOf(etComment.getText());
             if(amountString.length() == 0)
                 comment = "";
 
             // Сохраняем операцию
+            operation.setType(typeOperation ? Operation.TYPE_EXPENSE : Operation.TYPE_PROFIT);
             operation.setCashAccount(cashAccount);
             operation.setDate(new Date(System.currentTimeMillis()));
             operation.setSubCategory(subCategory);

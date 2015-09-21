@@ -116,7 +116,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getString(R.string.title_section_expenses),
                 getString(R.string.title_section_profits),
                 getString(R.string.title_section_categories),
-                getString(R.string.title_section_favorite_operations)};
+                getString(R.string.title_section_operation_templates)};
 
         int[] icons = {
                 R.drawable.wallet,

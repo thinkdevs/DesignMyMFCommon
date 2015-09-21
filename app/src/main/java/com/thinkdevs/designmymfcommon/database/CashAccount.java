@@ -23,7 +23,7 @@ public class CashAccount extends BaseModel {
     long id;
 
     @Column
-    String title;   //название счета
+    String name;   //название счета
 
     @Column
     String comment; //комментарий к счету
@@ -49,7 +49,7 @@ public class CashAccount extends BaseModel {
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "colour_id",
+            columnName = "color_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
@@ -61,11 +61,11 @@ public class CashAccount extends BaseModel {
         return id;
     }
 
-    public String   getTitle() {
-        return title;
+    public String   getName() {
+        return name;
     }
-    public void     setTitle(String title) {
-        this.title = title;
+    public void     setName(String name) {
+        this.name = name;
     }
 
     public String   getComment() {
@@ -109,7 +109,7 @@ public class CashAccount extends BaseModel {
         if(operations == null){
             operations = new Select()
                     .from(Operation.class)
-                    .where(Condition.column(Operation$Table.CASH_CASH_ID).is(this.id))
+                    .where(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.id))
                     .queryList();
         }
         return operations;
@@ -126,15 +126,17 @@ public class CashAccount extends BaseModel {
     public List<Operation> getExpenseOperations(){
         return new Select()
                 .from(Operation.class)
-                .where(Condition.column(Operation$Table.TYPE).is(Operation.TYPE_EXPENSE)
-                    && Condition.column(Operation$Table.CASHACCOUNT).is(this.getId()))
+                .where(Condition.CombinedCondition
+                .begin(Condition.column(Operation$Table.TYPE).is(Operation.TYPE_EXPENSE))
+                .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }
     public List<Operation> getProfitOperations(){
         return new Select()
                 .from(Operation.class)
-                .where(Condition.column(Operation$Table.TYPE).is(Operation.TYPE_PROFIT)
-                    && Condition.column(Operation$Table.CASHACCOUNT).is(this.getId()))
+                .where(Condition.CombinedCondition
+                .begin(Condition.column(Operation$Table.TYPE).is(Operation.TYPE_PROFIT))
+                .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }
 
@@ -145,10 +147,11 @@ public class CashAccount extends BaseModel {
                 .querySingle() != null;
     }
 
-    public static CashAccount getCashAccountByTitle(String title){
+    public static CashAccount getCashAccountByName(String title){
         return new Select().from(CashAccount.class).
                 where(Condition.column(CashAccount$Table.NAME)
                         .is(title))
                 .querySingle();
     }
+
 }

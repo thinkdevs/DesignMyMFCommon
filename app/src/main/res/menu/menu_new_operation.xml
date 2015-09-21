@@ -4,7 +4,7 @@
     tools:context="ru.tikhanovskiy.mymoneyflow.activity.NewCategoryActivity">
     <item
         android:id="@+id/action_save"
-        android:title="@string/action_save"
+        android:name="@string/action_save"
         android:icon="@drawable/done"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|withText" />

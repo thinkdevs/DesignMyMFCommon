@@ -52,7 +52,7 @@ public class NewOperationTemplateActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_favorite_operation);
+        setContentView(R.layout.activity_new_operation_template);
 
         Bundle extras = getIntent().getExtras();
         if(extras != null)
@@ -118,7 +118,7 @@ public class NewOperationTemplateActivity extends Activity {
         bundle = intent.getExtras();
         if(bundle != null){
             IS_NEW = false;
-            etTitle.        setText(bundle.getString(NamesOfParametrs.TITLE));
+            etTitle.        setText(bundle.getString(NamesOfParametrs.NAME));
             typeOperation = bundle.getBoolean(NamesOfParametrs.TYPE);
             Log.d(LOG_TAG, String.valueOf(typeOperation) + " редактор");
             if(typeOperation)
@@ -128,7 +128,7 @@ public class NewOperationTemplateActivity extends Activity {
 
             etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
 
-            String categoryName = bundle.getString(NamesOfParametrs.NAME_CATEGORY);
+            String categoryName = bundle.getString(NamesOfParametrs.CATEGORY_NAME);
 
 
             if(typeOperation){
@@ -180,8 +180,8 @@ public class NewOperationTemplateActivity extends Activity {
             // Получаем подкатегорию
             String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
             SubCategory subCategory = typeOperation
-                    ? SubCategory.getExpenseSubCategoryByTitle(stringSubCategory)
-                    : SubCategory.getProfitSubCategoryByTitle(stringSubCategory);
+                    ? SubCategory.getExpenseSubCategoryByName(stringSubCategory)
+                    : SubCategory.getProfitSubCategoryByName(stringSubCategory);
 
             // Получаем сумму
             String amountString = String.valueOf(etAmount.getText());
@@ -205,9 +205,9 @@ public class NewOperationTemplateActivity extends Activity {
                 if(IS_NEW)
                         operationTemplate = new OperationTemplate();
                 else
-                        operationTemplate = OperationTemplate.getOperationTemplateByTitle(bundle.getString(NamesOfParametrs.TITLE));
+                        operationTemplate = OperationTemplate.getOperationTemplateByName(bundle.getString(NamesOfParametrs.NAME));
 
-                operationTemplate.setTitle(title);
+                operationTemplate.setName(title);
                 operationTemplate.setType(typeOperation ? OperationTemplate.TYPE_EXPENSE : OperationTemplate.TYPE_PROFIT);
 
                 float amount;

@@ -5,7 +5,7 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/action_new_cash"
-        android:title="@string/action_new_cash"
+        android:name="@string/action_new_cash"
         android:icon="@android:drawable/ic_input_add"
         android:showAsAction="ifRoom|withText"/>
 </menu>

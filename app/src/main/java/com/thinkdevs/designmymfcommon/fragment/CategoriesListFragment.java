@@ -15,12 +15,12 @@ import android.widget.ExpandableListView;
 import android.widget.RadioGroup;
 
 import com.melnykov.fab.FloatingActionButton;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
+import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.ExpandableListCategoriesAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.SubCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class CategoriesListFragment extends Fragment {
     ExpandableListView expandableListView;
 
     List<Category> categoryExpenses; //Список категорий расходов
-    List<CategoryProfit> categoryProfits; //Список категорий доходов
+    List<Category> categoryProfits; //Список категорий доходов
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class CategoriesListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivityNavigationDrawer) activity).onSectionAttached(
+        ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
@@ -76,8 +76,8 @@ public class CategoriesListFragment extends Fragment {
             View view = inflater.inflate(R.layout.fragment_list_categories, container, false);
 
 
-            radioGroupType = ((RadioGroup) view.findViewById(R.id.radioGroup_type_category));
-            typeCategory = (radioGroupType.getCheckedRadioButtonId() == R.id.radioButton_expense);
+            radioGroupType = ((RadioGroup) view.findViewById(R.id.rg_type_category));
+            typeCategory = (radioGroupType.getCheckedRadioButtonId() == R.id.rb_operation_expense);
 
             expandableListView = ((ExpandableListView) view.findViewById(R.id.expandableListView));
             expandableListView.setAdapter(getAdapter(typeCategory));
@@ -89,13 +89,13 @@ public class CategoriesListFragment extends Fragment {
                     ExpandableListCategoriesAdapter adapter;
 
                     switch (checkedId) {
-                        case R.id.radioButton_expense:
+                        case R.id.rb_operation_expense:
                             typeCategory = true;
                             adapter = getAdapter(typeCategory);
                             expandableListView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                             break;
-                        case R.id.radioButton_profit:
+                        case R.id.rb_operation_profit:
                             typeCategory = false;
                             adapter = getAdapter(typeCategory);
                             expandableListView.setAdapter(adapter);
@@ -148,13 +148,13 @@ public class CategoriesListFragment extends Fragment {
     private ExpandableListCategoriesAdapter getAdapter(boolean typeCategory){
 
         List<Integer> colors = new ArrayList<>();
-        List<? extends CategoryInterface> categories;
+        List<Category> categories;
 
         if(typeCategory){
-            categories = new Select().from(Category.class).queryList();
+            categories = Category.getExpenseCategories();
         }
         else
-            categories = new Select().from(CategoryProfit.class).queryList();
+            categories = Category.getProfitCategories();
 
         // Collection for Categories
         ArrayList<Map<String, Object>> categoryData;
@@ -175,7 +175,7 @@ public class CategoriesListFragment extends Fragment {
         categoryData = new ArrayList<>();
         subCategoryData = new ArrayList<>();
 
-        for(CategoryInterface category : categories){
+        for(Category category : categories){
             atr = new HashMap<>();
 //            atr.put(ATTRIBUTE_NAME_LOGO, category.getLogo().getResourceId());
             atr.put(ATTRIBUTE_NAME_TITLE, category.getName());
@@ -184,7 +184,7 @@ public class CategoriesListFragment extends Fragment {
 
             subCategoryDataItem = new ArrayList<>();
 
-            for(SubCategoryInterface subCategory : category.getSubCategory()){
+            for(SubCategory subCategory : category.getSubCategories()){
                 atr = new HashMap<>();
                 atr.put(ATTRIBUTE_NAME_TITLE, subCategory.getName());
                 subCategoryDataItem.add(atr);

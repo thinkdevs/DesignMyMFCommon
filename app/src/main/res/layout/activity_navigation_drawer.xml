@@ -26,7 +26,7 @@
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:title="com.thinkdevs.designmymfcommon.fragment.NavigationDrawerFragment"
+        android:name="com.thinkdevs.designmymfcommon.fragment.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

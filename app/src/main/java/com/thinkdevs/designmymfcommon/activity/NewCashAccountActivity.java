@@ -18,8 +18,8 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListCurrencyAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogosCashAccountSpinnerAdapter;
-import com.thinkdevs.designmymfcommon.database.Cash$Table;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
+import com.thinkdevs.designmymfcommon.database.CashAccount$Table;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
 import com.thinkdevs.designmymfcommon.database.Logo;
@@ -33,7 +33,7 @@ public class NewCashAccountActivity extends Activity {
     private boolean IS_NEW = true;
 
     EditText etTitle;
-    EditText etType;
+    EditText etComment;
     EditText etAmount;
     Spinner  spLogo;
     Spinner  spCurrency;
@@ -56,7 +56,7 @@ public class NewCashAccountActivity extends Activity {
 //        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
 
         etTitle    = (EditText)findViewById(R.id.et_title);
-        etType     = (EditText)findViewById(R.id.et_type);
+        etComment = (EditText)findViewById(R.id.et_type);
         etAmount   = (EditText)findViewById(R.id.et_amount);
         spLogo     = (Spinner)findViewById(R.id.sp_logos);
         spColor    = (Spinner)findViewById(R.id.sp_colors);
@@ -81,12 +81,12 @@ public class NewCashAccountActivity extends Activity {
         bundle = intent.getExtras();
         if(bundle != null){
             IS_NEW = false;
-            etTitle. setText(bundle.getString(NamesOfParametrs.TITLE));
-            etType.  setText(bundle.getString(NamesOfParametrs.TYPE));
+            etTitle. setText(bundle.getString(NamesOfParametrs.NAME));
+            etComment.  setText(bundle.getString(NamesOfParametrs.TYPE));
             etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
-            int logoId  = bundle.getInt(NamesOfParametrs.CASH_LOGO);
-            int colorId = bundle.getInt(NamesOfParametrs.CASH_COLOR);
-            String currencyShortHand = bundle.getString(NamesOfParametrs.CASH_CURRENCY_SHORT_HAND);
+            int logoId  = bundle.getInt(NamesOfParametrs.LOGO);
+            int colorId = bundle.getInt(NamesOfParametrs.COLOR);
+            String currencyShortHand = bundle.getString(NamesOfParametrs.CURRENCY_STR_SYMBOL);
 
             for(int i = 0; i < logosCashAccountList.size(); i++){
                 if(logosCashAccountList.get(i).getResourceId() == logoId)
@@ -139,7 +139,7 @@ public class NewCashAccountActivity extends Activity {
 
             // Получение Color
             int colorId = (int) spColor.getSelectedView().findViewById(R.id.tv_color).getTag();
-            Color color = Color.getColorByResourceId(id);
+            Color color = Color.getColorByResourceId(colorId);
 
             // Получение Currency
             String strSymbol = String.valueOf(((TextView) spCurrency.getSelectedView().findViewById(android.R.id.text1)).getText());
@@ -148,8 +148,8 @@ public class NewCashAccountActivity extends Activity {
             // Получение Названия
             String title = String.valueOf(etTitle.getText());
 
-            // Получение Типа
-            String type = String.valueOf(etType.getText());
+            // Получение комментария
+            String comment = String.valueOf(etComment.getText());
 
             // Получение Средств
             String amountString = String.valueOf(etAmount.getText());
@@ -173,16 +173,16 @@ public class NewCashAccountActivity extends Activity {
                 else
                     cashAccount = new Select()
                             .from(CashAccount.class)
-                            .where(Condition.column(Cash$Table.NAME).is(bundle.getString(NamesOfParametrs.TITLE)))
+                            .where(Condition.column(CashAccount$Table.NAME).is(bundle.getString(NamesOfParametrs.NAME)))
                             .querySingle();
                 cashAccount.setLogo(cashAccountLogo);
                 cashAccount.setColor(color);
                 cashAccount.setCurrency(currency);
-                cashAccount.setTitle(title);
-                if(type == null)
+                cashAccount.setName(title);
+                if(comment == null)
                     cashAccount.setComment("");
                 else
-                    cashAccount.setComment(type);
+                    cashAccount.setComment(comment);
                 cashAccount.setAmount(amount);
 
                 if(IS_NEW)

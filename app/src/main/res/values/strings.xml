@@ -1,36 +1,36 @@
 <resources>
-    <string title="app_name">MyMF</string>
-
-    <!--Main activity buttons -->
-    <string title="btn_accounts_name">Cash Accounts</string>
-    <string title="empty">Empty</string>
+    <string name="app_name">Мои денежные потоки</string>
+    <string name="app_name_short">MyMF</string>
 
     <!-- CashAccount Accounts Activity -->
-    <string title="act_name_cash_accounts">Cash Accounts</string>
+    <string name="act_name_cash_accounts">Cash Accounts</string>
 
     <!-- Card CashAccount Account -->
-    <string title="edit">Редактировать</string>
-    <string title="remove">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="remove">Удалить</string>
 
-    <string title="title_section_wallets">Счета</string>
-    <string title="title_section_expenses">Расходы</string>
-    <string title="title_section_profits">Доходы</string>
-    <string title="title_section_categories">Категории</string>
-    <string title="title_section_favorite_operations">Избранные операции</string>
+    <string name="title_section_wallets">Счета</string>
+    <string name="title_section_expenses">Расходы</string>
+    <string name="title_section_profits">Доходы</string>
+    <string name="title_section_categories">Категории</string>
+    <string name="title_section_operation_templates">Шаблоны операций</string>
+    <string name="operation_expense">Расход</string>
+    <string name="operation_profit">Доход</string>
 
-    <string title="action_new_cash">Создать счет</string>
-    <string title="action_new_operation">Создать операцию</string>
-    <string title="action_new_category">Создать категорию</string>
-    <string title="action_save">Сохранить</string>
+    <string name="action_new_cash">Создать счет</string>
+    <string name="action_new_operation">Создать операцию</string>
+    <string name="action_new_category">Создать категорию</string>
+    <string name="action_save">Сохранить</string>
 
-    <string title="title_activity_new_cash">Новый счет</string>
-    <string title="title_activity_new_category">Новая категория</string>
-    <string title="title_activity_new_operation">Новая операция</string>
-    <string title="title_activity_new_favorite_operation">Новый шаблон</string>
+    <string name="title_activity_new_cash">Новый счет</string>
+    <string name="title_activity_new_category">Новая категория</string>
+    <string name="title_activity_new_operation">Новая операция</string>
+    <string name="title_activity_new_operation_template">Новый шаблон</string>
 
-    <string title="navigation_drawer_open">Open navigation drawer</string>
-    <string title="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string title="action_settings">Настройки</string>
+    <string name="action_settings">Настройки</string>
+    <string name="empty">Список пуст</string>
 
 </resources>

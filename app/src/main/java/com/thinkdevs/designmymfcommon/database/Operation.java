@@ -39,7 +39,7 @@ public class Operation extends BaseModel {
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "cash_id",
+            columnName = "cashAccount_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
@@ -115,5 +115,9 @@ public class Operation extends BaseModel {
                 .from(Operation.class)
                 .where(Condition.column(Operation$Table.TYPE).is(TYPE_PROFIT))
                 .queryList();
+    }
+
+    public boolean isExpense(){
+        return Operation.TYPE_EXPENSE.equals(this.getType());
     }
 }

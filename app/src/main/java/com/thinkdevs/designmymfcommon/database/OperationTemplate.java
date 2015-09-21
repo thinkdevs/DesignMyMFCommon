@@ -8,7 +8,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
+
+import java.util.List;
 
 /**
  * Таблица с шаблонами доходов
@@ -40,10 +41,10 @@ public class OperationTemplate extends BaseModel {
             saveForeignKeyModel = false)
     SubCategory subCategory; //подкатегория
 
-    public String      getTitle() {
+    public String      getName() {
         return name;
     }
-    public void        setTitle(String title) {
+    public void        setName(String title) {
         this.name = title;
     }
 
@@ -77,12 +78,34 @@ public class OperationTemplate extends BaseModel {
                 .querySingle() != null;
     }
 
-    public static OperationTemplate getOperationTemplateByTitle(String title){
+    public static List<OperationTemplate> getOperationTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
-                .where(Condition.column(OperationTemplate$Table.NAME).is(title))
+                .queryList();
+    }
+
+    public static List<OperationTemplate> getExpenseOperationTemplates(){
+        return new Select()
+                .from(OperationTemplate.class)
+                .where(Condition.column(OperationTemplate$Table.TYPE).eq(OperationTemplate.TYPE_EXPENSE))
+                .queryList();
+    }
+
+    public static List<OperationTemplate> getProfitOperationTemplates(){
+        return new Select()
+                .from(OperationTemplate.class)
+                .where(Condition.column(OperationTemplate$Table.TYPE).eq(OperationTemplate.TYPE_PROFIT))
+                .queryList();
+    }
+
+    public static OperationTemplate getOperationTemplateByName(String name){
+        return new Select()
+                .from(OperationTemplate.class)
+                .where(Condition.column(OperationTemplate$Table.NAME).is(name))
                 .querySingle();
     }
 
-
+    public boolean isExpense(){
+        return OperationTemplate.TYPE_EXPENSE.equals(this.getType());
+    }
 }

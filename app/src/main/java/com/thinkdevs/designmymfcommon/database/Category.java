@@ -26,7 +26,7 @@ public class Category extends BaseModel {
     long id;
 
     @Column
-    String title; //название категории
+    String name; //название категории
 
     @Column
     String type; //тип категории
@@ -58,7 +58,7 @@ public class Category extends BaseModel {
         if(subCategory == null){
             subCategory = new Select()
                     .from(SubCategory.class)
-                    .where(Condition.column(SubCategory$Table.CATEGORYEXPENSE_CATEGORY_ID).is(this.id))
+                    .where(Condition.column(SubCategory$Table.CATEGORY_CATEGORY_ID).is(this.id))
                     .queryList();
         }
         return subCategory;
@@ -68,11 +68,11 @@ public class Category extends BaseModel {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
-    public void   setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {
@@ -109,29 +109,33 @@ public class Category extends BaseModel {
                 .queryList();
     }
 
-    public static Category getProfitCategoryByTitle(String title){
+    public static Category getProfitCategoryByName(String title){
         return new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Category$Table.TITLE).is(title))
+                .begin(Condition.column(Category$Table.NAME).is(title))
                 .and(Condition.column(Category$Table.TYPE).is(Category.TYPE_PROFIT)))
                 .querySingle();
     }
-    public static Category getExpenseCategoryByTitle(String title){
+    public static Category getExpenseCategoryByName(String title){
         return new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Category$Table.TITLE).is(title))
+                .begin(Condition.column(Category$Table.NAME).is(title))
                 .and(Condition.column(Category$Table.TYPE).is(Category.TYPE_EXPENSE)))
                 .querySingle();
     }
 
-    public static boolean isExist(String title, String type){
+    public static boolean isExist(String name, String type){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
-                        .begin(Condition.column(Category$Table.NAME).is(title))
-                        .and  (Condition.column(Category$Table.TYPE).is(type)))
+                        .begin(Condition.column(Category$Table.NAME).eq(name))
+                        .and  (Condition.column(Category$Table.TYPE).eq(type)))
                 .querySingle() != null;
+    }
+
+    public boolean isExpense(){
+        return Category.TYPE_EXPENSE.equals(this.getType());
     }
 }

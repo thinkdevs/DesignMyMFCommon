@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
 
 import com.melnykov.fab.FloatingActionButton;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
+import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
 import com.thinkdevs.designmymfcommon.database.Operation;
 
@@ -55,8 +54,8 @@ public class OperationListFragment extends ListFragment {
 
         int itemLayout;
 
-        List<Operation> expenses = new Select().from(Operation.class).queryList();
-        List<Profit> profits = new Select().from(Profit.class).queryList();
+        List<Operation> expenses = Operation.getExpenseOperations();
+        List<Operation> profits = Operation.getProfitOperations();
 
         List<Integer> logoCategories = new ArrayList<>();
         List<String> categoryTitles = new ArrayList<>();
@@ -69,7 +68,7 @@ public class OperationListFragment extends ListFragment {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-        List<OperationInterface> operations = new ArrayList<>();
+        List<Operation> operations = new ArrayList<>();
         if(sectionNumber == 2){
             operations.addAll(expenses);
             itemLayout = R.layout.item_operation_expense_list;
@@ -79,13 +78,13 @@ public class OperationListFragment extends ListFragment {
             itemLayout = R.layout.item_operation_profit_list;
         }
 
-        for(OperationInterface operation : operations){
+        for(Operation operation : operations){
             logoCategories.add(operation.getSubCategory().getCategory().getLogo().getResourceId());
             categoryTitles.add(operation.getSubCategory().getName());
             amounts.add(operation.getAmount());
-            currencies.add(operation.getCash().getCurrency().getShortHand());
-            logoCashes.add(operation.getCash().getLogo().getResourceId());
-            cashTitles.add(operation.getCash().getTitle());
+            currencies.add(operation.getCashAccount().getCurrency().getStrSymbol());
+            logoCashes.add(operation.getCashAccount().getLogo().getResourceId());
+            cashTitles.add(operation.getCashAccount().getName());
             Date date  = operation.getDate();
             dates.add(sdf.format(date));
             comments.add(operation.getComment());
@@ -142,7 +141,7 @@ public class OperationListFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivityNavigationDrawer) activity).onSectionAttached(
+        ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 

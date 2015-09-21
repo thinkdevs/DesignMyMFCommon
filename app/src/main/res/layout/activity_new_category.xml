@@ -18,13 +18,13 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/radioGroup_type" >
+        android:id="@+id/rg_type_hierarchy" >
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Основная"
-            android:id="@+id/radioButton_category"
+            android:id="@+id/rb_category"
             android:checked="true" />
 
         <RadioButton
@@ -46,20 +46,20 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/radioGroup_type_category">
+        android:id="@+id/rg_type_category">
 
         <RadioButton
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Расходы"
-            android:id="@+id/radioButton_expense"
+            android:id="@+id/rb_operation_expense"
             android:checked="true" />
 
         <RadioButton
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Доходы"
-            android:id="@+id/radioButton_profit"
+            android:id="@+id/rb_operation_profit"
             android:checked="false" />
     </RadioGroup>
 

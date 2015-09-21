@@ -28,15 +28,15 @@ import java.util.List;
 
 public class NewCategoryActivity extends Activity {
 
-    RadioGroup radioGroupType;
-    RadioGroup radioGroupTypeCategory;
-    TextView textViewCategory;
-    Spinner spinnerCategory;
-    EditText editTextTitle;
-    TextView textViewLogo;
-    Spinner spinnerLogo;
-    TextView textViewColor;
-    Spinner spinnerColor;
+    RadioGroup rgTypeHierarchy;
+    RadioGroup rgTypeCategory;
+    TextView tvCategory;
+    Spinner spCategory;
+    EditText etName;
+    TextView tvLogo;
+    Spinner spLogo;
+    TextView tvColor;
+    Spinner spColor;
 
     List<View> listViewsCategory; // Список элементов управления категорий
     List<View> listViewsSubCategory; // Cписок элементов управления подкатегорий
@@ -48,7 +48,7 @@ public class NewCategoryActivity extends Activity {
     List<Color> listColor;
     List<Logo> listLogoCategory;
 
-    boolean type; //if TRUE then CategoryInterface
+    boolean typeHierarchy; //if TRUE then Category
     boolean typeCategory ; // if TRUE then Expensive
 
 
@@ -61,32 +61,32 @@ public class NewCategoryActivity extends Activity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
 
-        radioGroupType = ((RadioGroup) findViewById(R.id.radioGroup_type));
-        type = (radioGroupType.getCheckedRadioButtonId() == R.id.radioButton_category);
+        rgTypeHierarchy = ((RadioGroup) findViewById(R.id.rg_type_hierarchy));
+        typeHierarchy = (rgTypeHierarchy.getCheckedRadioButtonId() == R.id.rb_category);
 
-        radioGroupTypeCategory = ((RadioGroup) findViewById(R.id.radioGroup_type_category));
-        typeCategory = (radioGroupTypeCategory.getCheckedRadioButtonId() == R.id.radioButton_expense);
+        rgTypeCategory = ((RadioGroup) findViewById(R.id.rg_type_category));
+        typeCategory = (rgTypeCategory.getCheckedRadioButtonId() == R.id.rb_operation_expense);
 
-        textViewCategory = ((TextView) findViewById(R.id.textView_category));
-        spinnerCategory = ((Spinner) findViewById(R.id.spinner_category));
+        tvCategory = ((TextView) findViewById(R.id.textView_category));
+        spCategory = ((Spinner) findViewById(R.id.spinner_category));
 
-        editTextTitle = ((EditText) findViewById(R.id.editText_title));
+        etName = ((EditText) findViewById(R.id.editText_title));
 
-        textViewLogo = ((TextView) findViewById(R.id.textView_logo));
-        spinnerLogo = ((Spinner) findViewById(R.id.spinner_logo));
+        tvLogo = ((TextView) findViewById(R.id.textView_logo));
+        spLogo = ((Spinner) findViewById(R.id.spinner_logo));
 
-        textViewColor = ((TextView) findViewById(R.id.textView_color));
-        spinnerColor = ((Spinner) findViewById(R.id.spinner_color));
+        tvColor = ((TextView) findViewById(R.id.textView_color));
+        spColor = ((Spinner) findViewById(R.id.spinner_color));
 
         listViewsCategory = new ArrayList<>();
-        listViewsCategory.add(textViewCategory);
-        listViewsCategory.add(spinnerCategory);
+        listViewsCategory.add(tvCategory);
+        listViewsCategory.add(spCategory);
 
         listViewsSubCategory = new ArrayList<>();
-        listViewsSubCategory.add(textViewLogo);
-        listViewsSubCategory.add(spinnerLogo);
-        listViewsSubCategory.add(textViewColor);
-        listViewsSubCategory.add(spinnerColor);
+        listViewsSubCategory.add(tvLogo);
+        listViewsSubCategory.add(spLogo);
+        listViewsSubCategory.add(tvColor);
+        listViewsSubCategory.add(spColor);
 
         listCategoryExpense = Category.getExpenseCategories();
         listCategoryProfit = Category.getProfitCategories();
@@ -96,49 +96,49 @@ public class NewCategoryActivity extends Activity {
         listNamesCategoriesExpense = new ArrayList<>();
         if(listCategoryExpense.size() != 0){
             for(Category category : listCategoryExpense){
-                listNamesCategoriesExpense.add(category.getTitle());
+                listNamesCategoriesExpense.add(category.getName());
             }
         }
 
-        spinnerCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesExpense));
+        spCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesExpense));
 
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoryProfit.size() != 0){
             for(Category category : listCategoryProfit){
-                listNamesCategoriesProfit.add(category.getTitle());
+                listNamesCategoriesProfit.add(category.getName());
             }
         }
 
-        spinnerColor.setAdapter(new ListColorAdapter(this, listColor));
-        spinnerLogo.setAdapter(new ListLogoCategorySpinnerAdapter(this, listLogoCategory));
+        spColor.setAdapter(new ListColorAdapter(this, listColor));
+        spLogo.setAdapter(new ListLogoCategorySpinnerAdapter(this, listLogoCategory));
 
-        radioGroupType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rgTypeHierarchy.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
-                    case R.id.radioButton_category:
-                        type = true;
+                    case R.id.rb_category:
+                        typeHierarchy = true;
                         hideAndShowViews(listViewsCategory, listViewsSubCategory);
                         break;
                     case R.id.radioButton_subCategory:
-                        type = false;
+                        typeHierarchy = false;
                         hideAndShowViews(listViewsSubCategory, listViewsCategory);
                         break;
                 }
             }
         });
 
-        radioGroupTypeCategory.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rgTypeCategory.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
-                    case R.id.radioButton_expense:
+                    case R.id.rb_operation_expense:
                         typeCategory = true;
-                        spinnerCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesExpense));
+                        spCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesExpense));
                         break;
-                    case R.id.radioButton_profit:
+                    case R.id.rb_operation_profit:
                         typeCategory = false;
-                        spinnerCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesProfit));
+                        spCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesProfit));
                         break;
                 }
             }
@@ -173,16 +173,16 @@ public class NewCategoryActivity extends Activity {
         if(id == R.id.action_save){
 
             // Сохранение как категории
-            if(type){
+            if(typeHierarchy){
                 Category category = new Category();
-                String title = String.valueOf(editTextTitle.getText());
+                String title = String.valueOf(etName.getText());
                 String categoryType  = typeCategory ? Category.TYPE_EXPENSE : Category.TYPE_PROFIT;
                 category.setType(categoryType);
 
-                int  logoCategoryId = ((int) (((ImageView) spinnerLogo.getSelectedView().findViewById(R.id.imageView))).getTag());
+                int  logoCategoryId = ((int) (((ImageView) spLogo.getSelectedView().findViewById(R.id.imageView))).getTag());
                 Logo logoCategory = Logo.getLogoByResourceId(logoCategoryId);
 
-                int   colorId = ((int) ((TextView) spinnerColor.getSelectedView().findViewById(android.R.id.text1)).getTag());
+                int   colorId = ((int) (spColor.getSelectedView().findViewById(R.id.tv_color)).getTag());
                 Color color   = Color.getColorByResourceId(colorId);
 
                 // Проверка условий и сохранение
@@ -193,34 +193,40 @@ public class NewCategoryActivity extends Activity {
                     Toast.makeText(this, "Категория с таким именем уже существует", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    category.setTitle(title);
+                    category.setName(title);
                     category.setType(categoryType);
                     category.setColor(color);
                     category.setLogo(logoCategory);
                     category.save();
+
+                    NavUtils.navigateUpFromSameTask(this);
                 }
-                NavUtils.navigateUpFromSameTask(this);
+
                 return true;
             }
             // Сохранение как подкатегории
             else {
                 SubCategory subCategory = new SubCategory();
-                String title = String.valueOf(editTextTitle.getText());
-                String categoryString = String.valueOf(((TextView) spinnerCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
-                Category category  = typeCategory ? Category.getExpenseCategoryByTitle(title) : Category.getProfitCategoryByTitle(title);
+                String name = String.valueOf(etName.getText());
+                String categoryName = String.valueOf(((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
+                Category category  = typeCategory
+                        ? Category.getExpenseCategoryByName(categoryName)
+                        : Category.getProfitCategoryByName(categoryName);
                 // Проверка условий и сохранение
-                if(title == null || title.length() == 0){
+                if(name == null || name.length() == 0){
                     Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
                 }
-                else if(SubCategory.isExist(title, category)){
+                else if(SubCategory.isExist(name, category)){
                     Toast.makeText(this, "Подкатегория с таким именем уже существует", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    subCategory.setName(title);
+                    subCategory.setName(name);
                     subCategory.setCategory(category);
                     subCategory.save();
+
+                    NavUtils.navigateUpFromSameTask(this);
                 }
-                NavUtils.navigateUpFromSameTask(this);
+
                 return true;
             }
         }

@@ -16,9 +16,9 @@ import android.view.ViewGroup;
 import com.melnykov.fab.FloatingActionButton;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainActivityNavigationDrawer;
+import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
-import com.thinkdevs.designmymfcommon.activitycashaccounts.CashAccountsRecyclerViewAdapter;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewCashAccountsAdapter;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class CashAccountsListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivityNavigationDrawer) activity).onSectionAttached(
+        ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
@@ -76,7 +76,7 @@ public class CashAccountsListFragment extends Fragment {
         List<CashAccount> cashes = new Select().from(CashAccount.class).queryList();
 
         // specify an adapter (see also next example)
-        mAdapter = new CashAccountsRecyclerViewAdapter(CashAccountsListFragment.this.getActivity(), cashes);
+        mAdapter = new RecyclerViewCashAccountsAdapter(CashAccountsListFragment.this.getActivity(), cashes);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);

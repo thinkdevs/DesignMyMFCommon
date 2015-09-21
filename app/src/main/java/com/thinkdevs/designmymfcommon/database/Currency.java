@@ -18,7 +18,7 @@ public class Currency extends BaseModel {
     long id;
 
     @Column
-    String title; //название валюты
+    String name; //название валюты
 
     @Column
     String strSymbol; //короткая запись
@@ -27,11 +27,11 @@ public class Currency extends BaseModel {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
-    public void   setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getStrSymbol() {

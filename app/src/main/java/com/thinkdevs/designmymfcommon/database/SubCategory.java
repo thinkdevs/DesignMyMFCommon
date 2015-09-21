@@ -80,14 +80,14 @@ public class SubCategory extends BaseModel {
         return subCategories;
     }
 
-    public static SubCategory getExpenseSubCategoryByTitle(String title){
+    public static SubCategory getExpenseSubCategoryByName(String title){
         for(SubCategory subCategory : getExpenseSubCategories()){
             if(subCategory.getName().equals(title))
                 return subCategory;
         }
         return null;
     }
-    public static SubCategory getProfitSubCategoryByTitle(String title){
+    public static SubCategory getProfitSubCategoryByName(String title){
         for(SubCategory subCategory : getProfitSubCategories()){
             if(subCategory.getName().equals(title))
                 return subCategory;
@@ -95,12 +95,12 @@ public class SubCategory extends BaseModel {
         return null;
     }
 
-    public static boolean isExist(String title, Category category){
+    public static boolean isExist(String name, Category category){
         return  new Select()
                 .from(SubCategory.class)
                 .where(Condition.CombinedCondition
-                        .begin(Condition.column(SubCategory$Table.NAME).is(title))
-                        .and  (Condition.column(OperationTemplate$Table.CATEGORY_CATEGORY_ID).eq(category.getId())))
+                        .begin(Condition.column(SubCategory$Table.NAME).eq(name))
+                        .and  (Condition.column(SubCategory$Table.CATEGORY_CATEGORY_ID).is(category.getId())))
                 .querySingle() != null;
     }
 }

@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/radioGroup_type_category"
+        android:id="@+id/rg_type_category"
         android:layout_marginTop="16dp">
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Расходы"
-            android:id="@+id/radioButton_expense"
+            android:id="@+id/rb_operation_expense"
             android:layout_weight="1"
             android:checked="true" />
 
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Доходы"
-            android:id="@+id/radioButton_profit"
+            android:id="@+id/rb_operation_profit"
             android:layout_weight="1"
             android:checked="false" />
     </RadioGroup>

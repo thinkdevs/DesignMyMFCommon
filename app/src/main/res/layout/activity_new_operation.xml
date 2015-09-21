@@ -31,14 +31,14 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="Расход"
-                android:id="@+id/radioButton_expense"
+                android:id="@+id/rb_operation_expense"
                 android:checked="true" />
 
             <RadioButton
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="Доход"
-                android:id="@+id/radioButton_profit"
+                android:id="@+id/rb_operation_profit"
                 android:checked="false" />
         </RadioGroup>
 
