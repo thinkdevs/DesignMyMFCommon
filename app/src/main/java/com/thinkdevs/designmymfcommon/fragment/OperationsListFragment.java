@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class OperationListFragment extends ListFragment {
+public class OperationsListFragment extends ListFragment {
 
     /**
      * The fragment argument representing the section number for this
@@ -48,6 +49,7 @@ public class OperationListFragment extends ListFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("tag", "Operations List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
         super.onCreate(savedInstanceState);
         // Включаем отображение меню
         setHasOptionsMenu(true);
@@ -129,8 +131,9 @@ public class OperationListFragment extends ListFragment {
         this.setListAdapter(adapter);
     }
 
-    public static OperationListFragment newInstance(int sectionNumber) {
-        OperationListFragment fragment = new OperationListFragment();
+    public static OperationsListFragment newInstance(int sectionNumber) {
+        Log.d("tag", "Operations List Fragment - 'newInstance'");
+        OperationsListFragment fragment = new OperationsListFragment();
         fragment.sectionNumber = sectionNumber;
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -140,6 +143,7 @@ public class OperationListFragment extends ListFragment {
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d("tag", "Operations List Fragment - 'onAttach'");
         super.onAttach(activity);
         ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
@@ -147,12 +151,14 @@ public class OperationListFragment extends ListFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d("tag", "Operations List Fragment - 'onCreateOptionsMenu'");
 //        inflater.inflate(R.menu.global, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("tag", "Operations List Fragment - 'onOptionsItemSelected'");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in d.xml.
@@ -169,6 +175,7 @@ public class OperationListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("tag", "Operations List Fragment - 'onCreateView'");
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);

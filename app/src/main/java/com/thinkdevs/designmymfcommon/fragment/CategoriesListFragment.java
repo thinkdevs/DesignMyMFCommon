@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,12 +50,14 @@ public class CategoriesListFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("tag", "Categories List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
         super.onCreate(savedInstanceState);
         // Включаем отображение меню
         setHasOptionsMenu(true);
     }
 
     public static CategoriesListFragment newInstance(int sectionNumber) {
+        Log.d("tag", "Categories List Fragment - 'newInstance'");
         CategoriesListFragment fragment = new CategoriesListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -64,6 +67,7 @@ public class CategoriesListFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d("tag", "Categories List Fragment - 'onAttach'");
         super.onAttach(activity);
         ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
@@ -72,7 +76,7 @@ public class CategoriesListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+            Log.d("tag", "Categories List Fragment - 'onCreateView'");
             View view = inflater.inflate(R.layout.fragment_list_categories, container, false);
 
 
@@ -119,12 +123,14 @@ public class CategoriesListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d("tag", "Categories List Fragment - 'onCreateOptionsMenu'");
 //        inflater.inflate(R.menu.global, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("tag", "Categories List Fragment - 'onOptionsItemSelected'");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in d.xml.

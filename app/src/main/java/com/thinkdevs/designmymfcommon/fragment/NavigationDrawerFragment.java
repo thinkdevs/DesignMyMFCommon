@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,6 +78,7 @@ public class NavigationDrawerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -89,6 +91,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
+        Log.d("tag", "Navigation Drawer Fragment - 'onCreate' savedInstance = " + savedInstanceState);
     }
 
     @Override
@@ -96,6 +99,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+        Log.d("tag", "Navigation Drawer Fragment - 'onActivityCreated' savedInstanceState = " + savedInstanceState);
     }
 
     @Override
@@ -151,10 +155,14 @@ public class NavigationDrawerFragment extends Fragment {
 
         mDrawerListView.setAdapter(adapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        Log.d("tag", "Navigation Drawer Fragment - 'onCreateView'");
         return mDrawerListView;
+
     }
 
     public boolean isDrawerOpen() {
+        Log.d("tag", "NavigationDrawerFragment - 'isDrawerOpen'");
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
@@ -165,6 +173,7 @@ public class NavigationDrawerFragment extends Fragment {
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -193,6 +202,7 @@ public class NavigationDrawerFragment extends Fragment {
                 }
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                Log.d("tag", "Navigation Drawer Fragment - 'onDrawerClosed'");
             }
 
             @Override
@@ -212,6 +222,7 @@ public class NavigationDrawerFragment extends Fragment {
                 }
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                Log.d("tag", "Navigation Drawer Fragment - 'onDrawerOpened'");
             }
         };
 
@@ -230,9 +241,11 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        Log.d("tag", "Navigation Drawer Fragment - 'setUp'");
     }
 
     private void selectItem(int position) {
+
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
@@ -243,28 +256,33 @@ public class NavigationDrawerFragment extends Fragment {
         if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
+        Log.d("tag", "Navigation Drawer Fragment - 'selectItem' " + position);
     }
 
     @Override
     public void onAttach(Activity activity) {
+
         super.onAttach(activity);
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
+        Log.d("tag", "Navigation Drawer Fragment - 'onAttach'");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+        Log.d("tag", "Navigation Drawer Fragment - 'onDetach'");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        Log.d("tag", "Navigation Drawer Fragment - 'onSaveInstanceState' " + mCurrentSelectedPosition);
     }
 
     @Override
@@ -272,6 +290,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
+        Log.d("tag", "Navigation Drawer Fragment - 'onConfigurationChanged'");
     }
 
     @Override
@@ -283,14 +302,16 @@ public class NavigationDrawerFragment extends Fragment {
             showGlobalContextActionBar();
         }
         super.onCreateOptionsMenu(menu, inflater);
+        Log.d("tag", "Navigation Drawer Fragment - 'onCreateOptionsMenu'");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
+        Log.d("tag", "Navigation Drawer Fragment - 'onOptionsItemSelected'");
         return super.onOptionsItemSelected(item);
     }
 
@@ -299,13 +320,16 @@ public class NavigationDrawerFragment extends Fragment {
      * 'context', rather than just what's in the current screen.
      */
     private void showGlobalContextActionBar() {
+
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setTitle(R.string.app_name);
+        Log.d("tag", "Navigation Drawer Fragment - 'showGlobalContextActionBar'");
     }
 
     private ActionBar getActionBar() {
+        Log.d("tag", "Navigation Drawer Fragment - 'getActionBar'");
         return getActivity().getActionBar();
     }
 

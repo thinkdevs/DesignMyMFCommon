@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -216,9 +217,10 @@ public class NewOperationActivity extends Activity {
                     ? (cashAccount.getAmount() - amount)
                     : (cashAccount.getAmount() + amount);
             cashAccount.setAmount(newCashAccountAmount);
-            cashAccount.save();
+            cashAccount.update();
 
             NavUtils.navigateUpFromSameTask(this);
+            Log.d("tag", "New Operation Activity - 'save'");
         }
 
         return super.onOptionsItemSelected(item);

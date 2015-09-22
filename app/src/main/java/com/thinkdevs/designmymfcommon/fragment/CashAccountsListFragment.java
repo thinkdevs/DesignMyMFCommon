@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,7 @@ public class CashAccountsListFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("tag", "Cash Accounts List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
         super.onCreate(savedInstanceState);
 
         // Включаем отображение меню
@@ -44,6 +46,7 @@ public class CashAccountsListFragment extends Fragment {
     }
 
     public static CashAccountsListFragment newInstance(int sectionNumber) {
+        Log.d("tag", "Cash Accounts List Fragment - 'newInstance'");
         CashAccountsListFragment fragment = new CashAccountsListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -53,6 +56,7 @@ public class CashAccountsListFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d("tag", "Cash Accounts List Fragment - 'onAttach'");
         super.onAttach(activity);
         ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
@@ -61,6 +65,7 @@ public class CashAccountsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("tag", "Cash Accounts List Fragment - 'onCreateView'");
         View view = inflater.inflate(R.layout.fragment_cash_accounts_list, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_cash_accounts);
@@ -92,12 +97,14 @@ public class CashAccountsListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d("tag", "Cash Accounts List Fragment - 'onCreateOptionsMenu'");
 //        inflater.inflate(R.menu.menu_cashes_list, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("tag", "Cash Accounts List Fragment - 'onOptionsItemSelected'");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in d.xml.

@@ -107,7 +107,6 @@ public class NewOperationTemplateActivity extends Activity {
                     case R.id.rb_profit:
                         typeOperation = false;
                         spSubCategory.setAdapter(adapterProfit);
-                        Log.d(LOG_TAG, "profit");
                         break;
                 }
             }
@@ -120,7 +119,6 @@ public class NewOperationTemplateActivity extends Activity {
             IS_NEW = false;
             etTitle.        setText(bundle.getString(NamesOfParametrs.NAME));
             typeOperation = bundle.getBoolean(NamesOfParametrs.TYPE);
-            Log.d(LOG_TAG, String.valueOf(typeOperation) + " редактор");
             if(typeOperation)
                 radioGroupType.check(R.id.rb_expense);
             else
@@ -225,6 +223,7 @@ public class NewOperationTemplateActivity extends Activity {
                     operationTemplate.update();
 
                 NavUtils.navigateUpFromSameTask(this);
+                Log.d("tag", "New Operation Template Activity - 'save'");
                 }
 
             // Возвращаемся назад после сохранения

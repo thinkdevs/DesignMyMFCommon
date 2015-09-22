@@ -108,4 +108,5 @@ public class OperationTemplate extends BaseModel {
     public boolean isExpense(){
         return OperationTemplate.TYPE_EXPENSE.equals(this.getType());
     }
+
 }

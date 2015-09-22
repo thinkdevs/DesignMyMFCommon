@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -62,7 +63,7 @@ public class NewCashAccountActivity extends Activity {
         spColor    = (Spinner)findViewById(R.id.sp_colors);
         spCurrency = (Spinner)findViewById(R.id.sp_currency);
 
-        List<Logo> logosCashAccountList = new Select().from(Logo.class).queryList();
+        List<Logo> logosCashAccountList = Logo.getAllCashAccountLogos();
         List<Color> colorList = new Select().from(Color.class).queryList();
         List<Currency> currencyList = new Select().from(Currency.class).queryList();
 
@@ -82,7 +83,7 @@ public class NewCashAccountActivity extends Activity {
         if(bundle != null){
             IS_NEW = false;
             etTitle. setText(bundle.getString(NamesOfParametrs.NAME));
-            etComment.  setText(bundle.getString(NamesOfParametrs.TYPE));
+            etComment.  setText(bundle.getString(NamesOfParametrs.COMMENT));
             etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
             int logoId  = bundle.getInt(NamesOfParametrs.LOGO);
             int colorId = bundle.getInt(NamesOfParametrs.COLOR);
@@ -191,6 +192,7 @@ public class NewCashAccountActivity extends Activity {
                     cashAccount.update();
 
                 NavUtils.navigateUpFromSameTask(this);
+                Log.d("tag", "New Cash Account Activity - 'save'");
             }
 
             // Возвращаемся назад после сохранения
