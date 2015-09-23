@@ -239,7 +239,7 @@ public class NewOperationActivity extends Activity {
 
             if(bundle.getString(NamesOfParametrs.AMOUNT) != null){
                 oldAmount = Float.parseFloat(bundle.getString(NamesOfParametrs.AMOUNT));
-                etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
+                etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT).substring(1));
             }
         }
     }
