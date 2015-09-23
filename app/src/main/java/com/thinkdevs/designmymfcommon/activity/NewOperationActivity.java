@@ -8,6 +8,8 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
+import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
@@ -34,15 +37,23 @@ public class NewOperationActivity extends Activity {
     boolean typeOperation; // if TRUE then Expensive
 
     RadioGroup rgTypeOperation;
-    Spinner spCashAccount;
+    Spinner    spCashAccount;
+    Spinner    spCategory;
     Spinner    spSubCategory;
     EditText   etAmount;
     EditText   etComment;
+    EditText   etTime;
+    EditText   etDate;
 
+
+    List<Category> listCategoriesExpense;
+    List<Category> listCategoriesProfit;
     List<SubCategory> listSubCategoryExpense;
     List<SubCategory> listSubCategoryProfits;
     List<CashAccount> listCashAccounts;
 
+    List<String> listNamesCategoriesExpense;
+    List<String> listNamesCategoriesProfit;
     List<String> listNamesSubCategoriesExpense; // Для адаптера
     List<String> listNamesSubCategoriesProfit; // Для адаптера
     List<String> listCashAccountNames; // Для адаптера
@@ -52,6 +63,9 @@ public class NewOperationActivity extends Activity {
 
     Intent intent;
     Bundle bundle;
+    long time;
+    float oldAmount;
+    String oldCashAccount;
 
 
     @Override
@@ -67,13 +81,34 @@ public class NewOperationActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        rgTypeOperation = ((RadioGroup) findViewById(R.id.radioGroup_type_operation));
+        rgTypeOperation = ((RadioGroup) findViewById(R.id.rg_type_operation));
         typeOperation = (rgTypeOperation.getCheckedRadioButtonId() == R.id.rb_operation_expense);
 
-        spCashAccount = ((Spinner) findViewById(R.id.spinner_cash));
-        spSubCategory = ((Spinner) findViewById(R.id.spinner_category));
-        etAmount      = ((EditText) findViewById(R.id.editText_sum));
-        etComment     = ((EditText) findViewById(R.id.editText_comment));
+        spCashAccount = ((Spinner) findViewById(R.id.sp_cash));
+        spCategory    = ((Spinner) findViewById(R.id.sp_category));
+        spSubCategory = ((Spinner) findViewById(R.id.sp_subCategory));
+        etAmount      = ((EditText) findViewById(R.id.et_amount));
+        etComment     = ((EditText) findViewById(R.id.et_comment));
+        etTime        = ((EditText) findViewById(R.id.et_time));
+        etDate        = ((EditText) findViewById(R.id.et_date));
+
+
+
+        listCategoriesExpense = Category.getExpenseCategories();
+        listNamesCategoriesExpense = new ArrayList<>();
+        if(listCategoriesExpense.size() != 0){
+            for(Category categoryExpense : listCategoriesExpense){
+                listNamesCategoriesExpense.add(categoryExpense.getName());
+            }
+        }
+
+        listCategoriesProfit = Category.getProfitCategories();
+        listNamesCategoriesProfit = new ArrayList<>();
+        if(listCategoriesProfit.size() != 0){
+            for(Category categoryProfit : listCategoriesProfit){
+                listNamesCategoriesProfit.add(categoryProfit.getName());
+            }
+        }
 
         listSubCategoryExpense = SubCategory.getExpenseSubCategories();
         listNamesSubCategoriesExpense = new ArrayList<>();
@@ -82,7 +117,6 @@ public class NewOperationActivity extends Activity {
                 listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
             }
         }
-
         listSubCategoryProfits = SubCategory.getProfitSubCategories();
         listNamesSubCategoriesProfit = new ArrayList<>();
         if(listSubCategoryProfits.size() != 0){
@@ -102,14 +136,20 @@ public class NewOperationActivity extends Activity {
         adapterExpense = new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesSubCategoriesExpense);
+                listNamesCategoriesExpense);
 
         adapterProfit = new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesSubCategoriesProfit);
+                listNamesCategoriesProfit);
 
-        spSubCategory.setAdapter(adapterExpense);
+        spCategory.setAdapter(adapterExpense);
+
+
+        spSubCategory.setAdapter(new ArrayAdapter<String>(
+                NewOperationActivity.this,
+                android.R.layout.simple_list_item_1,
+                getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
 
         spCashAccount.setAdapter(
                 new ArrayAdapter<String>(NewOperationActivity.this,
@@ -122,34 +162,86 @@ public class NewOperationActivity extends Activity {
                 switch (checkedId) {
                     case R.id.rb_operation_expense:
                         typeOperation = true;
-                        spSubCategory.setAdapter(adapterExpense);
+                        spCategory.setAdapter(adapterExpense);
+                        spSubCategory.setAdapter(new ArrayAdapter<String>(
+                                NewOperationActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
                         break;
                     case R.id.rb_operation_profit:
                         typeOperation = false;
-                        spSubCategory.setAdapter(adapterProfit);
+                        spCategory.setAdapter(adapterProfit);
+                        spSubCategory.setAdapter(new ArrayAdapter<String>(
+                                NewOperationActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0))));
                         break;
                 }
             }
         });
 
+        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                List<String> listNames;
+                if(typeOperation)
+                    listNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(position));
+                else
+                    listNames = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(position));
+                spSubCategory.setAdapter(new ArrayAdapter<String>(
+                        NewOperationActivity.this,
+                        android.R.layout.simple_list_item_1,
+                        listNames));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         intent = getIntent();
         bundle = intent.getExtras();
+
         if(bundle != null){
+            IS_NEW = false;
             if(Operation.TYPE_EXPENSE.equals(bundle.getString(NamesOfParametrs.TYPE))){
                 typeOperation = true;
                 rgTypeOperation.check(R.id.rb_operation_expense);
+                for(int i = 0; i < listNamesCategoriesExpense.size(); i++) {
+                    if (listNamesCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
+                        spCategory.setSelection(i);
+                }
+                for(int i = 0; i < listNamesSubCategoriesExpense.size(); i++) {
+                    if (listNamesSubCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
+                        spSubCategory.setSelection(i);
+                }
             }
             else{
                 typeOperation = false;
                 rgTypeOperation.check(R.id.rb_operation_profit);
+                for(int i = 0; i < listNamesCategoriesProfit.size(); i++) {
+                    if (listNamesCategoriesProfit.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
+                        spCategory.setSelection(i);
+                }
+                for(int i = 0; i < listNamesSubCategoriesProfit.size(); i++) {
+                    if (listNamesSubCategoriesProfit.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
+                        spSubCategory.setSelection(i);
+                }
             }
 
             for(int i = 0; i < listCashAccountNames.size(); i++){
-                if(listCashAccountNames.get(i).equals(bundle.getString(NamesOfParametrs.NAME)))
+                if(listCashAccountNames.get(i).equals(bundle.getString(NamesOfParametrs.CASH_ACCOUNT_NAME)))
                     spCashAccount.setSelection(i);
             }
-        }
 
+            time = bundle.getLong(NamesOfParametrs.DATE);
+
+            if(bundle.getString(NamesOfParametrs.AMOUNT) != null){
+                oldAmount = Float.parseFloat(bundle.getString(NamesOfParametrs.AMOUNT));
+                etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
+            }
+        }
     }
 
     @Override
@@ -179,7 +271,11 @@ public class NewOperationActivity extends Activity {
         // ***************************** Сохранение операции ************************************
         if(id == R.id.action_save){
 
-            Operation operation = new Operation();
+            Operation operation;
+            if(!IS_NEW)
+                operation = new Operation();
+            else
+                operation = Operation.getOperationByTime(time);
             // Получаем подкатегорию
             String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
             SubCategory subCategory = typeOperation
@@ -211,18 +307,45 @@ public class NewOperationActivity extends Activity {
             operation.setAmount(amount);
             operation.setComment(comment);
 
-            operation.save();
-            float newCashAccountAmount;
-            newCashAccountAmount = typeOperation
-                    ? (cashAccount.getAmount() - amount)
-                    : (cashAccount.getAmount() + amount);
-            cashAccount.setAmount(newCashAccountAmount);
-            cashAccount.update();
+            if(IS_NEW){
+                operation.save();
+                float newCashAccountAmount;
+                newCashAccountAmount = typeOperation
+                        ? (cashAccount.getAmount() - amount)
+                        : (cashAccount.getAmount() + amount);
+                cashAccount.setAmount(newCashAccountAmount);
+                cashAccount.update();
+                Log.d("tag", "New Operation Activity - 'save'");
+            }
+            else {
+                operation.update();
+                float oldCashAccountAmount = CashAccount.getCashAccountByName(oldCashAccount).getAmount();
+                CashAccount oldCash = CashAccount.getCashAccountByName(oldCashAccount);
+                oldCash.setAmount(oldCashAccountAmount - oldAmount);
+                oldCash.update();
 
+                float newCashAccountAmount;
+                newCashAccountAmount = typeOperation
+                        ? (cashAccount.getAmount() - amount)
+                        : (cashAccount.getAmount() + amount);
+                cashAccount.setAmount(newCashAccountAmount);
+                cashAccount.update();
+                Log.d("tag", "New Operation Activity - 'update'");
+            }
             NavUtils.navigateUpFromSameTask(this);
-            Log.d("tag", "New Operation Activity - 'save'");
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<String> getListNamesSubCategoriesByCategory(Category category){
+        ArrayList<String> result = new ArrayList<>();
+        List<SubCategory> subCategories = category.getSubCategories();
+        if(subCategories.size() != 0){
+            for(SubCategory subCategory : subCategories){
+                result.add(subCategory.getName());
+            }
+        }
+        return result;
     }
 }

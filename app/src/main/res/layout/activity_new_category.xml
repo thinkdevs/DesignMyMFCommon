@@ -67,14 +67,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Категория"
-        android:id="@+id/textView_category"
+        android:id="@+id/tv_category"
         android:layout_marginTop="4dp"
         android:visibility="gone" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner_category"
+        android:id="@+id/sp_category"
         android:visibility="gone" />
 
     <TextView

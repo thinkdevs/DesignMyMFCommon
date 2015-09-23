@@ -14,18 +14,40 @@
         tools:context="ru.tikhanovskiy.mymoneyflow.activity.NewCategoryActivity"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_date"
+            android:visibility="gone">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:ems="10"
+                android:id="@+id/et_time" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:ems="10"
+                android:id="@+id/et_date" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Тип операции"
-            android:id="@+id/textView_type_operation"
+            android:id="@+id/tv_type_operation"
             android:layout_marginTop="4dp" />
 
         <RadioGroup
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/radioGroup_type_operation">
+            android:id="@+id/rg_type_operation">
 
             <RadioButton
                 android:layout_width="140dp"
@@ -46,49 +68,61 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Счет"
-            android:id="@+id/textView_cash"
+            android:id="@+id/tv_cash"
             android:layout_marginTop="4dp" />
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner_cash" />
+            android:id="@+id/sp_cash" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Категория"
-            android:id="@+id/textView_category"
+            android:id="@+id/tv_category"
             android:layout_marginTop="4dp" />
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner_category" />
+            android:id="@+id/sp_category" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Подкатегория"
+            android:id="@+id/tv_subCategory"
+            android:layout_marginTop="4dp" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sp_subCategory" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Сумма"
-            android:id="@+id/textView_sum"
+            android:id="@+id/tv_amount"
             android:layout_marginTop="4dp" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText_sum"
+            android:id="@+id/et_amount"
             android:numeric="decimal" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Комментарий"
-            android:id="@+id/textView_comment"
+            android:id="@+id/tv_comment"
             android:layout_marginTop="8dp" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText_comment" />
+            android:id="@+id/et_comment" />
     </LinearLayout>
 </ScrollView>

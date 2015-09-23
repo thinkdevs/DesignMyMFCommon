@@ -147,6 +147,9 @@ public class CashAccount extends BaseModel {
                 .querySingle() != null;
     }
 
+    public static List<CashAccount> getCashAccounts(){
+        return new Select().from(CashAccount.class).queryList();
+    }
     public static CashAccount getCashAccountByName(String title){
         return new Select().from(CashAccount.class).
                 where(Condition.column(CashAccount$Table.NAME)

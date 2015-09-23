@@ -68,8 +68,8 @@ public class NewCategoryActivity extends Activity {
         rgTypeCategory = ((RadioGroup) findViewById(R.id.rg_type_category));
         typeCategory = (rgTypeCategory.getCheckedRadioButtonId() == R.id.rb_operation_expense);
 
-        tvCategory = ((TextView) findViewById(R.id.textView_category));
-        spCategory = ((Spinner) findViewById(R.id.spinner_category));
+        tvCategory = ((TextView) findViewById(R.id.tv_category));
+        spCategory = ((Spinner) findViewById(R.id.sp_category));
 
         etName = ((EditText) findViewById(R.id.editText_title));
 

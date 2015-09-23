@@ -68,7 +68,7 @@ public class Operation extends BaseModel {
         return subCategory;
     }
     public void        setSubCategory(SubCategory subCategory) {
-        this.subCategory = (SubCategory)subCategory;
+        this.subCategory = subCategory;
     }
 
     public CashAccount getCashAccount() {
@@ -119,5 +119,36 @@ public class Operation extends BaseModel {
 
     public boolean isExpense(){
         return Operation.TYPE_EXPENSE.equals(this.getType());
+    }
+
+    public static void newOperationFromTemplate(OperationTemplate operationTemplate, CashAccount cashAccount){
+
+        // Получаем стоимость
+        float amount = operationTemplate.getAmount();
+        amount = operationTemplate.isExpense() ? amount * -1 : amount;
+
+        // Получаем комментарий
+        String comment = "";
+
+        // Сохраняем операцию
+        Operation operation = new Operation();
+        operation.setDate(new Date(System.currentTimeMillis()));
+        operation.setCashAccount(cashAccount);
+        operation.setType(operationTemplate.getType());
+        operation.setSubCategory(operationTemplate.getSubCategory());
+
+        operation.setAmount(amount);
+        operation.setComment(comment);
+        operation.save();
+
+        cashAccount.setAmount(cashAccount.getAmount() + amount);
+        cashAccount.update();
+    }
+
+    public static Operation getOperationByTime(long time){
+        return new Select().
+                from(Operation.class).
+                where(Condition.column(Operation$Table.DATE).is(time)).
+                querySingle();
     }
 }

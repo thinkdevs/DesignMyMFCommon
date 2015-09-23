@@ -202,8 +202,12 @@ public class NewOperationTemplateActivity extends Activity {
                 OperationTemplate operationTemplate;
                 if(IS_NEW)
                         operationTemplate = new OperationTemplate();
-                else
-                        operationTemplate = OperationTemplate.getOperationTemplateByName(bundle.getString(NamesOfParametrs.NAME));
+                else {
+                    String type = typeOperation
+                            ? OperationTemplate.TYPE_EXPENSE
+                            : OperationTemplate.TYPE_PROFIT;
+                    operationTemplate = OperationTemplate.getOperationTemplateByName(bundle.getString(NamesOfParametrs.NAME), type);
+                }
 
                 operationTemplate.setName(title);
                 operationTemplate.setType(typeOperation ? OperationTemplate.TYPE_EXPENSE : OperationTemplate.TYPE_PROFIT);

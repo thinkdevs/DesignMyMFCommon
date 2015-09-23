@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
@@ -66,9 +65,9 @@ public class CashAccountsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("tag", "Cash Accounts List Fragment - 'onCreateView'");
-        View view = inflater.inflate(R.layout.fragment_cash_accounts_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycler_view_list, container, false);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_cash_accounts);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_list);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -78,7 +77,7 @@ public class CashAccountsListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(CashAccountsListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<CashAccount> cashes = new Select().from(CashAccount.class).queryList();
+        List<CashAccount> cashes = CashAccount.getCashAccounts();
 
         // specify an adapter (see also next example)
         mAdapter = new RecyclerViewCashAccountsAdapter(CashAccountsListFragment.this.getActivity(), cashes);
@@ -117,7 +116,6 @@ public class CashAccountsListFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }
 

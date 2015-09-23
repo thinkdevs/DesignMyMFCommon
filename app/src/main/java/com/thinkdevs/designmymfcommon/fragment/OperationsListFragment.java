@@ -1,9 +1,11 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
 import android.app.Activity;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,128 +13,41 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SimpleAdapter;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
+import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationAdapter;
 import com.thinkdevs.designmymfcommon.database.Operation;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
-public class OperationsListFragment extends ListFragment {
-
+public class OperationsListFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private int sectionNumber;
-
-
-    final String ATTRIBUTE_NAME_LOGO_CATEGORY = "logoCategory";
-    final String ATTRIBUTE_NAME_TITLE_CATEGORY = "titleCategory";
-    final String ATTRIBUTE_NAME_AMOUNT = "amount";
-    final String ATTRIBUTE_NAME_CURRENCY = "currency";
-    final String ATTRIBUTE_NAME_LOGO_CASH = "logoCash";
-    final String ATTRIBUTE_NAME_TITLE_CASH = "logoTitle";
-    final String ATTRIBUTE_NAME_DATA = "data";
-    final String ATTRIBUTE_NAME_COMMENT = "comment";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("tag", "Operations List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
+        Log.d("tag", "Operation Templates List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
         super.onCreate(savedInstanceState);
+
         // Включаем отображение меню
         setHasOptionsMenu(true);
 
-        int itemLayout;
-
-        List<Operation> expenses = Operation.getExpenseOperations();
-        List<Operation> profits = Operation.getProfitOperations();
-
-        List<Integer> logoCategories = new ArrayList<>();
-        List<String> categoryTitles = new ArrayList<>();
-        List<Float> amounts = new ArrayList<>();
-        List<String> currencies = new ArrayList<>();
-        List<Integer> logoCashes = new ArrayList<>();
-        List<String> cashTitles = new ArrayList<>();
-        List<String> dates = new ArrayList<>();
-        List<String> comments = new ArrayList<>();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-
-        List<Operation> operations = new ArrayList<>();
-        if(sectionNumber == 2){
-            operations.addAll(expenses);
-            itemLayout = R.layout.item_operation_expense_list;
-        }
-        else {
-            operations.addAll(profits);
-            itemLayout = R.layout.item_operation_profit_list;
-        }
-
-        for(Operation operation : operations){
-            logoCategories.add(operation.getSubCategory().getCategory().getLogo().getResourceId());
-            categoryTitles.add(operation.getSubCategory().getName());
-            amounts.add(operation.getAmount());
-            currencies.add(operation.getCashAccount().getCurrency().getStrSymbol());
-            logoCashes.add(operation.getCashAccount().getLogo().getResourceId());
-            cashTitles.add(operation.getCashAccount().getName());
-            Date date  = operation.getDate();
-            dates.add(sdf.format(date));
-            comments.add(operation.getComment());
-        }
-
-        ArrayList<Map<String,Object>> data = new ArrayList<>(operations.size());
-        Map<String, Object> attr;
-
-        for(int i = 0; i < operations.size(); i++){
-            attr = new HashMap<>();
-            attr.put(ATTRIBUTE_NAME_LOGO_CATEGORY, logoCategories.get(i));
-            attr.put(ATTRIBUTE_NAME_TITLE_CATEGORY, categoryTitles.get(i));
-            attr.put(ATTRIBUTE_NAME_AMOUNT, amounts.get(i));
-            attr.put(ATTRIBUTE_NAME_CURRENCY, currencies.get(i));
-            attr.put(ATTRIBUTE_NAME_LOGO_CASH, logoCashes.get(i));
-            attr.put(ATTRIBUTE_NAME_TITLE_CASH, cashTitles.get(i));
-            attr.put(ATTRIBUTE_NAME_DATA, dates.get(i));
-            attr.put(ATTRIBUTE_NAME_COMMENT, comments.get(i));
-            data.add(attr);
-        }
-
-        String[] from = {
-                ATTRIBUTE_NAME_LOGO_CATEGORY,
-                ATTRIBUTE_NAME_TITLE_CATEGORY,
-                ATTRIBUTE_NAME_AMOUNT,
-                ATTRIBUTE_NAME_CURRENCY,
-                ATTRIBUTE_NAME_LOGO_CASH,
-                ATTRIBUTE_NAME_TITLE_CASH,
-                ATTRIBUTE_NAME_DATA,
-                ATTRIBUTE_NAME_COMMENT};
-        int[] to = {
-                R.id.imageView_logoCategory,
-                R.id.textView_titleCategory,
-                R.id.textView_amount,
-                R.id.textView_currency,
-                R.id.imageView_logoCash,
-                R.id.textView_titleCash,
-                R.id.textView_date,
-                R.id.textView_comment};
-
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), data, itemLayout, from, to);
-        this.setListAdapter(adapter);
     }
 
     public static OperationsListFragment newInstance(int sectionNumber) {
-        Log.d("tag", "Operations List Fragment - 'newInstance'");
+        Log.d("tag", "Operation Templates List Fragment - 'newInstance'");
         OperationsListFragment fragment = new OperationsListFragment();
         fragment.sectionNumber = sectionNumber;
         Bundle args = new Bundle();
@@ -143,40 +58,34 @@ public class OperationsListFragment extends ListFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        Log.d("tag", "Operations List Fragment - 'onAttach'");
+        Log.d("tag", "Operation Templates List Fragment - 'onAttach'");
         super.onAttach(activity);
         ((MainNavigationDrawerActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d("tag", "Operations List Fragment - 'onCreateOptionsMenu'");
-//        inflater.inflate(R.menu.global, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("tag", "Operations List Fragment - 'onOptionsItemSelected'");
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in d.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_new_operation) {
-            startActivity(new Intent(getActivity(), NewOperationActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("tag", "Operations List Fragment - 'onCreateView'");
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycler_view_list, container, false);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_list);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(OperationsListFragment.this.getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        List<Operation> operationList = sectionNumber == 2
+                ? Operation.getExpenseOperations()
+                : Operation.getProfitOperations();
+
+        // specify an adapter (see also next example)
+        mAdapter = new RecyclerViewOperationAdapter(OperationsListFragment.this.getActivity(), operationList);
+        mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -188,4 +97,30 @@ public class OperationsListFragment extends ListFragment {
 
         return view;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d("tag", "Operation Templates List Fragment - 'onCreateOptionsMenu'");
+//        inflater.inflate(R.menu.menu_cashes_list, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("tag", "Operation Templates List Fragment - 'onOptionsItemSelected'");
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in d.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_new_cash) {
+            startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
+

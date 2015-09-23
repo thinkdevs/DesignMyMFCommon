@@ -69,11 +69,11 @@ public class OperationTemplate extends BaseModel {
         this.subCategory = subCategory;
     }
 
-    public static boolean isExist(String title, String type){
+    public static boolean isExist(String name, String type){
         return  new Select()
                 .from(OperationTemplate.class)
                 .where(Condition.CombinedCondition
-                        .begin(Condition.column(OperationTemplate$Table.NAME).is(title))
+                        .begin(Condition.column(OperationTemplate$Table.NAME).is(name))
                         .and  (Condition.column(OperationTemplate$Table.TYPE).is(type)))
                 .querySingle() != null;
     }
@@ -98,10 +98,12 @@ public class OperationTemplate extends BaseModel {
                 .queryList();
     }
 
-    public static OperationTemplate getOperationTemplateByName(String name){
-        return new Select()
+    public static OperationTemplate getOperationTemplateByName(String name, String type){
+        return  new Select()
                 .from(OperationTemplate.class)
-                .where(Condition.column(OperationTemplate$Table.NAME).is(name))
+                .where(Condition.CombinedCondition
+                        .begin(Condition.column(OperationTemplate$Table.NAME).is(name))
+                        .and  (Condition.column(OperationTemplate$Table.TYPE).is(type)))
                 .querySingle();
     }
 
