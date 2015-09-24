@@ -95,6 +95,17 @@ public class SubCategory extends BaseModel {
         return null;
     }
 
+    public static SubCategory getSubCategoryByName(String title, Category category){
+        return  new Select()
+                .from(SubCategory.class)
+                .where(Condition.CombinedCondition
+                                .begin(Condition.column(SubCategory$Table.NAME).eq(title))
+                                .and(Condition.column(SubCategory$Table.CATEGORY_CATEGORY_ID).is(category.getId()))
+                )
+                .querySingle();
+    }
+
+
     public static boolean isExist(String name, Category category){
         return  new Select()
                 .from(SubCategory.class)

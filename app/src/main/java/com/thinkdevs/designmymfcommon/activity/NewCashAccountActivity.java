@@ -164,7 +164,7 @@ public class NewCashAccountActivity extends Activity {
             if(title == null || title.length() == 0){
                 Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
             }
-            else if(IS_NEW && CashAccount.isExist(title)){
+            else if(CashAccount.isExist(title)){
                 Toast.makeText(this, "Счет с таким именем уже существует", Toast.LENGTH_LONG).show();
             }
             else {

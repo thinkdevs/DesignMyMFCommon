@@ -155,6 +155,7 @@ public class RecyclerViewOperationAdapter extends
     private void startEditor (View view){
         Intent intent = new Intent(mContext, NewOperationActivity.class);
         String [] hierarchyCategories = ((TextView) view.findViewById(R.id.tv_category_name)).getText().toString().split("/");
+        intent.putExtra(NamesOfParametrs.IS_NEW, false);
         intent.putExtra(NamesOfParametrs.CATEGORY_NAME, hierarchyCategories[0]);
         intent.putExtra(NamesOfParametrs.SUB_CATEGORY_NAME, hierarchyCategories[1]);
         boolean typeOperation = (SubCategory.getExpenseSubCategoryByName(hierarchyCategories[1]) != null);

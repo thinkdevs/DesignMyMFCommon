@@ -8,6 +8,8 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thinkdevs.designmymfcommon.R;
+import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
@@ -31,15 +35,20 @@ public class NewOperationTemplateActivity extends Activity {
 
     boolean typeOperation; // if TRUE then Expensive
 
-    EditText etTitle;
+    EditText   etTitle;
     RadioGroup radioGroupType;
-    Spinner spSubCategory;
-    EditText etAmount;
+    Spinner    spCategory;
+    Spinner    spSubCategory;
+    EditText   etAmount;
 
 
+    List<Category> listCategoriesExpense;
+    List<Category> listCategoriesProfit;
     List<SubCategory> listSubCategoryExpense;
     List<SubCategory> listSubCategoryProfits;
 
+    List<String> listNamesCategoriesExpense;
+    List<String> listNamesCategoriesProfit;
     List<String> listNamesSubCategoriesExpense; // Для адаптера
     List<String> listNamesSubCategoriesProfit; // Для адаптера
 
@@ -65,10 +74,28 @@ public class NewOperationTemplateActivity extends Activity {
         etTitle        = (EditText)findViewById(R.id.et_title);
         radioGroupType = ((RadioGroup) findViewById(R.id.rg_type_operation));
         typeOperation  = (radioGroupType.getCheckedRadioButtonId() == R.id.rb_expense);
-        spSubCategory  = ((Spinner) findViewById(R.id.sp_category));
+        spCategory     = ((Spinner) findViewById(R.id.sp_category));
+        spSubCategory  = ((Spinner) findViewById(R.id.sp_subCategory));
         etAmount       = (EditText)findViewById(R.id.et_amount);
 
-        listSubCategoryExpense = SubCategory.getExpenseSubCategories();
+
+        listCategoriesExpense = Category.getExpenseCategories();
+        listNamesCategoriesExpense = new ArrayList<>();
+        if(listCategoriesExpense.size() != 0){
+            for(Category categoryExpense : listCategoriesExpense){
+                listNamesCategoriesExpense.add(categoryExpense.getName());
+            }
+        }
+
+        listCategoriesProfit = Category.getProfitCategories();
+        listNamesCategoriesProfit = new ArrayList<>();
+        if(listCategoriesProfit.size() != 0){
+            for(Category categoryProfit : listCategoriesProfit){
+                listNamesCategoriesProfit.add(categoryProfit.getName());
+            }
+        }
+
+        listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
         listNamesSubCategoriesExpense = new ArrayList<>();
         if(listSubCategoryExpense.size() != 0){
             for(SubCategory subCategoryExpense : listSubCategoryExpense){
@@ -76,7 +103,7 @@ public class NewOperationTemplateActivity extends Activity {
             }
         }
 
-        listSubCategoryProfits = SubCategory.getProfitSubCategories();
+        listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
         listNamesSubCategoriesProfit = new ArrayList<>();
         if(listSubCategoryProfits.size() != 0){
             for(SubCategory subCategoryProfit : listSubCategoryProfits){
@@ -87,14 +114,19 @@ public class NewOperationTemplateActivity extends Activity {
         adapterExpense = new ArrayAdapter<String>(
                 NewOperationTemplateActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesSubCategoriesExpense);
+                listNamesCategoriesExpense);
 
         adapterProfit = new ArrayAdapter<String>(
                 NewOperationTemplateActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesSubCategoriesProfit);
+                listNamesCategoriesProfit);
 
-        spSubCategory.setAdapter(adapterExpense);
+        spCategory.setAdapter(adapterExpense);
+
+        spSubCategory.setAdapter(new ArrayAdapter<String>(
+                NewOperationTemplateActivity.this,
+                android.R.layout.simple_list_item_1,
+                getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
 
         radioGroupType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -102,45 +134,82 @@ public class NewOperationTemplateActivity extends Activity {
                 switch (checkedId) {
                     case R.id.rb_expense:
                         typeOperation = true;
-                        spSubCategory.setAdapter(adapterExpense);
+                        spCategory.setAdapter(adapterExpense);
+                        spSubCategory.setAdapter(new ArrayAdapter<String>(
+                                NewOperationTemplateActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
                         break;
                     case R.id.rb_profit:
-                        typeOperation = false;
-                        spSubCategory.setAdapter(adapterProfit);
+                        spCategory.setAdapter(adapterProfit);
+                        spSubCategory.setAdapter(new ArrayAdapter<String>(
+                                NewOperationTemplateActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0))));
                         break;
                 }
             }
         });
 
-        intent = getIntent();
+        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                List<String> listNames;
+                if (typeOperation)
+                    listNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(position));
+                else
+                    listNames = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(position));
+                spSubCategory.setAdapter(
+                        new ArrayAdapter<String>(
+                                NewOperationTemplateActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                listNames));
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        intent = getIntent();
         bundle = intent.getExtras();
         if(bundle != null){
             IS_NEW = false;
             etTitle.        setText(bundle.getString(NamesOfParametrs.NAME));
-            typeOperation = bundle.getBoolean(NamesOfParametrs.TYPE);
-            if(typeOperation)
+
+            if(Operation.TYPE_EXPENSE.equals(bundle.getString(NamesOfParametrs.TYPE))){
+                typeOperation = true;
                 radioGroupType.check(R.id.rb_expense);
-            else
-                radioGroupType. check(R.id.rb_profit);
+
+                Log.d("oper", String.valueOf(listNamesCategoriesExpense.size()));
+                for(int i = 0; i < listNamesCategoriesExpense.size(); i++) {
+                    Log.d("oper", String.valueOf(listNamesCategoriesExpense.get(i)));
+                    if (listNamesCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
+                        spCategory.setSelection(i);
+                }
+
+                Log.d("oper", String.valueOf(listNamesSubCategoriesExpense.size()));
+                for(int i = 0; i < listNamesSubCategoriesExpense.size(); i++) {
+                    if (listNamesSubCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
+                        spSubCategory.setSelection(i);
+                }
+            }
+            else{
+                typeOperation = false;
+                radioGroupType.check(R.id.rb_profit);
+                for(int i = 0; i < listNamesCategoriesProfit.size(); i++) {
+                    if (listNamesCategoriesProfit.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
+                        spCategory.setSelection(i);
+                }
+                for(int i = 0; i < listNamesSubCategoriesProfit.size(); i++) {
+                    if (listNamesSubCategoriesProfit.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
+                        spSubCategory.setSelection(i);
+                }
+            }
 
             etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
-
             String categoryName = bundle.getString(NamesOfParametrs.CATEGORY_NAME);
-
-
-            if(typeOperation){
-                for(int i = 0; i < listSubCategoryExpense.size(); i++){
-                    if(listSubCategoryExpense.get(i).getName().equals(categoryName))
-                        spSubCategory.setSelection(i);
-                }
-            }
-            else {
-                for(int i = 0; i < listSubCategoryProfits.size(); i++){
-                    if(listSubCategoryProfits.get(i).getName().equals(categoryName))
-                        spSubCategory.setSelection(i);
-                }
-            }
         }
     }
 
@@ -175,11 +244,16 @@ public class NewOperationTemplateActivity extends Activity {
             // Получение Названия
             String title = String.valueOf(etTitle.getText());
 
+            String stringCategory = String.valueOf(((((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
+
+            //Получаем категорию
+            Category category = typeOperation
+                    ? Category.getExpenseCategoryByName(stringCategory)
+                    : Category.getProfitCategoryByName(stringCategory);
+
             // Получаем подкатегорию
             String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            SubCategory subCategory = typeOperation
-                    ? SubCategory.getExpenseSubCategoryByName(stringSubCategory)
-                    : SubCategory.getProfitSubCategoryByName(stringSubCategory);
+            SubCategory subCategory = SubCategory.getSubCategoryByName(stringSubCategory, category);
 
             // Получаем сумму
             String amountString = String.valueOf(etAmount.getText());
@@ -235,5 +309,16 @@ public class NewOperationTemplateActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<String> getListNamesSubCategoriesByCategory(Category category){
+        ArrayList<String> result = new ArrayList<>();
+        List<SubCategory> subCategories = category.getSubCategories();
+        if(subCategories.size() != 0){
+            for(SubCategory subCategory : subCategories){
+                result.add(subCategory.getName());
+            }
+        }
+        return result;
     }
 }

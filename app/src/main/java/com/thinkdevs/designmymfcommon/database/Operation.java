@@ -125,8 +125,6 @@ public class Operation extends BaseModel {
 
         // Получаем стоимость
         float amount = operationTemplate.getAmount();
-        amount = operationTemplate.isExpense() ? amount * -1 : amount;
-
         // Получаем комментарий
         String comment = "";
 
@@ -140,6 +138,8 @@ public class Operation extends BaseModel {
         operation.setAmount(amount);
         operation.setComment(comment);
         operation.save();
+
+        amount = operationTemplate.isExpense() ? amount * -1 : amount;
 
         cashAccount.setAmount(cashAccount.getAmount() + amount);
         cashAccount.update();

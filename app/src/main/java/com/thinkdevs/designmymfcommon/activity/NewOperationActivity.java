@@ -73,9 +73,11 @@ public class NewOperationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_operation);
 
-        Bundle extras = getIntent().getExtras();
-        if(extras != null)
-            setTitle(extras.getString(NamesOfParametrs.ACTIVITY_TITLE));
+
+        intent = getIntent();
+        bundle = intent.getExtras();
+        if(bundle != null)
+            setTitle(bundle.getString(NamesOfParametrs.ACTIVITY_TITLE));
 
 
         ActionBar actionBar = getActionBar();
@@ -110,14 +112,14 @@ public class NewOperationActivity extends Activity {
             }
         }
 
-        listSubCategoryExpense = SubCategory.getExpenseSubCategories();
+        listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
         listNamesSubCategoriesExpense = new ArrayList<>();
         if(listSubCategoryExpense.size() != 0){
             for(SubCategory subCategoryExpense : listSubCategoryExpense){
                 listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
             }
         }
-        listSubCategoryProfits = SubCategory.getProfitSubCategories();
+        listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
         listNamesSubCategoriesProfit = new ArrayList<>();
         if(listSubCategoryProfits.size() != 0){
             for(SubCategory subCategoryProfit : listSubCategoryProfits){
@@ -188,10 +190,11 @@ public class NewOperationActivity extends Activity {
                     listNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(position));
                 else
                     listNames = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(position));
-                spSubCategory.setAdapter(new ArrayAdapter<String>(
-                        NewOperationActivity.this,
-                        android.R.layout.simple_list_item_1,
-                        listNames));
+                spSubCategory.setAdapter(
+                        new ArrayAdapter<String>(
+                                NewOperationActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                listNames));
             }
 
             @Override
@@ -200,18 +203,23 @@ public class NewOperationActivity extends Activity {
             }
         });
 
-        intent = getIntent();
-        bundle = intent.getExtras();
-
         if(bundle != null){
-            IS_NEW = false;
+            Log.d("oper", "whith bundle");
+            if(bundle.containsKey(NamesOfParametrs.IS_NEW))
+                IS_NEW = bundle.getBoolean(NamesOfParametrs.IS_NEW);
+
             if(Operation.TYPE_EXPENSE.equals(bundle.getString(NamesOfParametrs.TYPE))){
                 typeOperation = true;
                 rgTypeOperation.check(R.id.rb_operation_expense);
+
+                Log.d("oper", String.valueOf(listNamesCategoriesExpense.size()));
                 for(int i = 0; i < listNamesCategoriesExpense.size(); i++) {
+                    Log.d("oper", String.valueOf(listNamesCategoriesExpense.get(i)));
                     if (listNamesCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
                         spCategory.setSelection(i);
                 }
+
+                Log.d("oper", String.valueOf(listNamesSubCategoriesExpense.size()));
                 for(int i = 0; i < listNamesSubCategoriesExpense.size(); i++) {
                     if (listNamesSubCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
                         spSubCategory.setSelection(i);
@@ -230,8 +238,9 @@ public class NewOperationActivity extends Activity {
                 }
             }
 
+            oldCashAccount = bundle.getString(NamesOfParametrs.CASH_ACCOUNT_NAME);
             for(int i = 0; i < listCashAccountNames.size(); i++){
-                if(listCashAccountNames.get(i).equals(bundle.getString(NamesOfParametrs.CASH_ACCOUNT_NAME)))
+                if(listCashAccountNames.get(i).equals(oldCashAccount))
                     spCashAccount.setSelection(i);
             }
 
@@ -242,6 +251,7 @@ public class NewOperationActivity extends Activity {
                 etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT).substring(1));
             }
         }
+        Log.d("oper", "create Activite");
     }
 
     @Override
@@ -258,6 +268,7 @@ public class NewOperationActivity extends Activity {
         // as you specify a parent activity in d.xml.
         int id = item.getItemId();
 
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -270,9 +281,9 @@ public class NewOperationActivity extends Activity {
 
         // ***************************** Сохранение операции ************************************
         if(id == R.id.action_save){
-
+            Log.d("oper", "сохраняем");
             Operation operation;
-            if(!IS_NEW)
+            if(IS_NEW)
                 operation = new Operation();
             else
                 operation = Operation.getOperationByTime(time);
@@ -281,13 +292,16 @@ public class NewOperationActivity extends Activity {
             SubCategory subCategory = typeOperation
                     ? SubCategory.getExpenseSubCategoryByName(stringSubCategory)
                     : SubCategory.getProfitSubCategoryByName(stringSubCategory);
+            Log.d("oper", "получаем категорию =" + subCategory);
 
             // Получаем кошелек
-            String stringCash = String.valueOf(((((TextView) spCashAccount.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            CashAccount cashAccount = CashAccount.getCashAccountByName(stringCash);
+            String stringCashAccount = String.valueOf(((((TextView) spCashAccount.getSelectedView().findViewById(android.R.id.text1))).getText()));
+            CashAccount cashAccount = CashAccount.getCashAccountByName(stringCashAccount);
+            Log.d("oper", "получаем счет =" + cashAccount);
 
             // Получаем стоимость
             String amountString = String.valueOf(etAmount.getText());
+            Log.d("oper", "получаем стоимость =" + amountString);
             float amount;
             if(amountString.length() == 0)
                 amount = 0;
@@ -296,7 +310,8 @@ public class NewOperationActivity extends Activity {
 
             // Получаем комментарий
             String comment = String.valueOf(etComment.getText());
-            if(amountString.length() == 0)
+            Log.d("oper", "получаем стоимость =" + comment);
+            if(comment.length() == 0)
                 comment = "";
 
             // Сохраняем операцию
@@ -321,6 +336,7 @@ public class NewOperationActivity extends Activity {
                 operation.update();
                 float oldCashAccountAmount = CashAccount.getCashAccountByName(oldCashAccount).getAmount();
                 CashAccount oldCash = CashAccount.getCashAccountByName(oldCashAccount);
+                Log.d("oper", String.valueOf(oldCashAccountAmount - oldAmount));
                 oldCash.setAmount(oldCashAccountAmount - oldAmount);
                 oldCash.update();
 
@@ -332,7 +348,9 @@ public class NewOperationActivity extends Activity {
                 cashAccount.update();
                 Log.d("tag", "New Operation Activity - 'update'");
             }
+
             NavUtils.navigateUpFromSameTask(this);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

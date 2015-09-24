@@ -99,7 +99,8 @@
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner_logo" />
+        android:id="@+id/spinner_logo"
+        android:spinnerMode="dialog" />
 
     <TextView
         android:layout_width="match_parent"
@@ -111,5 +112,6 @@
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner_color" />
+        android:id="@+id/spinner_color"
+        android:spinnerMode="dialog" />
 </LinearLayout>

@@ -74,7 +74,8 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sp_cash" />
+            android:id="@+id/sp_cash"
+            android:spinnerMode="dialog" />
 
         <TextView
             android:layout_width="match_parent"
@@ -86,7 +87,8 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sp_category" />
+            android:id="@+id/sp_category"
+            android:spinnerMode="dialog" />
 
         <TextView
             android:layout_width="match_parent"
@@ -98,7 +100,8 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sp_subCategory" />
+            android:id="@+id/sp_subCategory"
+            android:spinnerMode="dialog" />
 
         <TextView
             android:layout_width="match_parent"
