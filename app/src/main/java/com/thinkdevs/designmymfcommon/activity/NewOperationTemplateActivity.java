@@ -141,6 +141,7 @@ public class NewOperationTemplateActivity extends Activity {
                                 getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
                         break;
                     case R.id.rb_profit:
+                        typeOperation = false;
                         spCategory.setAdapter(adapterProfit);
                         spSubCategory.setAdapter(new ArrayAdapter<String>(
                                 NewOperationTemplateActivity.this,

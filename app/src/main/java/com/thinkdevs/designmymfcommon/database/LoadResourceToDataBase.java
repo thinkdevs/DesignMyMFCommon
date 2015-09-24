@@ -68,7 +68,19 @@ public class LoadResourceToDataBase {
 
         logoIds.add(R.drawable.ic_home_white_24dp);
         logoIds.add(R.drawable.ic_directions_car_white_24dp);
-        logoIds.add(R.drawable.ic_shop_white_24dp);
+        logoIds.add(R.drawable.ic_ambulance_white_24dp);
+        logoIds.add(R.drawable.ic_basket_white_24dp);
+        logoIds.add(R.drawable.ic_bus_white_24dp);
+        logoIds.add(R.drawable.ic_dumbbell_white_24dp);
+        logoIds.add(R.drawable.ic_hanger_white_24dp);
+        logoIds.add(R.drawable.ic_paw_white_24dp);
+        logoIds.add(R.drawable.ic_pill_white_24dp);
+        logoIds.add(R.drawable.ic_readability_white_24dp);
+        logoIds.add(R.drawable.ic_school_white_24dp);
+        logoIds.add(R.drawable.ic_theater_white_24dp);
+        logoIds.add(R.drawable.ic_silverware_variant_white_24dp);
+        logoIds.add(R.drawable.ic_responsive_white_24dp);
+        logoIds.add(R.drawable.ic_worker_white_24dp);
 
         for(Integer id : logoIds){
             Logo logo = new Logo();

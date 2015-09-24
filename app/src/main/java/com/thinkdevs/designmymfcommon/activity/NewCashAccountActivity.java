@@ -42,6 +42,7 @@ public class NewCashAccountActivity extends Activity {
 
     Intent intent;
     Bundle bundle;
+    String oldCashAccountName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class NewCashAccountActivity extends Activity {
         if(bundle != null){
             IS_NEW = false;
             etTitle. setText(bundle.getString(NamesOfParametrs.NAME));
+            oldCashAccountName = bundle.getString(NamesOfParametrs.NAME);
             etComment.  setText(bundle.getString(NamesOfParametrs.COMMENT));
             etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
             int logoId  = bundle.getInt(NamesOfParametrs.LOGO);
@@ -164,7 +166,7 @@ public class NewCashAccountActivity extends Activity {
             if(title == null || title.length() == 0){
                 Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
             }
-            else if(CashAccount.isExist(title)){
+            else if(CashAccount.isExist(title) && !title.equals(oldCashAccountName)){
                 Toast.makeText(this, "Счет с таким именем уже существует", Toast.LENGTH_LONG).show();
             }
             else {

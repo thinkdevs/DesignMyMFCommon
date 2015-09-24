@@ -64,8 +64,10 @@ public class NewOperationActivity extends Activity {
     Intent intent;
     Bundle bundle;
     long time;
+    String cashAccountName;
     float oldAmount;
-    String oldCashAccount;
+    String oldCashAccountName;
+    boolean oldTypeOperation;
 
 
     @Override
@@ -209,7 +211,7 @@ public class NewOperationActivity extends Activity {
                 IS_NEW = bundle.getBoolean(NamesOfParametrs.IS_NEW);
 
             if(Operation.TYPE_EXPENSE.equals(bundle.getString(NamesOfParametrs.TYPE))){
-                typeOperation = true;
+                oldTypeOperation = true;
                 rgTypeOperation.check(R.id.rb_operation_expense);
 
                 Log.d("oper", String.valueOf(listNamesCategoriesExpense.size()));
@@ -238,9 +240,9 @@ public class NewOperationActivity extends Activity {
                 }
             }
 
-            oldCashAccount = bundle.getString(NamesOfParametrs.CASH_ACCOUNT_NAME);
+            oldCashAccountName = bundle.getString(NamesOfParametrs.CASH_ACCOUNT_NAME);
             for(int i = 0; i < listCashAccountNames.size(); i++){
-                if(listCashAccountNames.get(i).equals(oldCashAccount))
+                if(listCashAccountNames.get(i).equals(oldCashAccountName))
                     spCashAccount.setSelection(i);
             }
 
@@ -297,6 +299,7 @@ public class NewOperationActivity extends Activity {
             // Получаем кошелек
             String stringCashAccount = String.valueOf(((((TextView) spCashAccount.getSelectedView().findViewById(android.R.id.text1))).getText()));
             CashAccount cashAccount = CashAccount.getCashAccountByName(stringCashAccount);
+            cashAccountName = cashAccount.getName();
             Log.d("oper", "получаем счет =" + cashAccount);
 
             // Получаем стоимость
@@ -324,29 +327,22 @@ public class NewOperationActivity extends Activity {
 
             if(IS_NEW){
                 operation.save();
-                float newCashAccountAmount;
-                newCashAccountAmount = typeOperation
-                        ? (cashAccount.getAmount() - amount)
-                        : (cashAccount.getAmount() + amount);
-                cashAccount.setAmount(newCashAccountAmount);
+                cashAccount.setAmount(cashAccount.getAmount() + getReallyAmount(amount, typeOperation));
                 cashAccount.update();
                 Log.d("tag", "New Operation Activity - 'save'");
             }
             else {
                 operation.update();
-                float oldCashAccountAmount = CashAccount.getCashAccountByName(oldCashAccount).getAmount();
-                CashAccount oldCash = CashAccount.getCashAccountByName(oldCashAccount);
-                Log.d("oper", String.valueOf(oldCashAccountAmount - oldAmount));
-                oldCash.setAmount(oldCashAccountAmount - oldAmount);
-                oldCash.update();
+                CashAccount oldCashAccount = CashAccount.getCashAccountByName(oldCashAccountName);
 
-                float newCashAccountAmount;
-                newCashAccountAmount = typeOperation
-                        ? (cashAccount.getAmount() - amount)
-                        : (cashAccount.getAmount() + amount);
-                cashAccount.setAmount(newCashAccountAmount);
+                //Изменился счет
+                if(isChangedCashAccount()) {
+                    changeCashAccount(oldCashAccount, cashAccount, oldAmount);
+                    oldCashAccount.update();
+                }
+                //Изменили средства
+                changeAmount(cashAccount, oldAmount, amount);
                 cashAccount.update();
-                Log.d("tag", "New Operation Activity - 'update'");
             }
 
             NavUtils.navigateUpFromSameTask(this);
@@ -366,4 +362,26 @@ public class NewOperationActivity extends Activity {
         }
         return result;
     }
+
+    private boolean isChangedCashAccount(){
+        return !oldCashAccountName.equals(cashAccountName);
+    }
+
+    private void changeCashAccount(CashAccount oldCashAccount,
+            CashAccount newCashAccount, float oldAmount){
+        float amountReally = getReallyAmount(oldAmount, oldTypeOperation);
+        oldCashAccount.setAmount(oldCashAccount.getAmount() - amountReally);
+        newCashAccount.setAmount(newCashAccount.getAmount() + amountReally);
+    }
+
+    private void changeAmount(CashAccount cashAccount, float oldAmount, float newAmount){
+        float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
+        float newAmountReally = getReallyAmount(newAmount, typeOperation);
+        cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally + newAmountReally);
+    }
+
+    private float getReallyAmount (float amount, boolean typeOperation){
+        return typeOperation ? amount* -1 : amount;
+    }
+
 }
