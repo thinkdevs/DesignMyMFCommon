@@ -138,4 +138,11 @@ public class Category extends BaseModel {
     public boolean isExpense(){
         return Category.TYPE_EXPENSE.equals(this.getType());
     }
+
+    public static Category getCategoryById(long idCategoryToDelete) {
+        return new Select()
+                .from(Category.class)
+                .where(Condition.column(Category$Table.ID).is(idCategoryToDelete))
+                .querySingle();
+    }
 }

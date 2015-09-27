@@ -96,6 +96,10 @@ public class NewOperationActivity extends Activity {
         etTime        = ((EditText) findViewById(R.id.et_time));
         etDate        = ((EditText) findViewById(R.id.et_date));
 
+        listNamesSubCategoriesProfit = new ArrayList<>();
+        listNamesSubCategoriesExpense = new ArrayList<>();
+        listCashAccountNames = new ArrayList<>();
+
 
 
         listCategoriesExpense = Category.getExpenseCategories();
@@ -114,23 +118,24 @@ public class NewOperationActivity extends Activity {
             }
         }
 
-        listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
-        listNamesSubCategoriesExpense = new ArrayList<>();
-        if(listSubCategoryExpense.size() != 0){
-            for(SubCategory subCategoryExpense : listSubCategoryExpense){
-                listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
+        if(listCategoriesExpense.size() != 0) {
+            listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
+            if (listSubCategoryExpense.size() != 0) {
+                for (SubCategory subCategoryExpense : listSubCategoryExpense) {
+                    listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
+                }
             }
         }
-        listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
-        listNamesSubCategoriesProfit = new ArrayList<>();
-        if(listSubCategoryProfits.size() != 0){
-            for(SubCategory subCategoryProfit : listSubCategoryProfits){
-                listNamesSubCategoriesProfit.add(subCategoryProfit.getName());
+        if(listCategoriesProfit.size() != 0) {
+            listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
+            if (listSubCategoryProfits.size() != 0) {
+                for (SubCategory subCategoryProfit : listSubCategoryProfits) {
+                    listNamesSubCategoriesProfit.add(subCategoryProfit.getName());
+                }
             }
         }
 
         listCashAccounts = new Select().from(CashAccount.class).queryList();
-        listCashAccountNames = new ArrayList<>();
         if(listCashAccounts.size() != 0){
             for(CashAccount cash : listCashAccounts){
                 listCashAccountNames.add(cash.getName());
@@ -150,10 +155,16 @@ public class NewOperationActivity extends Activity {
         spCategory.setAdapter(adapterExpense);
 
 
+        List<String> subCategoryNames;
+        if(listCategoriesExpense.size() != 0)
+            subCategoryNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0));
+        else
+            subCategoryNames = new ArrayList<>();
+
         spSubCategory.setAdapter(new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
+                subCategoryNames));
 
         spCashAccount.setAdapter(
                 new ArrayAdapter<String>(NewOperationActivity.this,
@@ -163,22 +174,32 @@ public class NewOperationActivity extends Activity {
         rgTypeOperation.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                List<String> subCategoryNameList;
                 switch (checkedId) {
                     case R.id.rb_operation_expense:
                         typeOperation = true;
                         spCategory.setAdapter(adapterExpense);
+
+                        if(listCategoriesExpense.size() != 0)
+                            subCategoryNameList = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0));
+                        else
+                            subCategoryNameList = new ArrayList<String>();
                         spSubCategory.setAdapter(new ArrayAdapter<String>(
                                 NewOperationActivity.this,
                                 android.R.layout.simple_list_item_1,
-                                getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0))));
+                                subCategoryNameList));
                         break;
                     case R.id.rb_operation_profit:
                         typeOperation = false;
+                        if(listCategoriesExpense.size() != 0)
+                            subCategoryNameList = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0));
+                        else
+                            subCategoryNameList = new ArrayList<String>();
                         spCategory.setAdapter(adapterProfit);
                         spSubCategory.setAdapter(new ArrayAdapter<String>(
                                 NewOperationActivity.this,
                                 android.R.layout.simple_list_item_1,
-                                getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0))));
+                                subCategoryNameList));
                         break;
                 }
             }
@@ -249,7 +270,7 @@ public class NewOperationActivity extends Activity {
             time = bundle.getLong(NamesOfParametrs.DATE);
 
             if(bundle.getString(NamesOfParametrs.AMOUNT) != null){
-                oldAmount = Float.parseFloat(bundle.getString(NamesOfParametrs.AMOUNT));
+                oldAmount = Float.parseFloat(bundle.getString(NamesOfParametrs.AMOUNT).substring(1));
                 etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT).substring(1));
             }
         }
@@ -333,16 +354,39 @@ public class NewOperationActivity extends Activity {
             }
             else {
                 operation.update();
+
                 CashAccount oldCashAccount = CashAccount.getCashAccountByName(oldCashAccountName);
+
+                Log.d("operation", "oldTypeOperation = " + oldTypeOperation);
+                Log.d("operation", "oldAmountOperation = " + oldAmount);
+
+                Log.d("operation", "oldCashAccount = " + oldCashAccountName);
+                Log.d("operation", "oldAmountCashAccount = " + oldCashAccount.getAmount());
+
+
+                Log.d("operation", "newTypeOperation = " + typeOperation);
+                Log.d("operation", "newAmountOperation = " + amount);
+                Log.d("operation", "newCashAccount = " + cashAccountName);
+                Log.d("operation", "newAmountCashAccount = " + cashAccount.getAmount());
+
+
+                if(isChangedType()){
+                    changeType(oldCashAccount, oldAmount);
+                }
+
+                //Изменили средства
+                if(isChangedAmount(amount)) {
+                    changeAmount(oldCashAccount, oldAmount, amount);
+                    cashAccount.update();
+                }
 
                 //Изменился счет
                 if(isChangedCashAccount()) {
                     changeCashAccount(oldCashAccount, cashAccount, oldAmount);
-                    oldCashAccount.update();
                 }
-                //Изменили средства
-                changeAmount(cashAccount, oldAmount, amount);
+
                 cashAccount.update();
+                oldCashAccount.update();
             }
 
             NavUtils.navigateUpFromSameTask(this);
@@ -372,16 +416,32 @@ public class NewOperationActivity extends Activity {
         float amountReally = getReallyAmount(oldAmount, oldTypeOperation);
         oldCashAccount.setAmount(oldCashAccount.getAmount() - amountReally);
         newCashAccount.setAmount(newCashAccount.getAmount() + amountReally);
+        Log.d("operation", "after changeCashAccount --> oldCashAccountAmount = " + oldCashAccount.getAmount());
+        Log.d("operation", "after changeCashAccount --> newCashAccountAmount = " + newCashAccount.getAmount());
     }
 
     private void changeAmount(CashAccount cashAccount, float oldAmount, float newAmount){
         float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
         float newAmountReally = getReallyAmount(newAmount, typeOperation);
         cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally + newAmountReally);
+        Log.d("operation", "after changeAmount --> newCashAmount = " + cashAccount.getAmount());
+    }
+
+    private void changeType (CashAccount cashAccount, float oldAmount){
+        float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
+        cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally * 2);
+        Log.d("operation", "after changeType --> newCashAmount = " + cashAccount.getAmount());
     }
 
     private float getReallyAmount (float amount, boolean typeOperation){
         return typeOperation ? amount* -1 : amount;
     }
 
+    private boolean isChangedType(){
+        return oldTypeOperation != typeOperation;
+    }
+
+    private boolean isChangedAmount(float newAmount){
+        return oldAmount != newAmount;
+    }
 }

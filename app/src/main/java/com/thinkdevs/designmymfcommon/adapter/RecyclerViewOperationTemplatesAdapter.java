@@ -38,8 +38,8 @@ public class RecyclerViewOperationTemplatesAdapter extends
     private Activity mContext;
     private Resources mResources;
     private DialogFragment dialogDelete;
-    private int positionOperationFavoriteToDelete;
-    private String titleOperationFavoriteToDelete;
+    private int positionOperationTemplateToDelete;
+    private String titleOperationTemplateToDelete;
     private boolean typeOperationTemplateToDelete;
 
     private String categoryName;
@@ -140,12 +140,12 @@ public class RecyclerViewOperationTemplatesAdapter extends
                                 return true;
                             case R.id.remove:
                                 dialogDelete = DeleteDialogFragment.newInstance(RecyclerViewOperationTemplatesAdapter.this, "");
-                                titleOperationFavoriteToDelete = ((TextView)v.findViewById(R.id.tv_template_name)).getText().toString();
+                                titleOperationTemplateToDelete = ((TextView)v.findViewById(R.id.tv_template_name)).getText().toString();
                                 String subCategoryName = ((TextView) v.findViewById(R.id.tv_category_name)).getText().toString();
                                 Log.d(LOG_TAG, subCategoryName);
                                 typeOperationTemplateToDelete = (SubCategory.getExpenseSubCategoryByName(subCategoryName) != null);
                                 Log.d(LOG_TAG, String.valueOf(typeOperationTemplateToDelete));
-                                positionOperationFavoriteToDelete = i;
+                                positionOperationTemplateToDelete = i;
                                 dialogDelete.show(mContext.getFragmentManager(), "dialogDelete");
                                 Log.d(LOG_TAG, "button remove");
                                 return true;
@@ -215,14 +215,14 @@ public class RecyclerViewOperationTemplatesAdapter extends
         String typeOperation = typeOperationTemplateToDelete
                 ? OperationTemplate.TYPE_EXPENSE
                 : OperationTemplate.TYPE_PROFIT;
-        operationTemplate = OperationTemplate.getOperationTemplateByName(titleOperationFavoriteToDelete, typeOperation);
+        operationTemplate = OperationTemplate.getOperationTemplateByName(titleOperationTemplateToDelete, typeOperation);
         operationTemplate.delete();
     }
 
     private void updateRecycleViewAfterDelete(){
-        mOperationTemplate.remove(positionOperationFavoriteToDelete);
-        notifyItemRemoved(positionOperationFavoriteToDelete);
-        notifyItemRangeChanged(positionOperationFavoriteToDelete, getItemCount());
+        mOperationTemplate.remove(positionOperationTemplateToDelete);
+        notifyItemRemoved(positionOperationTemplateToDelete);
+        notifyItemRangeChanged(positionOperationTemplateToDelete, getItemCount());
     }
 
 
