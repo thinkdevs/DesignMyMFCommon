@@ -15,5 +15,7 @@ public class NamesOfParametrs {
     public static final String CASH_ACCOUNT_NAME   = "cash_account_name";
     public static final String DATE                = "date";
     public static final String IS_NEW              = "is_new";
-
+    public static final String SUB_CATEGORY_ID     = "category_id";
+    public static final String CATEGORY_ID         = "category_id";
+    public static final String IS_SUB_CATEGORY     = "is_sub_category";
 }

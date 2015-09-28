@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@android:color/white"
+    android:padding="8dp"
+    android:divider="@android:drawable/divider_horizontal_dark"
+    android:showDividers="middle">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/rl_title_bar"
+        android:background="@color/green">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/iv_logo"
+            android:src="@drawable/ic_shop_white_24dp"
+            android:visibility="visible"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Дети/Одежда"
+            android:id="@+id/tv_name"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"
+            android:visibility="visible"
+            android:fontFamily="roboto-normal"
+            android:singleLine="true"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/iv_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="(1)"
+            android:id="@+id/tv_count"
+            android:textSize="16dp"
+            android:layout_alignParentEnd="true"
+            android:visibility="visible"
+            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/rv_sub_categories"
+            android:scrollbars="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="220dp"
+            android:padding="8dp">
+        </android.support.v7.widget.RecyclerView>
+
+
+    <Button
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="90dp"
+        android:layout_height="36dp"
+        android:text="ДОБАВИТЬ"
+        android:id="@+id/btn_new"
+        android:layout_marginRight="4dp"
+        android:textSize="14dp" />
+
+</LinearLayout>

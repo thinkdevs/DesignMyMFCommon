@@ -191,7 +191,7 @@ public class NewOperationActivity extends Activity {
                         break;
                     case R.id.rb_operation_profit:
                         typeOperation = false;
-                        if(listCategoriesExpense.size() != 0)
+                        if(listCategoriesProfit.size() != 0)
                             subCategoryNameList = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0));
                         else
                             subCategoryNameList = new ArrayList<String>();

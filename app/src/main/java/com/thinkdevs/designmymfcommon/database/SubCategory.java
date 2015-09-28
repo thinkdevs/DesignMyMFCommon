@@ -36,6 +36,10 @@ public class SubCategory extends BaseModel {
 
     List<Operation> operations; //список операций
 
+    public long     getId() {
+        return id;
+    }
+
     public String   getName() {
         return name;
     }
@@ -63,7 +67,6 @@ public class SubCategory extends BaseModel {
     }
 
     public static List<SubCategory> getExpenseSubCategories() {
-
         List<SubCategory> subCategories = new ArrayList<>();
         List<Category> expenseCategories = Category.getExpenseCategories();
         for (Category category : expenseCategories) {
@@ -105,7 +108,6 @@ public class SubCategory extends BaseModel {
                 .querySingle();
     }
 
-
     public static boolean isExist(String name, Category category){
         return  new Select()
                 .from(SubCategory.class)
@@ -113,5 +115,12 @@ public class SubCategory extends BaseModel {
                         .begin(Condition.column(SubCategory$Table.NAME).eq(name))
                         .and  (Condition.column(SubCategory$Table.CATEGORY_CATEGORY_ID).is(category.getId())))
                 .querySingle() != null;
+    }
+
+    public static SubCategory getSubCategoryById(long idSubCategoryToDelete) {
+        return new Select()
+                .from(SubCategory.class)
+                .where(Condition.column(SubCategory$Table.ID).is(idSubCategoryToDelete))
+                .querySingle();
     }
 }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,14 +16,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.NewOperationTemplateActivity;
-import com.thinkdevs.designmymfcommon.database.CashAccount;
+import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
-import com.thinkdevs.designmymfcommon.dialog.OperationTemplatesDialogFragment;
+import com.thinkdevs.designmymfcommon.dialog.SubCategoriesDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.List;
@@ -40,11 +35,7 @@ public class RecyclerViewCategoriesAdapter extends
     private Resources mResources;
     private DialogFragment dialogDelete;
     private int positionCategoryToDelete;
-    private String nameCategoryToDelete;
-    private boolean typeOperationTemplateToDelete;
     private long idCategoryToDelete;
-
-    private String cashAccountName;
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -113,14 +104,9 @@ public class RecyclerViewCategoriesAdapter extends
                                 return true;
                             case R.id.remove:
                                 dialogDelete = DeleteDialogFragment.newInstance(RecyclerViewCategoriesAdapter.this, "При удалении будут удаленны все подкатегории, операциям данных категорий будет присвоена категория прочее");
-                                nameCategoryToDelete = ((TextView)v.findViewById(R.id.tv_category_name)).getText().toString();
                                 idCategoryToDelete   = (long)(v.findViewById(R.id.tv_category_name).getTag());
-                                String subCategoryName = ((TextView) v.findViewById(R.id.tv_category_name)).getText().toString();
-                                typeOperationTemplateToDelete = (SubCategory.getExpenseSubCategoryByName(subCategoryName) != null);
-                                Log.d(LOG_TAG, String.valueOf(typeOperationTemplateToDelete));
                                 positionCategoryToDelete = i;
                                 dialogDelete.show(mContext.getFragmentManager(), "dialogDelete");
-                                Log.d(LOG_TAG, "button remove");
                                 return true;
                             default:
                                 return false;
@@ -134,33 +120,19 @@ public class RecyclerViewCategoriesAdapter extends
 
         viewHolder.cardView.setOnLongClickListener(longClickListener);
 
-//        View.OnClickListener clickListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Получаем кошелек
-//                CashAccount cashAccount = CashAccount.getCashAccountByName(cashAccountName);
-//                // Получаем шаблон
-//                String typeOperationTemplate = viewHolder.tvAmount.getText().toString().startsWith("-")
-//                        ? OperationTemplate.TYPE_EXPENSE
-//                        : OperationTemplate.TYPE_PROFIT;
-//
-//                Log.d(LOG_TAG, typeOperationTemplate + " " + viewHolder.tvTemplateName.getText().toString());
-//
-//                OperationTemplate operationTemplate =
-//                        OperationTemplate.getOperationTemplateByName(viewHolder.tvTemplateName.getText().toString()
-//                                , typeOperationTemplate);
-//                Operation.newOperationFromTemplate(operationTemplate, cashAccount);
-//
-//                cashAccountsAdapter.update();
-//                operationTemplatesDialogFragment.dismiss();
-//            }
-//        };
-//
-//
-//        if(cashAccountName != null) {
-//            Log.d("tag", "RecyclerViewOperationTemplateAdapter - 'setOnclickListener'");
-//            viewHolder.cardView.setOnClickListener(clickListener);
-//        }
+        View.OnClickListener clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Получаем кошелек
+                long idCategory = (long)v.findViewById(R.id.tv_category_name).getTag();
+                // Получаем шаблон
+                SubCategoriesDialogFragment subCategoriesDialogFragment =
+                        SubCategoriesDialogFragment.newInstance(idCategory);
+                subCategoriesDialogFragment.show(mContext.getFragmentManager(), "subCategories dialog");
+            }
+        };
+
+        viewHolder.cardView.setOnClickListener(clickListener);
 
     }
 
@@ -170,18 +142,13 @@ public class RecyclerViewCategoriesAdapter extends
     }
 
     private void startEditor (View view){
-//        Intent intent = new Intent(mContext, NewOperationTemplateActivity.class);
-//        intent.putExtra(NamesOfParametrs.IS_NEW, false);
-//        intent.putExtra(NamesOfParametrs.NAME, ((TextView) view.findViewById(R.id.tv_template_name)).getText());
-//        String subCategoryName = ((TextView) view.findViewById(R.id.tv_category_name)).getText().toString();
-//        Log.d(LOG_TAG, subCategoryName + " startEditor");
-//        intent.putExtra(NamesOfParametrs.SUB_CATEGORY_NAME, subCategoryName);
-//        intent.putExtra(NamesOfParametrs.CATEGORY_NAME, categoryName);
-//        boolean typeOperation = (SubCategory.getExpenseSubCategoryByName(subCategoryName) != null);
-//        intent.putExtra(NamesOfParametrs.TYPE, typeOperation);
-//        intent.putExtra(NamesOfParametrs.AMOUNT, ((TextView) view.findViewById(R.id.tv_amount)).getText().toString().substring(1));
-//        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
-//        mContext.startActivity(intent);
+        Intent intent = new Intent(mContext, NewCategoryActivity.class);
+        intent.putExtra(NamesOfParametrs.IS_NEW, false);
+        intent.putExtra(NamesOfParametrs.IS_SUB_CATEGORY, false);
+        long categoryId = (long)view.findViewById(R.id.tv_category_name).getTag();
+        intent.putExtra(NamesOfParametrs.CATEGORY_ID, categoryId);
+        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
+        mContext.startActivity(intent);
     }
 
     private void deleteOperationTemplate(){

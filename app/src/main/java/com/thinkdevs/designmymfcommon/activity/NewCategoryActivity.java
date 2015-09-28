@@ -2,6 +2,7 @@ package com.thinkdevs.designmymfcommon.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Logo;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
+import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +54,22 @@ public class NewCategoryActivity extends Activity {
     boolean typeHierarchy; //if TRUE then Category
     boolean typeCategory ; // if TRUE then Expensive
 
+    Intent intent;
+    Bundle bundle;
+    private boolean IS_NEW = true;
+    private boolean oldTypeHierarchy;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_category);
+
+        intent = getIntent();
+        bundle = intent.getExtras();
+        if(bundle != null)
+            setTitle(bundle.getString(NamesOfParametrs.ACTIVITY_TITLE));
+
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -101,7 +114,10 @@ public class NewCategoryActivity extends Activity {
             }
         }
 
-        spCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesExpense));
+        spCategory.setAdapter(new ArrayAdapter<String>(
+                NewCategoryActivity.this,
+                android.R.layout.simple_list_item_1,
+                listNamesCategoriesExpense));
 
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoryProfit.size() != 0){
@@ -135,15 +151,122 @@ public class NewCategoryActivity extends Activity {
                 switch (checkedId) {
                     case R.id.rb_operation_expense:
                         typeCategory = true;
-                        spCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesExpense));
+                        spCategory.setAdapter(new ArrayAdapter<String>(
+                                NewCategoryActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                listNamesCategoriesExpense));
                         break;
                     case R.id.rb_operation_profit:
                         typeCategory = false;
-                        spCategory.setAdapter(new ArrayAdapter<String>(NewCategoryActivity.this, android.R.layout.simple_list_item_1, listNamesCategoriesProfit));
+                        spCategory.setAdapter(new ArrayAdapter<String>(
+                                NewCategoryActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                listNamesCategoriesProfit));
                         break;
                 }
             }
         });
+
+        if(bundle != null) {
+            IS_NEW = bundle.getBoolean(NamesOfParametrs.IS_NEW);
+            //Редактирование
+            if (!IS_NEW) {
+                //Как подкатегория
+                if (bundle.getBoolean(NamesOfParametrs.IS_SUB_CATEGORY)) {
+                    //Тип иерархии
+                    oldTypeHierarchy = false;
+                    rgTypeHierarchy.check(R.id.radioButton_subCategory);
+                    SubCategory subCategory =
+                            SubCategory.getSubCategoryById(
+                                    bundle.getLong(NamesOfParametrs.SUB_CATEGORY_ID));
+                    //Имя
+                    etName.setText(subCategory.getName());
+
+                    //Тип категории. Категория.
+                    if (!subCategory.getCategory().isExpense()) {
+                        rgTypeCategory.check(R.id.rb_operation_profit);
+                        for (int i = 0; i < listCategoryProfit.size(); i++) {
+                            if (listCategoryProfit.get(i).getId() == subCategory.getCategory().getId()) {
+                                spCategory.setSelection(i);
+                                break;
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < listCategoryExpense.size(); i++) {
+                            if (listCategoryExpense.get(i).getId() == subCategory.getCategory().getId()) {
+                                spCategory.setSelection(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //Как категория
+                else {
+                    Category category =
+                            Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
+                    //Тип иерархии
+                    rgTypeHierarchy.check(R.id.rb_category);
+                    //Имя
+                    etName.setText(category.getName());
+                    //Цвет
+                    for (int i = 0; i < listColor.size(); i++) {
+                        if (listColor.get(i).getId() == category.getColor().getId()) {
+                            spColor.setSelection(i);
+                            break;
+                        }
+                    }
+                    //Тип категории и категория
+                    if (!category.isExpense()) {
+                        rgTypeCategory.check(R.id.rb_operation_profit);
+                        for (int i = 0; i < listCategoryProfit.size(); i++) {
+                            if (listCategoryProfit.get(i).getId() == category.getId()) {
+                                spCategory.setSelection(i);
+                                break;
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < listCategoryExpense.size(); i++) {
+                            if (listCategoryExpense.get(i).getId() == category.getId()) {
+                                spCategory.setSelection(i);
+                                break;
+                            }
+                        }
+                    }
+                    //Логотип
+                    for (int i = 0; i < listLogoCategory.size(); i++) {
+                        if (listLogoCategory.get(i).getId() == category.getLogo().getId()) {
+                            spLogo.setSelection(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            // Новая подкатегория с изветсной категорией
+            else {
+                Category category =
+                        Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
+                //Тип иерархии
+                rgTypeHierarchy.check(R.id.radioButton_subCategory);
+
+                //Тип категории и категория
+                if (!category.isExpense()) {
+                    rgTypeCategory.check(R.id.rb_operation_profit);
+                    for (int i = 0; i < listCategoryProfit.size(); i++) {
+                        if (listCategoryProfit.get(i).getId() == category.getId()) {
+                            spCategory.setSelection(i);
+                            break;
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < listCategoryExpense.size(); i++) {
+                        if (listCategoryExpense.get(i).getId() == category.getId()) {
+                            spCategory.setSelection(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -175,7 +298,15 @@ public class NewCategoryActivity extends Activity {
 
             // Сохранение как категории
             if(typeHierarchy){
-                Category category = new Category();
+                Category category;
+                if(IS_NEW)
+                    category = new Category();
+                else if (isTypeHierarchyChanged()){
+                    SubCategory.getSubCategoryById(bundle.getLong(NamesOfParametrs.SUB_CATEGORY_ID)).delete();
+                    category = new Category();
+                }
+                else
+                    category = Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
                 String title = String.valueOf(etName.getText());
                 String categoryType  = typeCategory ? Category.TYPE_EXPENSE : Category.TYPE_PROFIT;
                 category.setType(categoryType);
@@ -208,7 +339,16 @@ public class NewCategoryActivity extends Activity {
             }
             // Сохранение как подкатегории
             else {
-                SubCategory subCategory = new SubCategory();
+                SubCategory subCategory;
+                if(IS_NEW)
+                    subCategory = new SubCategory();
+                else if (isTypeHierarchyChanged()){
+                    Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID)).delete();
+                    subCategory = new SubCategory();
+                }
+                else
+                    subCategory = SubCategory.getSubCategoryById(bundle.getLong(NamesOfParametrs.SUB_CATEGORY_ID));
+
                 String name = String.valueOf(etName.getText());
                 String categoryName = String.valueOf(((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
                 Category category  = typeCategory
@@ -225,7 +365,6 @@ public class NewCategoryActivity extends Activity {
                     subCategory.setName(name);
                     subCategory.setCategory(category);
                     subCategory.save();
-
                     NavUtils.navigateUpFromSameTask(this);
                     Log.d("tag", "New Category Activity - 'save'");
                 }
@@ -248,5 +387,9 @@ public class NewCategoryActivity extends Activity {
         for(View view : show){
             view.setVisibility(View.VISIBLE);
         }
+    }
+
+    private boolean isTypeHierarchyChanged(){
+        return typeHierarchy != oldTypeHierarchy;
     }
 }
