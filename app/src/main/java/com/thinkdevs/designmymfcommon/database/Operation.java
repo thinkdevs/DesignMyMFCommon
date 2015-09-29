@@ -18,24 +18,21 @@ import java.util.List;
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class Operation extends BaseModel {
 
-    public static final String TYPE_EXPENSE = "expense";
-    public static final String TYPE_PROFIT  = "profit";
-
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
-    String type;   //тип операции;
+    int type;
 
     @Column
-    Date   date;   //дата расхода
+    Date date;
 
     @Column
-    float  amount; //сумма
+    float amount;
 
     @Column
-    String comment; //комментарий к расходу
+    String comment;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -43,59 +40,65 @@ public class Operation extends BaseModel {
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    CashAccount cashAccount; // счет
+    CashAccount cashAccount;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "subCategory_id",
+            columnName = "category_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    SubCategory subCategory; //подкатегория
+    Category category;
 
-    public long        getId() {
+    public long getId() {
         return id;
     }
 
-    public String      getType() {
+    public int getType() {
         return type;
     }
-    public void        setType(String type) {
+
+    public void setType(int type) {
         this.type = type;
     }
 
-    public SubCategory getSubCategory() {
-        return subCategory;
+    public Category getCategory() {
+        return category;
     }
-    public void        setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public CashAccount getCashAccount() {
         return cashAccount;
     }
-    public void        setCashAccount(CashAccount cashAccount) {
+
+    public void setCashAccount(CashAccount cashAccount) {
         this.cashAccount = cashAccount;
     }
 
-    public String      getComment() {
+    public String getComment() {
         return comment;
     }
-    public void        setComment(String comment) {
+
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
-    public float       getAmount() {
+    public float getAmount() {
         return amount;
     }
-    public void        setAmount(float amount) {
+
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
-    public Date        getDate() {
+    public Date getDate() {
         return date;
     }
-    public void        setDate(Date date) {
+
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -104,21 +107,23 @@ public class Operation extends BaseModel {
                 .from(Operation.class)
                 .queryList();
     }
+
     public static List<Operation> getExpenseOperations(){
         return new Select()
                 .from(Operation.class)
-                .where(Condition.column(Operation$Table.TYPE).is(TYPE_EXPENSE))
+                .where(Condition.column(Operation$Table.TYPE).is(Category.TYPE_EXPENSE))
                 .queryList();
     }
+
     public static List<Operation> getProfitOperations(){
         return new Select()
                 .from(Operation.class)
-                .where(Condition.column(Operation$Table.TYPE).is(TYPE_PROFIT))
+                .where(Condition.column(Operation$Table.TYPE).is(Category.TYPE_PROFIT))
                 .queryList();
     }
 
     public boolean isExpense(){
-        return Operation.TYPE_EXPENSE.equals(this.getType());
+        return Category.TYPE_EXPENSE == this.getType();
     }
 
     public static void newOperationFromTemplate(OperationTemplate operationTemplate, CashAccount cashAccount){
@@ -133,7 +138,7 @@ public class Operation extends BaseModel {
         operation.setDate(new Date(System.currentTimeMillis()));
         operation.setCashAccount(cashAccount);
         operation.setType(operationTemplate.getType());
-        operation.setSubCategory(operationTemplate.getSubCategory());
+        operation.setCategory(operationTemplate.getCategory());
 
         operation.setAmount(amount);
         operation.setComment(comment);
@@ -145,10 +150,10 @@ public class Operation extends BaseModel {
         cashAccount.update();
     }
 
-    public static Operation getOperationByTime(long time){
+    public static Operation getOperationByID(long id) {
         return new Select().
                 from(Operation.class).
-                where(Condition.column(Operation$Table.DATE).is(time)).
+                where(Condition.column(Operation$Table.ID).is(id)).
                 querySingle();
     }
 }

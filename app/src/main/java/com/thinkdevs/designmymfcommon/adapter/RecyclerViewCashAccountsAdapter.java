@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
+import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
@@ -33,60 +31,53 @@ import java.util.List;
 
 public class RecyclerViewCashAccountsAdapter extends
         RecyclerView.Adapter<RecyclerViewCashAccountsAdapter.CashAccountViewHolder>
-        implements DeleteDialogFragment.NoticeDialogListener{
-
-    final String LOG_TAG = "mylog";
+        implements View.OnLongClickListener, DeleteDialogFragment.NoticeDialogListener{
 
     private List<CashAccount> mCashAccounts;
-    private Activity mContext;
-    private Resources mResources;
-    private DialogFragment dialogDelete;
-    private int positionCashAccountToDelete;
-    private String nameCashAccountToDelete;
+    private Activity          mContext;
+    private Resources         mResources;
+    private DialogFragment    dialogDelete;
+    private int               positionToDelete;
+    private long               idToDelete;
 
     public static class CashAccountViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+
         public CardView       cardView;
         public RelativeLayout rlTitleBar;
-        public ImageView ivCashAccountLogo;
-        public TextView tvCashAccountName;
-        public TextView tvCashAccountComment;
-        public TextView tvCashAccountAmount;
+        public ImageView      ivCashAccountLogo;
+        public TextView       tvCashAccountName;
+        public TextView       tvCashAccountComment;
+        public TextView       tvCashAccountAmount;
         public TextView       tvDate;
         public TextView       tvOperation;
         public TextView       tvCurrency;
         public Button         btnAddExpense;
         public Button         btnAddProfit;
-        public ImageView      btnMenu;
 
         public CashAccountViewHolder(View itemView) {
             super(itemView);
-            cardView          = (CardView)itemView.findViewById(R.id.cv_cash_account);
-            rlTitleBar        = (RelativeLayout)itemView.findViewById(R.id.rl_title_bar);
-            ivCashAccountLogo = (ImageView)itemView.findViewById(R.id.iv_category_logo);
-            tvCashAccountName = (TextView)itemView.findViewById(R.id.tv_cash_account_name);
+            cardView             = (CardView)itemView.findViewById(R.id.cv_cash_account);
+            rlTitleBar           = (RelativeLayout)itemView.findViewById(R.id.rl_title_bar);
+            ivCashAccountLogo    = (ImageView)itemView.findViewById(R.id.iv_category_logo);
+            tvCashAccountName    = (TextView)itemView.findViewById(R.id.tv_cash_account_name);
             tvCashAccountComment = (TextView)itemView.findViewById(R.id.tv_cash_account_comment);
             tvCashAccountAmount  = (TextView)itemView.findViewById(R.id.tv_amount);
-            tvDate        = (TextView)itemView.findViewById(R.id.tv_date);
-            tvOperation   = (TextView)itemView.findViewById(R.id.tv_operation);
-            tvCurrency    = (TextView)itemView.findViewById(R.id.tv_currency);
-            btnAddExpense = (Button)itemView.findViewById(R.id.btn_add_expense);
-            btnAddProfit  = (Button)itemView.findViewById(R.id.btn_add_profit);
-            btnMenu       = (ImageView)itemView.findViewById(R.id.iv_menu);
+            tvDate               = (TextView)itemView.findViewById(R.id.tv_date);
+            tvOperation          = (TextView)itemView.findViewById(R.id.tv_operation);
+            tvCurrency           = (TextView)itemView.findViewById(R.id.tv_currency);
+            btnAddExpense        = (Button)itemView.findViewById(R.id.btn_add_expense);
+            btnAddProfit         = (Button)itemView.findViewById(R.id.btn_add_profit);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     public RecyclerViewCashAccountsAdapter(Activity context, List<CashAccount> cashAccounts) {
         this.mCashAccounts = cashAccounts;
-        this.mContext = context;
-        this.mResources = context.getResources();
+        this.mContext      = context;
+        this.mResources    = context.getResources();
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
-    public CashAccountViewHolder onCreateViewHolder(ViewGroup parent,
-                                                    int viewType) {
+    public CashAccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_cash_account, parent, false);
 
@@ -97,119 +88,62 @@ public class RecyclerViewCashAccountsAdapter extends
     @Override
     public void onBindViewHolder(final CashAccountViewHolder viewHolder, final int i) {
 
-        viewHolder.rlTitleBar.   setBackgroundColor(
-                (mResources.getColor(mCashAccounts.get(i).getColor().getResourceId())));
-        viewHolder.rlTitleBar.   setTag(
-                (mCashAccounts.get(i).getColor().getResourceId()));
-        viewHolder.ivCashAccountLogo.setImageResource(
-                mCashAccounts.get(i).getLogo().getResourceId());
-        viewHolder.ivCashAccountLogo.setTag(
-                mCashAccounts.get(i).getLogo().getResourceId());
-        viewHolder.tvCashAccountName.setText(
-                mCashAccounts.get(i).getName());
-        viewHolder.tvCashAccountComment.setText(
-                mCashAccounts.get(i).getComment());
-        viewHolder.tvCashAccountAmount.setText(String.valueOf(
-                mCashAccounts.get(i).getAmount()));
-        viewHolder.tvCurrency.setText(
-                mCashAccounts.get(i).getCurrency().getStrSymbol());
+        CashAccount cashAccount = mCashAccounts.get(i);
 
-        Operation lastOperation = mCashAccounts.get(i).getLastOperation();
+        //Сохранение id счета и его позииции в списке
+        viewHolder.cardView.setTag(R.string.tag_cash_account_id, cashAccount.getId());
+        viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
+
+        //id счета для быстрого создания операций
+        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_id,cashAccount.getId());
+        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_id,cashAccount.getId());
+
+        //Цвет бара кошелька
+        viewHolder.rlTitleBar.   setBackgroundColor(
+                (mResources.getColor(cashAccount.getColor().getResourceId())));
+        viewHolder.rlTitleBar.setTag(
+                R.string.tag_resource_id, cashAccount.getColor().getResourceId());
+
+        //Логотип
+        viewHolder.ivCashAccountLogo.setImageResource(cashAccount.getLogo().getResourceId());
+        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_id, cashAccount.getLogo().getResourceId());
+
+        //Имя
+        viewHolder.tvCashAccountName.setText(cashAccount.getName());
+
+        //Комментарий
+        viewHolder.tvCashAccountComment.setText(cashAccount.getComment());
+
+        //Средства
+        viewHolder.tvCashAccountAmount.setText(String.valueOf(cashAccount.getAmount()));
+
+        //Валюта
+        viewHolder.tvCurrency.setText(cashAccount.getCurrency().getStrSymbol());
+        viewHolder.tvCurrency.setTag(R.string.tag_currency_id, cashAccount.getCurrency().getId());
+
+        //Последняя операция и дата последнего изменения
+        Operation lastOperation = cashAccount.getLastOperation();
         if(lastOperation == null){
             viewHolder.tvOperation.setText("операций нет");
             viewHolder.tvDate.setText("");
         }
         else {
-            StringBuilder operation  = new StringBuilder();
+            StringBuilder sbLastOperation  = new StringBuilder();
             if(lastOperation.isExpense())
-                operation.append("-").append(lastOperation.getAmount());
+                sbLastOperation.append("-").append(lastOperation.getAmount());
             else
-                operation.append("+").append(lastOperation.getAmount());
+                sbLastOperation.append("+").append(lastOperation.getAmount());
 
-            viewHolder.tvOperation.setText(String.valueOf(operation));
+            viewHolder.tvOperation.setText(String.valueOf(sbLastOperation));
             viewHolder.tvDate.setText(Formatter.formatDateTime(lastOperation.getDate()));
         }
 
+        //Установка слушателей
+        viewHolder.rlTitleBar.setOnLongClickListener(this);
+        FastOperationOnClickListener listener = new FastOperationOnClickListener();
+        viewHolder.btnAddExpense.setOnClickListener(listener);
+        viewHolder.btnAddProfit.setOnClickListener(listener);
 
-        viewHolder.btnAddExpense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(OperationTemplate.getExpenseOperationTemplates()!= null
-                        && !OperationTemplate.getExpenseOperationTemplates().isEmpty()) {
-                    final OperationTemplatesDialogFragment dialogTemplates
-                            = OperationTemplatesDialogFragment.newInstance(
-                            OperationTemplate.TYPE_EXPENSE,
-                            viewHolder.tvCashAccountName.getText().toString(),
-                            RecyclerViewCashAccountsAdapter.this);
-                    dialogTemplates.show(mContext.getFragmentManager(), "dialogTemplates");
-            }
-            else {
-                Intent intent = new Intent(mContext, NewOperationActivity.class);
-                intent.putExtra(
-                        NamesOfParametrs.NAME,
-                        viewHolder.tvCashAccountName.getText().toString());
-                intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, mContext.getResources().getString(R.string.action_new_operation));
-                intent.putExtra(NamesOfParametrs.TYPE, OperationTemplate.TYPE_EXPENSE);
-                mContext.startActivity(intent);
-            }
-            }
-        });
-
-        viewHolder.btnAddProfit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(OperationTemplate.getProfitOperationTemplates() != null
-                        && !OperationTemplate.getProfitOperationTemplates().isEmpty() ) {
-                    final OperationTemplatesDialogFragment dialogTemplates
-                            = OperationTemplatesDialogFragment.newInstance(
-                            OperationTemplate.TYPE_PROFIT,
-                            viewHolder.tvCashAccountName.getText().toString(),
-                            RecyclerViewCashAccountsAdapter.this);
-                    dialogTemplates.show(mContext.getFragmentManager(), "dialogTemplates");
-                }
-                else {
-                    Intent intent = new Intent(mContext, NewOperationActivity.class);
-                    intent.putExtra(
-                            NamesOfParametrs.NAME,
-                            viewHolder.tvCashAccountName.getText().toString());
-                    intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, mContext.getResources().getString(R.string.action_new_operation));
-                    intent.putExtra(NamesOfParametrs.TYPE, OperationTemplate.TYPE_PROFIT);
-                    mContext.startActivity(intent);
-                }
-            }
-        });
-
-
-        viewHolder.btnMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final PopupMenu popupMenu = new PopupMenu(mContext, v, Gravity.START);
-                popupMenu.inflate(R.menu.card_account_edit_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.edit:
-                                startEditor(viewHolder);
-                                return true;
-                            case R.id.remove:
-                                dialogDelete = DeleteDialogFragment.newInstance(
-                                        RecyclerViewCashAccountsAdapter.this,
-                                        "При удалении счета будут удалены все операции");
-                                nameCashAccountToDelete =
-                                        viewHolder.tvCashAccountName.getText().toString();
-                                positionCashAccountToDelete = i;
-                                dialogDelete.show(mContext.getFragmentManager(), "dialogDelete");
-                                Log.d(LOG_TAG, "button remove");
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-                popupMenu.show();
-            }
-        });
     }
 
     @Override
@@ -217,20 +151,20 @@ public class RecyclerViewCashAccountsAdapter extends
         return mCashAccounts.size();
     }
 
-    private void startEditor (CashAccountViewHolder viewHolder){
-        Intent intent = new Intent(mContext, NewCashAccountActivity.class);
-        intent.putExtra(NamesOfParametrs.NAME, viewHolder.tvCashAccountName.getText());
-        intent.putExtra(NamesOfParametrs.COMMENT, viewHolder.tvCashAccountComment.getText());
-        intent.putExtra(NamesOfParametrs.CURRENCY_STR_SYMBOL, viewHolder.tvCurrency.getText());
-        intent.putExtra(NamesOfParametrs.AMOUNT, viewHolder.tvCashAccountAmount.getText());
-        intent.putExtra(NamesOfParametrs.LOGO, (int) viewHolder.ivCashAccountLogo.getTag());
-        intent.putExtra(NamesOfParametrs.COLOR,         (int) viewHolder.rlTitleBar.getTag());
-        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE,      "Редактирование");
-        mContext.startActivity(intent);
+    private void startEditor (View view){
+//        Intent intent = new Intent(mContext, NewCashAccountActivity.class);
+//        intent.putExtra(NamesOfParametrs.NAME, viewHolder.tvCashAccountName.getText());
+//        intent.putExtra(NamesOfParametrs.COMMENT, viewHolder.tvCashAccountComment.getText());
+//        intent.putExtra(NamesOfParametrs.CURRENCY_STR_SYMBOL, viewHolder.tvCurrency.getText());
+//        intent.putExtra(NamesOfParametrs.AMOUNT, viewHolder.tvCashAccountAmount.getText());
+//        intent.putExtra(NamesOfParametrs.LOGO, (int) viewHolder.ivCashAccountLogo.getTag());
+//        intent.putExtra(NamesOfParametrs.COLOR,         (int) viewHolder.rlTitleBar.getTag());
+//        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE,      "Редактирование");
+//        mContext.startActivity(intent);
     }
 
     private void deleteCashAccount(){
-        CashAccount cashAccount = CashAccount.getCashAccountByName(nameCashAccountToDelete);
+        CashAccount cashAccount = CashAccount.getCashAccountByID(idToDelete);
         List<Operation> operations = cashAccount.getAllOperations();
 
         if(!operations.isEmpty()){
@@ -242,11 +176,10 @@ public class RecyclerViewCashAccountsAdapter extends
     }
 
     private void updateRecycleViewAfterDelete(){
-        mCashAccounts.remove(positionCashAccountToDelete);
-        notifyItemRemoved(positionCashAccountToDelete);
-        notifyItemRangeChanged(positionCashAccountToDelete, getItemCount());
+        mCashAccounts.remove(positionToDelete);
+        notifyItemRemoved(positionToDelete);
+        notifyItemRangeChanged(positionToDelete, getItemCount());
     }
-
 
     @Override
     public void onDialogPositiveClick() {
@@ -262,5 +195,74 @@ public class RecyclerViewCashAccountsAdapter extends
     public void update(){
         mCashAccounts = CashAccount.getCashAccounts();
         this.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onLongClick(final View v) {
+        //id операции
+        final long id = (long)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_id));
+        //позиция в rv
+        final int position = (int)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_position_in_rv));
+        //меню
+        final PopupMenu popupMenu = new PopupMenu(
+                mContext, v.findViewById(R.id.tv_cash_account_name));
+        popupMenu.inflate(R.menu.menu_popup_cash_account);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.edit:
+                        startEditor(v);
+                        return true;
+                    case R.id.remove:
+                        idToDelete = id;
+                        positionToDelete = position;
+                        dialogDelete = DeleteDialogFragment.newInstance(
+                                RecyclerViewCashAccountsAdapter.this,
+                                mContext.getString(R.string.msg_delete_cash_account));
+                        dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.show();
+        return true;
+    }
+
+    public class FastOperationOnClickListener implements View.OnClickListener{
+        int typeOperation;
+        long cashAccountID;
+        List<OperationTemplate> templates;
+        OperationTemplatesDialogFragment dialog;
+
+        @Override
+        public void onClick(View v) {
+            cashAccountID = (long) v.getTag(R.string.tag_cash_account_id);
+            switch (v.getId()){
+                case R.id.btn_add_expense:
+                    typeOperation = Category.TYPE_EXPENSE;
+                    templates = OperationTemplate.getExpenseOperationTemplates();
+                    break;
+                case R.id.btn_add_profit:
+                    typeOperation = Category.TYPE_PROFIT;
+                    templates = OperationTemplate.getProfitOperationTemplates();
+            }
+
+            if(templates != null && templates.isEmpty()){
+                dialog = OperationTemplatesDialogFragment.newInstance(
+                        typeOperation, cashAccountID, RecyclerViewCashAccountsAdapter.this);
+            }
+            else {
+                Intent intent = new Intent(mContext, NewOperationActivity.class);
+                intent.putExtra(
+                        NamesOfParametrs.NAME,
+                        CashAccount.getCashAccountByID(cashAccountID).getName());
+                intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, mContext.getResources().getString(R.string.action_new_operation));
+                intent.putExtra(NamesOfParametrs.TYPE, typeOperation);
+                mContext.startActivity(intent);
+            }
+        }
     }
 }

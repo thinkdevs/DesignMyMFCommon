@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
@@ -42,8 +42,8 @@ public class NewOperationTemplateActivity extends Activity {
     EditText   etAmount;
 
 
-    List<Category> listCategoriesExpense;
-    List<Category> listCategoriesProfit;
+    List<ParentCategory> listCategoriesExpense;
+    List<ParentCategory> listCategoriesProfit;
     List<SubCategory> listSubCategoryExpense;
     List<SubCategory> listSubCategoryProfits;
 
@@ -82,19 +82,19 @@ public class NewOperationTemplateActivity extends Activity {
         listNamesSubCategoriesExpense = new ArrayList<>();
 
 
-        listCategoriesExpense = Category.getExpenseCategories();
+        listCategoriesExpense = ParentCategory.getExpenseCategories();
         listNamesCategoriesExpense = new ArrayList<>();
         if(listCategoriesExpense.size() != 0){
-            for(Category categoryExpense : listCategoriesExpense){
-                listNamesCategoriesExpense.add(categoryExpense.getName());
+            for(ParentCategory parentCategoryExpense : listCategoriesExpense){
+                listNamesCategoriesExpense.add(parentCategoryExpense.getName());
             }
         }
 
-        listCategoriesProfit = Category.getProfitCategories();
+        listCategoriesProfit = ParentCategory.getProfitCategories();
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoriesProfit.size() != 0){
-            for(Category categoryProfit : listCategoriesProfit){
-                listNamesCategoriesProfit.add(categoryProfit.getName());
+            for(ParentCategory parentCategoryProfit : listCategoriesProfit){
+                listNamesCategoriesProfit.add(parentCategoryProfit.getName());
             }
         }
 
@@ -267,13 +267,13 @@ public class NewOperationTemplateActivity extends Activity {
             String stringCategory = String.valueOf(((((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
 
             //Получаем категорию
-            Category category = typeOperation
-                    ? Category.getExpenseCategoryByName(stringCategory)
-                    : Category.getProfitCategoryByName(stringCategory);
+            ParentCategory parentCategory = typeOperation
+                    ? ParentCategory.getExpenseCategoryByName(stringCategory)
+                    : ParentCategory.getProfitCategoryByName(stringCategory);
 
             // Получаем подкатегорию
             String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            SubCategory subCategory = SubCategory.getSubCategoryByName(stringSubCategory, category);
+            SubCategory subCategory = SubCategory.getSubCategoryByName(stringSubCategory, parentCategory);
 
             // Получаем сумму
             String amountString = String.valueOf(etAmount.getText());
@@ -331,9 +331,9 @@ public class NewOperationTemplateActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<String> getListNamesSubCategoriesByCategory(Category category){
+    private List<String> getListNamesSubCategoriesByCategory(ParentCategory parentCategory){
         ArrayList<String> result = new ArrayList<>();
-        List<SubCategory> subCategories = category.getSubCategories();
+        List<SubCategory> subCategories = parentCategory.getSubCategories();
         if(subCategories.size() != 0){
             for(SubCategory subCategory : subCategories){
                 result.add(subCategory.getName());

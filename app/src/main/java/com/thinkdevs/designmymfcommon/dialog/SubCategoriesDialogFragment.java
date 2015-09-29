@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewSubCategoriesAdapter;
-import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
@@ -26,14 +26,12 @@ import java.util.List;
 public class SubCategoriesDialogFragment extends DialogFragment
         implements View.OnClickListener {
 
-    final String LOG_TAG = "mylog";
-
     private RecyclerView rvSubCategories;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private static long idCategory;
-    private Category category;
+    private ParentCategory parentCategory;
     private List<SubCategory> subCategories;
 
     RelativeLayout rlTitleBar;
@@ -62,14 +60,14 @@ public class SubCategoriesDialogFragment extends DialogFragment
         tvCount       = (TextView) view.findViewById(R.id.tv_count);
         btnNew        = (Button)view.findViewById(R.id.btn_new);
         btnNew.setOnClickListener(this);
-        category      = Category.getCategoryById(idCategory);
-        subCategories = category.getSubCategories();
+        parentCategory = ParentCategory.getCategoryById(idCategory);
+        subCategories = parentCategory.getSubCategories();
 
-        rlTitleBar.setBackgroundColor(getResources().getColor(category.getColor().getResourceId()));
-        ivLogo.setImageResource(category.getLogo().getResourceId());
-        tvName.setText(category.getName());
+        rlTitleBar.setBackgroundColor(getResources().getColor(parentCategory.getColor().getResourceId()));
+        ivLogo.setImageResource(parentCategory.getLogo().getResourceId());
+        tvName.setText(parentCategory.getName());
         StringBuilder sbCountSubCategories = new StringBuilder();
-        sbCountSubCategories.append("(").append(subCategories.size()).append(")");
+        sbCountSubCategories.append("( ").append(subCategories.size()).append(" )");
         tvCount.setText(sbCountSubCategories);
 
         rvSubCategories = (RecyclerView) view.findViewById(R.id.rv_sub_categories);
@@ -89,7 +87,7 @@ public class SubCategoriesDialogFragment extends DialogFragment
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), NewCategoryActivity.class);
         intent.putExtra(NamesOfParametrs.IS_NEW, true);
-        intent.putExtra(NamesOfParametrs.CATEGORY_ID, category.getId());
+        intent.putExtra(NamesOfParametrs.CATEGORY_ID, parentCategory.getId());
         intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, getResources().getString(R.string.action_new_category));
         startActivity(intent);
         dismiss();

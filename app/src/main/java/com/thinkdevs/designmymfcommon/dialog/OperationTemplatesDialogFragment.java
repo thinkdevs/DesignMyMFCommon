@@ -16,6 +16,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewCashAccountsAdapter;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationTemplatesAdapter;
+import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
@@ -24,8 +25,6 @@ import java.util.List;
 public class OperationTemplatesDialogFragment extends DialogFragment
         implements View.OnClickListener {
 
-    final String LOG_TAG = "mylog";
-
     private RecyclerView rvOperationTemplates;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -33,18 +32,18 @@ public class OperationTemplatesDialogFragment extends DialogFragment
     TextView     tvTitle;
     Button       btnNew;
 
-    private static String typeOperation;
-    private static String nameCashAccount;
+    private static int typeOperation;
+    private static long cashAccountID;
     private static RecyclerViewCashAccountsAdapter recyclerViewCashAccountsAdapter;
 
     public static OperationTemplatesDialogFragment newInstance (
-            String typeOperation,
-            String nameCashAccount,
+            int typeOperation,
+            long cashAccountID,
             RecyclerViewCashAccountsAdapter recyclerViewCashAccountsAdapter){
         OperationTemplatesDialogFragment.typeOperation
                 = typeOperation;
-        OperationTemplatesDialogFragment.nameCashAccount
-                = nameCashAccount;
+        OperationTemplatesDialogFragment.cashAccountID
+                = cashAccountID;
         OperationTemplatesDialogFragment.recyclerViewCashAccountsAdapter
                 = recyclerViewCashAccountsAdapter;
         return new OperationTemplatesDialogFragment();
@@ -62,7 +61,7 @@ public class OperationTemplatesDialogFragment extends DialogFragment
         List<OperationTemplate> operationTemplateList;
 
 
-        if(OperationTemplate.TYPE_EXPENSE.equals(typeOperation)) {
+        if(Category.TYPE_EXPENSE == typeOperation) {
             tvTitle.setText(getActivity().getResources().getString(R.string.operation_expense).toUpperCase());
             tvTitle.setTextColor(getResources().getColor(R.color.red));
             btnNew.setTextColor(getResources().getColor(R.color.red));

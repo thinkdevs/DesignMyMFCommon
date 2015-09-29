@@ -19,7 +19,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
-import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationAdapter;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationsAdapter;
 import com.thinkdevs.designmymfcommon.database.Operation;
 
 import java.util.List;
@@ -84,7 +84,7 @@ public class OperationsListFragment extends Fragment {
                 : Operation.getProfitOperations();
 
         // specify an adapter (see also next example)
-        mAdapter = new RecyclerViewOperationAdapter(OperationsListFragment.this.getActivity(), operationList);
+        mAdapter = new RecyclerViewOperationsAdapter(OperationsListFragment.this.getActivity(), operationList);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);

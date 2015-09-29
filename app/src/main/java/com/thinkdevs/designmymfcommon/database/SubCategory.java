@@ -8,7 +8,6 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,41 +16,43 @@ import java.util.List;
  * Таблица с подкатегориями расходов
  */
 @Table(databaseName = MoneyFlowDataBase.NAME)
-public class SubCategory extends BaseModel {
+public class SubCategory extends Category {
 
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
-    String name; //название подкатегории
+    String name;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "category_id",
+            columnName = "parentCategory_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    Category category; //категория
+    ParentCategory parentCategory;
 
-    List<Operation> operations; //список операций
+    List<Operation> operations;
 
-    public long     getId() {
+    public long getId() {
         return id;
     }
 
-    public String   getName() {
+    public String getName() {
         return name;
     }
-    public void     setName(String name) {
+
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Category getCategory() {
-        return category;
+    public ParentCategory getParentCategory() {
+        return parentCategory;
     }
-    public void     setCategory(Category category) {
-        this.category = category;
+
+    public void setParentCategory(ParentCategory parentCategory) {
+        this.parentCategory = parentCategory;
     }
 
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE},
@@ -60,25 +61,46 @@ public class SubCategory extends BaseModel {
         if(operations == null){
             operations = new Select()
                     .from(Operation.class)
-                    .where(Condition.column(Operation$Table.SUBCATEGORY_SUBCATEGORY_ID).is(this.id))
+                    .where(Condition.column(Operation$Table.CATEGORY_CATEGORY_ID).is(this.id))
                     .queryList();
         }
         return operations;
     }
 
+    @Override
+    public Logo getLogo() {
+        return parentCategory.getLogo();
+    }
+
+    @Override
+    public Color getColor() {
+        return parentCategory.getColor();
+    }
+
+    @Override
+    public int getHierarchy() {
+        return HIERARCHY_SUB;
+    }
+
+    @Override
+    public int getType() {
+        return parentCategory.getType();
+    }
+
     public static List<SubCategory> getExpenseSubCategories() {
         List<SubCategory> subCategories = new ArrayList<>();
-        List<Category> expenseCategories = Category.getExpenseCategories();
-        for (Category category : expenseCategories) {
-            subCategories.addAll(category.getSubCategories());
+        List<ParentCategory> expenseCategories = ParentCategory.getExpenseCategories();
+        for (ParentCategory parentCategory : expenseCategories) {
+            subCategories.addAll(parentCategory.getSubCategories());
         }
         return subCategories;
     }
+
     public static List<SubCategory> getProfitSubCategories() {
         List<SubCategory> subCategories = new ArrayList<>();
-        List<Category> profitCategories = Category.getProfitCategories();
-        for (Category category : profitCategories) {
-            subCategories.addAll(category.getSubCategories());
+        List<ParentCategory> profitCategories = ParentCategory.getProfitCategories();
+        for (ParentCategory parentCategory : profitCategories) {
+            subCategories.addAll(parentCategory.getSubCategories());
         }
         return subCategories;
     }
@@ -90,6 +112,7 @@ public class SubCategory extends BaseModel {
         }
         return null;
     }
+
     public static SubCategory getProfitSubCategoryByName(String title){
         for(SubCategory subCategory : getProfitSubCategories()){
             if(subCategory.getName().equals(title))
@@ -98,22 +121,22 @@ public class SubCategory extends BaseModel {
         return null;
     }
 
-    public static SubCategory getSubCategoryByName(String title, Category category){
+    public static SubCategory getSubCategoryByName(String title, ParentCategory parentCategory){
         return  new Select()
                 .from(SubCategory.class)
                 .where(Condition.CombinedCondition
                                 .begin(Condition.column(SubCategory$Table.NAME).eq(title))
-                                .and(Condition.column(SubCategory$Table.CATEGORY_CATEGORY_ID).is(category.getId()))
+                                .and(Condition.column(SubCategory$Table.PARENTCATEGORY_PARENTCATEGORY_ID).is(parentCategory.getId()))
                 )
                 .querySingle();
     }
 
-    public static boolean isExist(String name, Category category){
+    public static boolean isExist(String name, ParentCategory parentCategory){
         return  new Select()
                 .from(SubCategory.class)
                 .where(Condition.CombinedCondition
                         .begin(Condition.column(SubCategory$Table.NAME).eq(name))
-                        .and  (Condition.column(SubCategory$Table.CATEGORY_CATEGORY_ID).is(category.getId())))
+                        .and  (Condition.column(SubCategory$Table.PARENTCATEGORY_PARENTCATEGORY_ID).is(parentCategory.getId())))
                 .querySingle() != null;
     }
 

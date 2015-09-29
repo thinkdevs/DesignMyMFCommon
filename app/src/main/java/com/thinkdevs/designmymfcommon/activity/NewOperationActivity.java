@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
-import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
@@ -46,8 +46,8 @@ public class NewOperationActivity extends Activity {
     EditText   etDate;
 
 
-    List<Category> listCategoriesExpense;
-    List<Category> listCategoriesProfit;
+    List<ParentCategory> listCategoriesExpense;
+    List<ParentCategory> listCategoriesProfit;
     List<SubCategory> listSubCategoryExpense;
     List<SubCategory> listSubCategoryProfits;
     List<CashAccount> listCashAccounts;
@@ -102,19 +102,19 @@ public class NewOperationActivity extends Activity {
 
 
 
-        listCategoriesExpense = Category.getExpenseCategories();
+        listCategoriesExpense = ParentCategory.getExpenseCategories();
         listNamesCategoriesExpense = new ArrayList<>();
         if(listCategoriesExpense.size() != 0){
-            for(Category categoryExpense : listCategoriesExpense){
-                listNamesCategoriesExpense.add(categoryExpense.getName());
+            for(ParentCategory parentCategoryExpense : listCategoriesExpense){
+                listNamesCategoriesExpense.add(parentCategoryExpense.getName());
             }
         }
 
-        listCategoriesProfit = Category.getProfitCategories();
+        listCategoriesProfit = ParentCategory.getProfitCategories();
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoriesProfit.size() != 0){
-            for(Category categoryProfit : listCategoriesProfit){
-                listNamesCategoriesProfit.add(categoryProfit.getName());
+            for(ParentCategory parentCategoryProfit : listCategoriesProfit){
+                listNamesCategoriesProfit.add(parentCategoryProfit.getName());
             }
         }
 
@@ -342,7 +342,7 @@ public class NewOperationActivity extends Activity {
             operation.setType(typeOperation ? Operation.TYPE_EXPENSE : Operation.TYPE_PROFIT);
             operation.setCashAccount(cashAccount);
             operation.setDate(new Date(System.currentTimeMillis()));
-            operation.setSubCategory(subCategory);
+            operation.setCategory(subCategory);
             operation.setAmount(amount);
             operation.setComment(comment);
 
@@ -396,9 +396,9 @@ public class NewOperationActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<String> getListNamesSubCategoriesByCategory(Category category){
+    private List<String> getListNamesSubCategoriesByCategory(ParentCategory parentCategory){
         ArrayList<String> result = new ArrayList<>();
-        List<SubCategory> subCategories = category.getSubCategories();
+        List<SubCategory> subCategories = parentCategory.getSubCategories();
         if(subCategories.size() != 0){
             for(SubCategory subCategory : subCategories){
                 result.add(subCategory.getName());

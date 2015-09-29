@@ -23,41 +23,32 @@ import java.util.List;
 
 public class RecyclerViewSubCategoriesAdapter extends
         RecyclerView.Adapter<RecyclerViewSubCategoriesAdapter.SubCategoryViewHolder>
-        implements DeleteDialogFragment.NoticeDialogListener{
+        implements View.OnLongClickListener, DeleteDialogFragment.NoticeDialogListener{
 
-    final String LOG_TAG = "mylog";
-
-    private List<SubCategory> mSubCategories;
-    private Activity mContext;
-    private Resources mResources;
-    private DialogFragment dialogDelete;
-    private int positionSubCategoryToDelete;
-    private String nameSubCategoryToDelete;
-    private boolean typeOperationTemplateToDelete;
-    private long idSubCategoryToDelete;
+    private List<SubCategory> mCategories;
+    private Activity          mContext;
+    private Resources         mResources;
+    private DialogFragment    dialogDelete;
+    private int               positionToDelete;
+    private long              idToDelete;
 
     public static class SubCategoryViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public CardView       cardView;
-        public TextView       tvSubCategoryName;
+        public CardView cardView;
+        public TextView tvSubCategoryName;
 
         public SubCategoryViewHolder(View itemView) {
             super(itemView);
-            cardView          = (CardView) itemView.findViewById(R.id.cv_subCategory);
-            tvSubCategoryName = (TextView) itemView.findViewById(R.id.tv_subCategory_name);
+            cardView          = (CardView) itemView.findViewById(R.id.cv_sub_category);
+            tvSubCategoryName = (TextView) itemView.findViewById(R.id.tv_sub_category_name);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerViewSubCategoriesAdapter(
-            Activity context,
-            List<SubCategory> subCategories) {
-        this.mSubCategories = subCategories;
-        this.mContext = context;
-        this.mResources = context.getResources();
+    public RecyclerViewSubCategoriesAdapter(Activity context, List<SubCategory> subCategories) {
+        this.mCategories = subCategories;
+        this.mContext    = context;
+        this.mResources  = context.getResources();
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public SubCategoryViewHolder onCreateViewHolder(ViewGroup parent,
                                                     int viewType) {
@@ -71,51 +62,32 @@ public class RecyclerViewSubCategoriesAdapter extends
     @Override
     public void onBindViewHolder(final SubCategoryViewHolder viewHolder, final int i) {
 
-        viewHolder.tvSubCategoryName.setText(mSubCategories.get(i).getName());
-        viewHolder.tvSubCategoryName.setTag(mSubCategories.get(i).getId());
+        SubCategory category = mCategories.get(i);
+
+        //Сохранение id категории и ее позииции в списке
+        viewHolder.cardView.setTag(R.string.tag_category_id, category.getId());
+        viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
+
+        //Имя категории
+        viewHolder.tvSubCategoryName.setText(category.getName());
+
+        //Цвет текста имени
         viewHolder.tvSubCategoryName.setTextColor(
-                (mResources.getColor(mSubCategories.get(i).getCategory().getColor().getResourceId())));
+                (mResources.getColor(category.getColor().getResourceId())));
 
-        View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(final View v) {
-                final PopupMenu popupMenu = new PopupMenu(mContext, v.findViewById(R.id.tv_subCategory_name));
-                popupMenu.inflate(R.menu.card_account_edit_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.edit:
-                                startEditor(v);
-                                return true;
-                            case R.id.remove:
-                                dialogDelete = DeleteDialogFragment.newInstance(RecyclerViewSubCategoriesAdapter.this, "При удалении, операциям будет присвоена категория прочее");
-                                idSubCategoryToDelete = (long)(v.findViewById(R.id.tv_subCategory_name).getTag());
-                                positionSubCategoryToDelete = i;
-                                dialogDelete.show(mContext.getFragmentManager(), "dialogDelete");
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-                popupMenu.show();
-                return true;
-            }
-        };
-
-        viewHolder.cardView.setOnLongClickListener(longClickListener);
+        //Установка слушателей
+        viewHolder.cardView.setOnLongClickListener(this);
     }
 
     @Override
     public int getItemCount() {
-        return mSubCategories.size();
+        return mCategories.size();
     }
 
     private void startEditor (View view){
         Intent intent = new Intent(mContext, NewCategoryActivity.class);
         intent.putExtra(NamesOfParametrs.IS_NEW, false);
-        long subCategoryId = (long)view.findViewById(R.id.tv_subCategory_name).getTag();
+        long subCategoryId = (long)view.findViewById(R.id.tv_sub_category_name).getTag();
         intent.putExtra(NamesOfParametrs.IS_SUB_CATEGORY, true);
         intent.putExtra(NamesOfParametrs.SUB_CATEGORY_ID, subCategoryId);
         intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
@@ -124,16 +96,15 @@ public class RecyclerViewSubCategoriesAdapter extends
 
     private void deleteSubCategory(){
         SubCategory subCategory;
-        subCategory = SubCategory.getSubCategoryById(idSubCategoryToDelete);
+        subCategory = SubCategory.getSubCategoryById(idToDelete);
         subCategory.delete();
     }
 
     private void updateRecycleViewAfterDelete(){
-        mSubCategories.remove(positionSubCategoryToDelete);
-        notifyItemRemoved(positionSubCategoryToDelete);
-        notifyItemRangeChanged(positionSubCategoryToDelete, getItemCount());
+        mCategories.remove(positionToDelete);
+        notifyItemRemoved(positionToDelete);
+        notifyItemRangeChanged(positionToDelete, getItemCount());
     }
-
 
     @Override
     public void onDialogPositiveClick() {
@@ -146,4 +117,37 @@ public class RecyclerViewSubCategoriesAdapter extends
 
     }
 
+    @Override
+    public boolean onLongClick(final View v) {
+        //id операции
+        final long id = (long)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_id));
+        //позиция в rv
+        final int position = (int)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_position_in_rv));
+        //меню
+        final PopupMenu popupMenu = new PopupMenu(
+                mContext, v.findViewById(R.id.tv_sub_category_name));
+        popupMenu.inflate(R.menu.menu_popup_sub_categories);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.edit:
+                        startEditor(v);
+                        return true;
+                    case R.id.remove:
+                        idToDelete = id;
+                        positionToDelete = position;
+                        dialogDelete = DeleteDialogFragment.newInstance(
+                                RecyclerViewSubCategoriesAdapter.this,
+                                mContext.getString(R.string.msg_delete_sub_category));
+                        dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.show();
+        return true;
+    }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class Logo extends BaseModel {
 
     public static final String TYPE_CASH_ACCOUNT = "cash_account";
-    public static final String TYPE_CATEGORY     = "category";
+    public static final String TYPE_CATEGORY     = "parentCategory";
 
     @Column
     @PrimaryKey(autoincrement = true)

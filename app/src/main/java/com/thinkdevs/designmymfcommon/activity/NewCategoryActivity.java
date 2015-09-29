@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogoCategorySpinnerAdapter;
-import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Logo;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
@@ -44,14 +44,14 @@ public class NewCategoryActivity extends Activity {
     List<View> listViewsCategory; // Список элементов управления категорий
     List<View> listViewsSubCategory; // Cписок элементов управления подкатегорий
 
-    List<Category> listCategoryExpense;
+    List<ParentCategory> listParentCategoryExpense;
     List<String> listNamesCategoriesExpense;
-    List<Category> listCategoryProfit;
+    List<ParentCategory> listParentCategoryProfit;
     List<String> listNamesCategoriesProfit;
     List<Color> listColor;
     List<Logo> listLogoCategory;
 
-    boolean typeHierarchy; //if TRUE then Category
+    boolean typeHierarchy; //if TRUE then ParentCategory
     boolean typeCategory ; // if TRUE then Expensive
 
     Intent intent;
@@ -102,15 +102,15 @@ public class NewCategoryActivity extends Activity {
         listViewsSubCategory.add(tvColor);
         listViewsSubCategory.add(spColor);
 
-        listCategoryExpense = Category.getExpenseCategories();
-        listCategoryProfit = Category.getProfitCategories();
+        listParentCategoryExpense = ParentCategory.getExpenseCategories();
+        listParentCategoryProfit = ParentCategory.getProfitCategories();
         listColor = Color.getColors();
         listLogoCategory = Logo.getAllCategoryLogos();
 
         listNamesCategoriesExpense = new ArrayList<>();
-        if(listCategoryExpense.size() != 0){
-            for(Category category : listCategoryExpense){
-                listNamesCategoriesExpense.add(category.getName());
+        if(listParentCategoryExpense.size() != 0){
+            for(ParentCategory parentCategory : listParentCategoryExpense){
+                listNamesCategoriesExpense.add(parentCategory.getName());
             }
         }
 
@@ -120,9 +120,9 @@ public class NewCategoryActivity extends Activity {
                 listNamesCategoriesExpense));
 
         listNamesCategoriesProfit = new ArrayList<>();
-        if(listCategoryProfit.size() != 0){
-            for(Category category : listCategoryProfit){
-                listNamesCategoriesProfit.add(category.getName());
+        if(listParentCategoryProfit.size() != 0){
+            for(ParentCategory parentCategory : listParentCategoryProfit){
+                listNamesCategoriesProfit.add(parentCategory.getName());
             }
         }
 
@@ -183,17 +183,17 @@ public class NewCategoryActivity extends Activity {
                     etName.setText(subCategory.getName());
 
                     //Тип категории. Категория.
-                    if (!subCategory.getCategory().isExpense()) {
+                    if (!subCategory.getParentCategory().isExpense()) {
                         rgTypeCategory.check(R.id.rb_operation_profit);
-                        for (int i = 0; i < listCategoryProfit.size(); i++) {
-                            if (listCategoryProfit.get(i).getId() == subCategory.getCategory().getId()) {
+                        for (int i = 0; i < listParentCategoryProfit.size(); i++) {
+                            if (listParentCategoryProfit.get(i).getId() == subCategory.getParentCategory().getId()) {
                                 spCategory.setSelection(i);
                                 break;
                             }
                         }
                     } else {
-                        for (int i = 0; i < listCategoryExpense.size(); i++) {
-                            if (listCategoryExpense.get(i).getId() == subCategory.getCategory().getId()) {
+                        for (int i = 0; i < listParentCategoryExpense.size(); i++) {
+                            if (listParentCategoryExpense.get(i).getId() == subCategory.getParentCategory().getId()) {
                                 spCategory.setSelection(i);
                                 break;
                             }
@@ -202,31 +202,31 @@ public class NewCategoryActivity extends Activity {
                 }
                 //Как категория
                 else {
-                    Category category =
-                            Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
+                    ParentCategory parentCategory =
+                            ParentCategory.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
                     //Тип иерархии
                     rgTypeHierarchy.check(R.id.rb_category);
                     //Имя
-                    etName.setText(category.getName());
+                    etName.setText(parentCategory.getName());
                     //Цвет
                     for (int i = 0; i < listColor.size(); i++) {
-                        if (listColor.get(i).getId() == category.getColor().getId()) {
+                        if (listColor.get(i).getId() == parentCategory.getColor().getId()) {
                             spColor.setSelection(i);
                             break;
                         }
                     }
                     //Тип категории и категория
-                    if (!category.isExpense()) {
+                    if (!parentCategory.isExpense()) {
                         rgTypeCategory.check(R.id.rb_operation_profit);
-                        for (int i = 0; i < listCategoryProfit.size(); i++) {
-                            if (listCategoryProfit.get(i).getId() == category.getId()) {
+                        for (int i = 0; i < listParentCategoryProfit.size(); i++) {
+                            if (listParentCategoryProfit.get(i).getId() == parentCategory.getId()) {
                                 spCategory.setSelection(i);
                                 break;
                             }
                         }
                     } else {
-                        for (int i = 0; i < listCategoryExpense.size(); i++) {
-                            if (listCategoryExpense.get(i).getId() == category.getId()) {
+                        for (int i = 0; i < listParentCategoryExpense.size(); i++) {
+                            if (listParentCategoryExpense.get(i).getId() == parentCategory.getId()) {
                                 spCategory.setSelection(i);
                                 break;
                             }
@@ -234,7 +234,7 @@ public class NewCategoryActivity extends Activity {
                     }
                     //Логотип
                     for (int i = 0; i < listLogoCategory.size(); i++) {
-                        if (listLogoCategory.get(i).getId() == category.getLogo().getId()) {
+                        if (listLogoCategory.get(i).getId() == parentCategory.getLogo().getId()) {
                             spLogo.setSelection(i);
                             break;
                         }
@@ -243,23 +243,23 @@ public class NewCategoryActivity extends Activity {
             }
             // Новая подкатегория с изветсной категорией
             else {
-                Category category =
-                        Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
+                ParentCategory parentCategory =
+                        ParentCategory.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
                 //Тип иерархии
                 rgTypeHierarchy.check(R.id.radioButton_subCategory);
 
                 //Тип категории и категория
-                if (!category.isExpense()) {
+                if (!parentCategory.isExpense()) {
                     rgTypeCategory.check(R.id.rb_operation_profit);
-                    for (int i = 0; i < listCategoryProfit.size(); i++) {
-                        if (listCategoryProfit.get(i).getId() == category.getId()) {
+                    for (int i = 0; i < listParentCategoryProfit.size(); i++) {
+                        if (listParentCategoryProfit.get(i).getId() == parentCategory.getId()) {
                             spCategory.setSelection(i);
                             break;
                         }
                     }
                 } else {
-                    for (int i = 0; i < listCategoryExpense.size(); i++) {
-                        if (listCategoryExpense.get(i).getId() == category.getId()) {
+                    for (int i = 0; i < listParentCategoryExpense.size(); i++) {
+                        if (listParentCategoryExpense.get(i).getId() == parentCategory.getId()) {
                             spCategory.setSelection(i);
                             break;
                         }
@@ -298,18 +298,18 @@ public class NewCategoryActivity extends Activity {
 
             // Сохранение как категории
             if(typeHierarchy){
-                Category category;
+                ParentCategory parentCategory;
                 if(IS_NEW)
-                    category = new Category();
+                    parentCategory = new ParentCategory();
                 else if (isTypeHierarchyChanged()){
                     SubCategory.getSubCategoryById(bundle.getLong(NamesOfParametrs.SUB_CATEGORY_ID)).delete();
-                    category = new Category();
+                    parentCategory = new ParentCategory();
                 }
                 else
-                    category = Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
+                    parentCategory = ParentCategory.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID));
                 String title = String.valueOf(etName.getText());
-                String categoryType  = typeCategory ? Category.TYPE_EXPENSE : Category.TYPE_PROFIT;
-                category.setType(categoryType);
+                int categoryType  = typeCategory ? ParentCategory.TYPE_EXPENSE : ParentCategory.TYPE_PROFIT;
+                parentCategory.setType(categoryType);
 
                 int  logoCategoryId = ((int) (((ImageView) spLogo.getSelectedView().findViewById(R.id.imageView))).getTag());
                 Logo logoCategory = Logo.getLogoByResourceId(logoCategoryId);
@@ -321,18 +321,18 @@ public class NewCategoryActivity extends Activity {
                 if(title == null || title.length() == 0){
                     Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
                 }
-                else if(Category.isExist(title, categoryType)){
+                else if(ParentCategory.isExist(title, categoryType)){
                     Toast.makeText(this, "Категория с таким именем уже существует", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    category.setName(title);
-                    category.setType(categoryType);
-                    category.setColor(color);
-                    category.setLogo(logoCategory);
-                    category.save();
+                    parentCategory.setName(title);
+                    parentCategory.setType(categoryType);
+                    parentCategory.setColor(color);
+                    parentCategory.setLogo(logoCategory);
+                    parentCategory.save();
 
                     NavUtils.navigateUpFromSameTask(this);
-                    Log.d("tag", "New Category Activity - 'save'");
+                    Log.d("tag", "New ParentCategory Activity - 'save'");
                 }
 
                 return true;
@@ -343,7 +343,7 @@ public class NewCategoryActivity extends Activity {
                 if(IS_NEW)
                     subCategory = new SubCategory();
                 else if (isTypeHierarchyChanged()){
-                    Category.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID)).delete();
+                    ParentCategory.getCategoryById(bundle.getLong(NamesOfParametrs.CATEGORY_ID)).delete();
                     subCategory = new SubCategory();
                 }
                 else
@@ -351,22 +351,22 @@ public class NewCategoryActivity extends Activity {
 
                 String name = String.valueOf(etName.getText());
                 String categoryName = String.valueOf(((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
-                Category category  = typeCategory
-                        ? Category.getExpenseCategoryByName(categoryName)
-                        : Category.getProfitCategoryByName(categoryName);
+                ParentCategory parentCategory = typeCategory
+                        ? ParentCategory.getExpenseCategoryByName(categoryName)
+                        : ParentCategory.getProfitCategoryByName(categoryName);
                 // Проверка условий и сохранение
                 if(name == null || name.length() == 0){
                     Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
                 }
-                else if(SubCategory.isExist(name, category)){
+                else if(SubCategory.isExist(name, parentCategory)){
                     Toast.makeText(this, "Подкатегория с таким именем уже существует", Toast.LENGTH_LONG).show();
                 }
                 else {
                     subCategory.setName(name);
-                    subCategory.setCategory(category);
+                    subCategory.setParentCategory(parentCategory);
                     subCategory.save();
                     NavUtils.navigateUpFromSameTask(this);
-                    Log.d("tag", "New Category Activity - 'save'");
+                    Log.d("tag", "New ParentCategory Activity - 'save'");
                 }
 
                 return true;

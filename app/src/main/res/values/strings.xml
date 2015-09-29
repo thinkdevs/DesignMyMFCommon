@@ -8,20 +8,23 @@
     <!-- Card CashAccount Account -->
     <string name="edit">Редактировать</string>
     <string name="remove">Удалить</string>
+    <string name="add_in_templates">В шаллоны</string>
 
+    <!-- Menu-->
     <string name="title_section_wallets">Счета</string>
     <string name="title_section_expenses">Расходы</string>
     <string name="title_section_profits">Доходы</string>
     <string name="title_section_categories">Категории</string>
     <string name="title_section_operation_templates">Шаблоны операций</string>
+
     <string name="operation_expense">Расход</string>
     <string name="operation_profit">Доход</string>
 
+    <!-- Activity titles-->
     <string name="action_new_cash">Создать счет</string>
     <string name="action_new_operation">Создать операцию</string>
     <string name="action_new_category">Создать категорию</string>
     <string name="action_save">Сохранить</string>
-
     <string name="title_activity_new_cash">Новый счет</string>
     <string name="title_activity_new_category">Новая категория</string>
     <string name="title_activity_new_operation">Новая операция</string>
@@ -32,5 +35,28 @@
 
     <string name="action_settings">Настройки</string>
     <string name="empty">Список пуст</string>
+
+    <!-- Keys for tags-->
+    <string name="tag_id">id</string>
+    <string name="tag_hierarchy">hierarchy</string>
+    <string name="tag_resource_id">resource_id</string>
+    <string name="tag_currency_id">currency_id</string>
+    <string name="tag_category_id">category_id</string>
+    <string name="tag_operation_id">operation_id</string>
+    <string name="tag_position_in_rv">position_in_rv</string>
+    <string name="tag_cash_account_id">cash_account_id</string>
+
+    <!-- Dialog messages-->
+    <string name="msg_delete_cash_account">
+        "При удалении счета будут удалены все операции"
+    </string>
+    <string name="msg_delete_operation">Вы уверены ?</string>
+    <string name="msg_delete_parent_category">
+        "При удалении, будут удаленны все подкатегории,
+        операциям и шаблонам данных категорий будет присвоена категория прочее"
+    </string>
+    <string name="msg_delete_sub_category">
+        "При удалении, операциям и шаблонам будет присвоена родительская категория"
+    </string>
 
 </resources>

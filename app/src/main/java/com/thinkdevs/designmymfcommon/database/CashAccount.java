@@ -127,7 +127,7 @@ public class CashAccount extends BaseModel {
         return new Select()
                 .from(Operation.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Operation$Table.TYPE).is(Operation.TYPE_EXPENSE))
+                .begin(Condition.column(Operation$Table.TYPE).is(Category.TYPE_EXPENSE))
                 .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }
@@ -135,7 +135,7 @@ public class CashAccount extends BaseModel {
         return new Select()
                 .from(Operation.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Operation$Table.TYPE).is(Operation.TYPE_PROFIT))
+                .begin(Condition.column(Operation$Table.TYPE).is(Category.TYPE_PROFIT))
                 .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }
@@ -154,6 +154,13 @@ public class CashAccount extends BaseModel {
         return new Select().from(CashAccount.class).
                 where(Condition.column(CashAccount$Table.NAME)
                         .is(title))
+                .querySingle();
+    }
+
+    public static CashAccount getCashAccountByID(long id){
+        return new Select().from(CashAccount.class).
+                where(Condition.column(CashAccount$Table.ID)
+                        .is(id))
                 .querySingle();
     }
 

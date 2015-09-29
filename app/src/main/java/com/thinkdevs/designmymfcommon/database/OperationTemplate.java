@@ -17,56 +17,57 @@ import java.util.List;
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class OperationTemplate extends BaseModel {
 
-    public final static String TYPE_EXPENSE = "expense";
-    public final static String TYPE_PROFIT  = "profit";
-
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
-    String name; //название счета
+    String name;
 
     @Column
-    String type; //тип операции
+    int type;
 
     @Column
-    float amount; //сумма
+    float amount;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "subCategory_id",
+            columnName = "category_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    SubCategory subCategory; //подкатегория
+    Category category;
 
-    public String      getName() {
+    public String getName() {
         return name;
     }
-    public void        setName(String title) {
+
+    public void setName(String title) {
         this.name = title;
     }
 
-    public String      getType() {
+    public int getType() {
         return type;
     }
-    public void        setType(String type) {
+
+    public void setType(int type) {
         this.type = type;
     }
 
-    public float       getAmount() {
+    public float getAmount() {
         return amount;
     }
-    public void        setAmount(float amount) {
+
+    public void  setAmount(float amount) {
         this.amount = amount;
     }
 
-    public SubCategory getSubCategory() {
-        return subCategory;
+    public Category getCategory() {
+        return category;
     }
-    public void        setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
+
+    public void setCategory(Category subCategory) {
+        this.category = subCategory;
     }
 
     public static boolean isExist(String name, String type){
@@ -87,14 +88,14 @@ public class OperationTemplate extends BaseModel {
     public static List<OperationTemplate> getExpenseOperationTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
-                .where(Condition.column(OperationTemplate$Table.TYPE).eq(OperationTemplate.TYPE_EXPENSE))
+                .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.TYPE_EXPENSE))
                 .queryList();
     }
 
     public static List<OperationTemplate> getProfitOperationTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
-                .where(Condition.column(OperationTemplate$Table.TYPE).eq(OperationTemplate.TYPE_PROFIT))
+                .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.TYPE_PROFIT))
                 .queryList();
     }
 
@@ -103,12 +104,16 @@ public class OperationTemplate extends BaseModel {
                 .from(OperationTemplate.class)
                 .where(Condition.CombinedCondition
                         .begin(Condition.column(OperationTemplate$Table.NAME).is(name))
-                        .and  (Condition.column(OperationTemplate$Table.TYPE).is(type)))
+                        .and(Condition.column(OperationTemplate$Table.TYPE).is(type)))
                 .querySingle();
     }
 
     public boolean isExpense(){
-        return OperationTemplate.TYPE_EXPENSE.equals(this.getType());
+        return Category.TYPE_EXPENSE == this.getType();
+    }
+
+    public static void newTemplateFromOperation(Operation operation){
+
     }
 
 }

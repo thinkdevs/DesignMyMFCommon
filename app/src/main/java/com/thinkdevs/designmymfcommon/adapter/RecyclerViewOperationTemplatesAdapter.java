@@ -130,7 +130,7 @@ public class RecyclerViewOperationTemplatesAdapter extends
             @Override
             public boolean onLongClick(final View v) {
                 final PopupMenu popupMenu = new PopupMenu(mContext, v.findViewById(R.id.tv_template_name));
-                popupMenu.inflate(R.menu.card_account_edit_menu);
+                popupMenu.inflate(R.menu.menu_popup_cash_account);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {

@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.RadioGroup;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -21,12 +20,8 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
-import com.thinkdevs.designmymfcommon.activity.NewOperationTemplateActivity;
-import com.thinkdevs.designmymfcommon.adapter.ExpandableListCategoriesAdapter;
-import com.thinkdevs.designmymfcommon.adapter.RecyclerViewCategoriesAdapter;
-import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationTemplatesAdapter;
-import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.database.OperationTemplate;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapter;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 
 import java.util.List;
 
@@ -86,8 +81,8 @@ public class CategoriesListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(CategoriesListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<Category> categoriesList = Category.getExpenseCategories();
-        mAdapter = new RecyclerViewCategoriesAdapter(CategoriesListFragment.this.getActivity(), categoriesList);
+        List<ParentCategory> categoriesList = ParentCategory.getExpenseCategories();
+        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categoriesList);
 
         radioGroupType = ((RadioGroup) view.findViewById(R.id.rg_type_category));
         typeCategory = (radioGroupType.getCheckedRadioButtonId() == R.id.rb_operation_expense);
@@ -126,14 +121,14 @@ public class CategoriesListFragment extends Fragment {
         return view;
     }
 
-    private RecyclerViewCategoriesAdapter getAdapter(boolean typeCategory) {
-        List<Category> categories;
+    private RecyclerViewParentCategoriesAdapter getAdapter(boolean typeCategory) {
+        List<ParentCategory> categories;
         if(typeCategory)
-            categories = Category.getExpenseCategories();
+            categories = ParentCategory.getExpenseCategories();
         else
-            categories = Category.getProfitCategories();
+            categories = ParentCategory.getProfitCategories();
 
-        return new RecyclerViewCategoriesAdapter(CategoriesListFragment.this.getActivity(), categories);
+        return new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categories);
     }
 
     @Override

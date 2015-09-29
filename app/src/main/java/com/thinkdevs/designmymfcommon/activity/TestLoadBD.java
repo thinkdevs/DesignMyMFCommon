@@ -2,12 +2,10 @@ package com.thinkdevs.designmymfcommon.activity;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
-import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
 import com.thinkdevs.designmymfcommon.database.LoadResourceToDataBase;
 import com.thinkdevs.designmymfcommon.database.Logo;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 
 import java.util.List;
 
@@ -90,8 +88,8 @@ public class TestLoadBD {
         // --------------------------------********************************
 
         // Сохранение категорий в Базу данных********************************
-//        Category categoryExpense = new Category();
-//        categoryExpense.setType(Category.TYPE_EXPENSE);
+//        ParentCategory categoryExpense = new ParentCategory();
+//        categoryExpense.setType(ParentCategory.TYPE_EXPENSE);
 //        categoryExpense.setName("Дети");
 //        categoryExpense.setColor(colors.get(0));
 //        categoryExpense.setLogo(categoryLogos.get(0));
@@ -99,20 +97,20 @@ public class TestLoadBD {
 //
 //        SubCategory subCategoryExpense = new SubCategory();
 //        subCategoryExpense.setName("Игрушки");
-//        subCategoryExpense.setCategory(categoryExpense);
+//        subCategoryExpense.setParentCategory(categoryExpense);
 //        subCategoryExpense.save();
 //
 //        SubCategory subCategoryExpense1 = new SubCategory();
 //        subCategoryExpense1.setName("Питание");
-//        subCategoryExpense1.setCategory(categoryExpense);
+//        subCategoryExpense1.setParentCategory(categoryExpense);
 //        subCategoryExpense1.save();
 //
 //        SubCategory subCategoryExpense2 = new SubCategory();
 //        subCategoryExpense2.setName("Подгузники");
-//        subCategoryExpense2.setCategory(categoryExpense);
+//        subCategoryExpense2.setParentCategory(categoryExpense);
 //        subCategoryExpense2.save();
 //
-//        Category categoryExpense1 = new Category();
+//        ParentCategory categoryExpense1 = new ParentCategory();
 //        categoryExpense1.setName("Автомобиль");
 //        categoryExpense1.setColor(colors.get(2));
 //        categoryExpense1.setLogo(categoryLogos.get(1));
@@ -120,40 +118,40 @@ public class TestLoadBD {
 //
 //        SubCategory subCategoryExpense3 = new SubCategory();
 //        subCategoryExpense3.setName("Бензин");
-//        subCategoryExpense3.setCategory(categoryExpense1);
+//        subCategoryExpense3.setParentCategory(categoryExpense1);
 //        subCategoryExpense3.save();
 //
 //        SubCategory subCategoryExpense4 = new SubCategory();
 //        subCategoryExpense4.setName("Запчасти");
-//        subCategoryExpense4.setCategory(categoryExpense1);
+//        subCategoryExpense4.setParentCategory(categoryExpense1);
 //        subCategoryExpense4.save();
 //
-//        Category categoryExpense3 = new Category();
+//        ParentCategory categoryExpense3 = new ParentCategory();
 //        categoryExpense3.setName("Образование");
-//        categoryExpense3.setType(Category.TYPE_EXPENSE);
+//        categoryExpense3.setType(ParentCategory.TYPE_EXPENSE);
 //        categoryExpense3.setColor(colors.get(10));
 //        categoryExpense3.setLogo(categoryLogos.get(2));
 //        categoryExpense3.save();
 //
-//        Category categoryProfit = new Category();
-//        categoryProfit.setType(Category.TYPE_PROFIT);
+//        ParentCategory categoryProfit = new ParentCategory();
+//        categoryProfit.setType(ParentCategory.TYPE_PROFIT);
 //        categoryProfit.setLogo(categoryLogos.get(2));
 //        categoryProfit.setColor(colors.get(15));
 //        categoryProfit.setName("Работа");
 //        categoryProfit.save();
 //
 //        SubCategory subCategoryProfit = new SubCategory();
-//        subCategoryProfit.setCategory(categoryProfit);
+//        subCategoryProfit.setParentCategory(categoryProfit);
 //        subCategoryProfit.setName("Зарплата");
 //        subCategoryProfit.save();
 //
 //        SubCategory subCategoryProfit1 = new SubCategory();
-//        subCategoryProfit1.setCategory(categoryProfit);
+//        subCategoryProfit1.setParentCategory(categoryProfit);
 //        subCategoryProfit1.setName("Аванс");
 //        subCategoryProfit1.save();
 //
-//        Category categoryProfit1 = new Category();
-//        categoryProfit1.setName(Category.TYPE_PROFIT);
+//        ParentCategory categoryProfit1 = new ParentCategory();
+//        categoryProfit1.setName(ParentCategory.TYPE_PROFIT);
 //        categoryProfit1.setLogo(categoryLogos.get(2));
 //        categoryProfit1.setColor(colors.get(19));
 //        categoryProfit1.setName("Халтура");
