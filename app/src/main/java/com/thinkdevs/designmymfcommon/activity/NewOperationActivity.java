@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,17 +13,16 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
+import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Operation;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class NewOperationActivity extends Activity {
 
     private boolean IS_NEW = true;
 
-    boolean typeOperation; // if TRUE then Expensive
+    int typeOperation;
 
     RadioGroup rgTypeOperation;
     Spinner    spCashAccount;
@@ -67,26 +65,26 @@ public class NewOperationActivity extends Activity {
     String cashAccountName;
     float oldAmount;
     String oldCashAccountName;
-    boolean oldTypeOperation;
-
+    int oldTypeOperation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_operation);
 
-
         intent = getIntent();
         bundle = intent.getExtras();
         if(bundle != null)
-            setTitle(bundle.getString(NamesOfParametrs.ACTIVITY_TITLE));
-
+            setTitle(bundle.getString(Constants.ACTIVITY_TITLE));
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         rgTypeOperation = ((RadioGroup) findViewById(R.id.rg_type_operation));
-        typeOperation = (rgTypeOperation.getCheckedRadioButtonId() == R.id.rb_operation_expense);
+        if(rgTypeOperation.getCheckedRadioButtonId() == R.id.rb_operation_expense)
+            typeOperation = Category.TYPE_EXPENSE;
+        else
+            typeOperation = Category.TYPE_PROFIT;
 
         spCashAccount = ((Spinner) findViewById(R.id.sp_cash));
         spCategory    = ((Spinner) findViewById(R.id.sp_category));
@@ -99,8 +97,6 @@ public class NewOperationActivity extends Activity {
         listNamesSubCategoriesProfit = new ArrayList<>();
         listNamesSubCategoriesExpense = new ArrayList<>();
         listCashAccountNames = new ArrayList<>();
-
-
 
         listCategoriesExpense = ParentCategory.getExpenseCategories();
         listNamesCategoriesExpense = new ArrayList<>();
@@ -177,7 +173,7 @@ public class NewOperationActivity extends Activity {
                 List<String> subCategoryNameList;
                 switch (checkedId) {
                     case R.id.rb_operation_expense:
-                        typeOperation = true;
+                        typeOperation = Category.TYPE_EXPENSE;
                         spCategory.setAdapter(adapterExpense);
 
                         if(listCategoriesExpense.size() != 0)
@@ -190,7 +186,7 @@ public class NewOperationActivity extends Activity {
                                 subCategoryNameList));
                         break;
                     case R.id.rb_operation_profit:
-                        typeOperation = false;
+                        typeOperation = Category.TYPE_PROFIT;
                         if(listCategoriesProfit.size() != 0)
                             subCategoryNameList = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0));
                         else
@@ -209,7 +205,7 @@ public class NewOperationActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> listNames;
-                if(typeOperation)
+                if(typeOperation == Category.TYPE_EXPENSE)
                     listNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(position));
                 else
                     listNames = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(position));
@@ -227,54 +223,55 @@ public class NewOperationActivity extends Activity {
         });
 
         if(bundle != null){
-            Log.d("oper", "whith bundle");
-            if(bundle.containsKey(NamesOfParametrs.IS_NEW))
-                IS_NEW = bundle.getBoolean(NamesOfParametrs.IS_NEW);
+            if(bundle.containsKey(Constants.IS_NEW))
+                IS_NEW = bundle.getBoolean(Constants.IS_NEW);
 
-            if(Operation.TYPE_EXPENSE.equals(bundle.getString(NamesOfParametrs.TYPE))){
-                oldTypeOperation = true;
+            Operation operation = Operation.getByID(bundle.getLong(Constants.OPERATION_ID));
+
+            if(operation.getType() == Category.TYPE_EXPENSE){
+                oldTypeOperation = Category.TYPE_EXPENSE;
                 rgTypeOperation.check(R.id.rb_operation_expense);
 
-                Log.d("oper", String.valueOf(listNamesCategoriesExpense.size()));
                 for(int i = 0; i < listNamesCategoriesExpense.size(); i++) {
-                    Log.d("oper", String.valueOf(listNamesCategoriesExpense.get(i)));
-                    if (listNamesCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
-                        spCategory.setSelection(i);
+                    if(operation.getCategory().getHierarchy() == Category.HIERARCHY_PARENT) {
+                        if (listNamesCategoriesExpense.get(i).equals(operation.getCategory().getName()))
+                            spCategory.setSelection(i);
+                    }
+                    else {
+                        if (listNamesCategoriesExpense.get(i).
+                                equals(((SubCategory) (operation.getCategory())).getParentCategory().getName()))
+                            spCategory.setSelection(i);
+                    }
                 }
 
-                Log.d("oper", String.valueOf(listNamesSubCategoriesExpense.size()));
-                for(int i = 0; i < listNamesSubCategoriesExpense.size(); i++) {
-                    if (listNamesSubCategoriesExpense.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
-                        spSubCategory.setSelection(i);
-                }
+
             }
             else{
-                typeOperation = false;
+                typeOperation = Category.TYPE_PROFIT;
                 rgTypeOperation.check(R.id.rb_operation_profit);
                 for(int i = 0; i < listNamesCategoriesProfit.size(); i++) {
-                    if (listNamesCategoriesProfit.get(i).equals(bundle.getString(NamesOfParametrs.CATEGORY_NAME)))
+                    if (listNamesCategoriesProfit.get(i).equals(bundle.getString(Constants.CATEGORY_NAME)))
                         spCategory.setSelection(i);
                 }
                 for(int i = 0; i < listNamesSubCategoriesProfit.size(); i++) {
-                    if (listNamesSubCategoriesProfit.get(i).equals(bundle.getString(NamesOfParametrs.SUB_CATEGORY_NAME)))
+                    if (listNamesSubCategoriesProfit.get(i).equals(bundle.getString(Constants.SUB_CATEGORY_NAME)))
                         spSubCategory.setSelection(i);
                 }
             }
 
-            oldCashAccountName = bundle.getString(NamesOfParametrs.CASH_ACCOUNT_NAME);
+            oldCashAccountName = bundle.getString(Constants.CASH_ACCOUNT_NAME);
             for(int i = 0; i < listCashAccountNames.size(); i++){
                 if(listCashAccountNames.get(i).equals(oldCashAccountName))
                     spCashAccount.setSelection(i);
             }
 
-            time = bundle.getLong(NamesOfParametrs.DATE);
+            time = bundle.getLong(Constants.DATE);
 
-            if(bundle.getString(NamesOfParametrs.AMOUNT) != null){
-                oldAmount = Float.parseFloat(bundle.getString(NamesOfParametrs.AMOUNT).substring(1));
-                etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT).substring(1));
+            if(bundle.getString(Constants.AMOUNT) != null){
+                oldAmount = Float.parseFloat(bundle.getString(Constants.AMOUNT).substring(1));
+                etAmount.setText(bundle.getString(Constants.AMOUNT).substring(1));
             }
         }
-        Log.d("oper", "create Activite");
     }
 
     @Override
@@ -304,93 +301,93 @@ public class NewOperationActivity extends Activity {
 
         // ***************************** Сохранение операции ************************************
         if(id == R.id.action_save){
-            Log.d("oper", "сохраняем");
-            Operation operation;
-            if(IS_NEW)
-                operation = new Operation();
-            else
-                operation = Operation.getOperationByTime(time);
-            // Получаем подкатегорию
-            String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            SubCategory subCategory = typeOperation
-                    ? SubCategory.getExpenseSubCategoryByName(stringSubCategory)
-                    : SubCategory.getProfitSubCategoryByName(stringSubCategory);
-            Log.d("oper", "получаем категорию =" + subCategory);
-
-            // Получаем кошелек
-            String stringCashAccount = String.valueOf(((((TextView) spCashAccount.getSelectedView().findViewById(android.R.id.text1))).getText()));
-            CashAccount cashAccount = CashAccount.getCashAccountByName(stringCashAccount);
-            cashAccountName = cashAccount.getName();
-            Log.d("oper", "получаем счет =" + cashAccount);
-
-            // Получаем стоимость
-            String amountString = String.valueOf(etAmount.getText());
-            Log.d("oper", "получаем стоимость =" + amountString);
-            float amount;
-            if(amountString.length() == 0)
-                amount = 0;
-            else
-                amount = Float.parseFloat(String.valueOf(amountString));
-
-            // Получаем комментарий
-            String comment = String.valueOf(etComment.getText());
-            Log.d("oper", "получаем стоимость =" + comment);
-            if(comment.length() == 0)
-                comment = "";
-
-            // Сохраняем операцию
-            operation.setType(typeOperation ? Operation.TYPE_EXPENSE : Operation.TYPE_PROFIT);
-            operation.setCashAccount(cashAccount);
-            operation.setDate(new Date(System.currentTimeMillis()));
-            operation.setCategory(subCategory);
-            operation.setAmount(amount);
-            operation.setComment(comment);
-
-            if(IS_NEW){
-                operation.save();
-                cashAccount.setAmount(cashAccount.getAmount() + getReallyAmount(amount, typeOperation));
-                cashAccount.update();
-                Log.d("tag", "New Operation Activity - 'save'");
-            }
-            else {
-                operation.update();
-
-                CashAccount oldCashAccount = CashAccount.getCashAccountByName(oldCashAccountName);
-
-                Log.d("operation", "oldTypeOperation = " + oldTypeOperation);
-                Log.d("operation", "oldAmountOperation = " + oldAmount);
-
-                Log.d("operation", "oldCashAccount = " + oldCashAccountName);
-                Log.d("operation", "oldAmountCashAccount = " + oldCashAccount.getAmount());
-
-
-                Log.d("operation", "newTypeOperation = " + typeOperation);
-                Log.d("operation", "newAmountOperation = " + amount);
-                Log.d("operation", "newCashAccount = " + cashAccountName);
-                Log.d("operation", "newAmountCashAccount = " + cashAccount.getAmount());
-
-
-                if(isChangedType()){
-                    changeType(oldCashAccount, oldAmount);
-                }
-
-                //Изменили средства
-                if(isChangedAmount(amount)) {
-                    changeAmount(oldCashAccount, oldAmount, amount);
-                    cashAccount.update();
-                }
-
-                //Изменился счет
-                if(isChangedCashAccount()) {
-                    changeCashAccount(oldCashAccount, cashAccount, oldAmount);
-                }
-
-                cashAccount.update();
-                oldCashAccount.update();
-            }
-
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
+//            Log.d("oper", "сохраняем");
+//            Operation operation;
+//            if(IS_NEW)
+//                operation = new Operation();
+//            else
+//                operation = Operation.getByID(time);
+//            // Получаем подкатегорию
+//            String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
+//            SubCategory subCategory = typeOperation
+//                    ? SubCategory.getExpenseSubCategoryByName(stringSubCategory)
+//                    : SubCategory.getProfitSubCategoryByName(stringSubCategory);
+//            Log.d("oper", "получаем категорию =" + subCategory);
+//
+//            // Получаем кошелек
+//            String stringCashAccount = String.valueOf(((((TextView) spCashAccount.getSelectedView().findViewById(android.R.id.text1))).getText()));
+//            CashAccount cashAccount = CashAccount.getByName(stringCashAccount);
+//            cashAccountName = cashAccount.getName();
+//            Log.d("oper", "получаем счет =" + cashAccount);
+//
+//            // Получаем стоимость
+//            String amountString = String.valueOf(etAmount.getText());
+//            Log.d("oper", "получаем стоимость =" + amountString);
+//            float amount;
+//            if(amountString.length() == 0)
+//                amount = 0;
+//            else
+//                amount = Float.parseFloat(String.valueOf(amountString));
+//
+//            // Получаем комментарий
+//            String comment = String.valueOf(etComment.getText());
+//            Log.d("oper", "получаем стоимость =" + comment);
+//            if(comment.length() == 0)
+//                comment = "";
+//
+//            // Сохраняем операцию
+//            operation.setType(typeOperation ? Operation.TYPE_EXPENSE : Operation.TYPE_PROFIT);
+//            operation.setCashAccount(cashAccount);
+//            operation.setDate(new Date(System.currentTimeMillis()));
+//            operation.setCategory(subCategory);
+//            operation.setAmount(amount);
+//            operation.setComment(comment);
+//
+//            if(IS_NEW){
+//                operation.save();
+//                cashAccount.setAmount(cashAccount.getAmount() + getReallyAmount(amount, typeOperation));
+//                cashAccount.update();
+//                Log.d("tag", "New Operation Activity - 'save'");
+//            }
+//            else {
+//                operation.update();
+//
+//                CashAccount oldCashAccount = CashAccount.getByName(oldCashAccountName);
+//
+//                Log.d("operation", "oldTypeOperation = " + oldTypeOperation);
+//                Log.d("operation", "oldAmountOperation = " + oldAmount);
+//
+//                Log.d("operation", "oldCashAccount = " + oldCashAccountName);
+//                Log.d("operation", "oldAmountCashAccount = " + oldCashAccount.getAmount());
+//
+//
+//                Log.d("operation", "newTypeOperation = " + typeOperation);
+//                Log.d("operation", "newAmountOperation = " + amount);
+//                Log.d("operation", "newCashAccount = " + cashAccountName);
+//                Log.d("operation", "newAmountCashAccount = " + cashAccount.getAmount());
+//
+//
+//                if(isChangedType()){
+//                    changeType(oldCashAccount, oldAmount);
+//                }
+//
+//                //Изменили средства
+//                if(isChangedAmount(amount)) {
+//                    changeAmount(oldCashAccount, oldAmount, amount);
+//                    cashAccount.update();
+//                }
+//
+//                //Изменился счет
+//                if(isChangedCashAccount()) {
+//                    changeCashAccount(oldCashAccount, cashAccount, oldAmount);
+//                }
+//
+//                cashAccount.update();
+//                oldCashAccount.update();
+//            }
+//
+//            NavUtils.navigateUpFromSameTask(this);
+//            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -407,41 +404,41 @@ public class NewOperationActivity extends Activity {
         return result;
     }
 
-    private boolean isChangedCashAccount(){
-        return !oldCashAccountName.equals(cashAccountName);
-    }
-
-    private void changeCashAccount(CashAccount oldCashAccount,
-            CashAccount newCashAccount, float oldAmount){
-        float amountReally = getReallyAmount(oldAmount, oldTypeOperation);
-        oldCashAccount.setAmount(oldCashAccount.getAmount() - amountReally);
-        newCashAccount.setAmount(newCashAccount.getAmount() + amountReally);
-        Log.d("operation", "after changeCashAccount --> oldCashAccountAmount = " + oldCashAccount.getAmount());
-        Log.d("operation", "after changeCashAccount --> newCashAccountAmount = " + newCashAccount.getAmount());
-    }
-
-    private void changeAmount(CashAccount cashAccount, float oldAmount, float newAmount){
-        float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
-        float newAmountReally = getReallyAmount(newAmount, typeOperation);
-        cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally + newAmountReally);
-        Log.d("operation", "after changeAmount --> newCashAmount = " + cashAccount.getAmount());
-    }
-
-    private void changeType (CashAccount cashAccount, float oldAmount){
-        float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
-        cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally * 2);
-        Log.d("operation", "after changeType --> newCashAmount = " + cashAccount.getAmount());
-    }
-
-    private float getReallyAmount (float amount, boolean typeOperation){
-        return typeOperation ? amount* -1 : amount;
-    }
-
-    private boolean isChangedType(){
-        return oldTypeOperation != typeOperation;
-    }
-
-    private boolean isChangedAmount(float newAmount){
-        return oldAmount != newAmount;
-    }
+//    private boolean isChangedCashAccount(){
+//        return !oldCashAccountName.equals(cashAccountName);
+//    }
+//
+//    private void changeCashAccount(CashAccount oldCashAccount,
+//            CashAccount newCashAccount, float oldAmount){
+//        float amountReally = getReallyAmount(oldAmount, oldTypeOperation);
+//        oldCashAccount.setAmount(oldCashAccount.getAmount() - amountReally);
+//        newCashAccount.setAmount(newCashAccount.getAmount() + amountReally);
+//        Log.d("operation", "after changeCashAccount --> oldCashAccountAmount = " + oldCashAccount.getAmount());
+//        Log.d("operation", "after changeCashAccount --> newCashAccountAmount = " + newCashAccount.getAmount());
+//    }
+//
+//    private void changeAmount(CashAccount cashAccount, float oldAmount, float newAmount){
+//        float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
+//        float newAmountReally = getReallyAmount(newAmount, typeOperation);
+//        cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally + newAmountReally);
+//        Log.d("operation", "after changeAmount --> newCashAmount = " + cashAccount.getAmount());
+//    }
+//
+//    private void changeType (CashAccount cashAccount, float oldAmount){
+//        float oldAmountReally = getReallyAmount(oldAmount, oldTypeOperation);
+//        cashAccount.setAmount(cashAccount.getAmount() - oldAmountReally * 2);
+//        Log.d("operation", "after changeType --> newCashAmount = " + cashAccount.getAmount());
+//    }
+//
+//    private float getReallyAmount (float amount, boolean typeOperation){
+//        return typeOperation ? amount* -1 : amount;
+//    }
+//
+//    private boolean isChangedType(){
+//        return oldTypeOperation != typeOperation;
+//    }
+//
+//    private boolean isChangedAmount(float newAmount){
+//        return oldAmount != newAmount;
+//    }
 }

@@ -9,13 +9,14 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Таблица с категориями расходов
  */
 @Table(databaseName = MoneyFlowDataBase.NAME)
-public class ParentCategory extends Category {
+public class ParentCategory {
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -110,14 +111,14 @@ public class ParentCategory extends Category {
     public static List<ParentCategory> getExpenseCategories(){
         return new Select()
                 .from(ParentCategory.class)
-                .where(Condition.column(Category$Table.TYPE).is(TYPE_EXPENSE))
+                .where(Condition.column(ParentCategory$Table.TYPE).is(TYPE_EXPENSE))
                 .queryList();
     }
 
     public static List<ParentCategory> getProfitCategories(){
         return new Select()
                 .from(ParentCategory.class)
-                .where(Condition.column(Category$Table.TYPE).is(TYPE_PROFIT))
+                .where(Condition.column(ParentCategory$Table.TYPE).is(TYPE_PROFIT))
                 .queryList();
     }
 
@@ -125,8 +126,8 @@ public class ParentCategory extends Category {
         return new Select()
                 .from(ParentCategory.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Category$Table.NAME).is(title))
-                .and(Condition.column(Category$Table.TYPE).is(TYPE_PROFIT)))
+                        .begin(Condition.column(ParentCategory$Table.NAME).is(title))
+                        .and(Condition.column(ParentCategory$Table.TYPE).is(TYPE_PROFIT)))
                 .querySingle();
     }
 
@@ -134,8 +135,8 @@ public class ParentCategory extends Category {
         return new Select()
                 .from(ParentCategory.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Category$Table.NAME).is(title))
-                .and(Condition.column(Category$Table.TYPE).is(TYPE_EXPENSE)))
+                        .begin(Condition.column(ParentCategory$Table.NAME).is(title))
+                        .and(Condition.column(ParentCategory$Table.TYPE).is(TYPE_EXPENSE)))
                 .querySingle();
     }
 
@@ -143,8 +144,8 @@ public class ParentCategory extends Category {
         return  new Select()
                 .from(ParentCategory.class)
                 .where(Condition.CombinedCondition
-                        .begin(Condition.column(Category$Table.NAME).eq(name))
-                        .and  (Condition.column(Category$Table.TYPE).eq(type)))
+                        .begin(Condition.column(ParentCategory$Table.NAME).eq(name))
+                        .and  (Condition.column(ParentCategory$Table.TYPE).is(type)))
                 .querySingle() != null;
     }
 
@@ -152,15 +153,42 @@ public class ParentCategory extends Category {
         return TYPE_EXPENSE == this.getType();
     }
 
-    public static ParentCategory getCategoryById(long idCategoryToDelete) {
+    public static ParentCategory getById(long id) {
         return new Select()
                 .from(ParentCategory.class)
-                .where(Condition.column(Category$Table.ID).is(idCategoryToDelete))
+                .where(Condition.column(ParentCategory$Table.ID).is(id))
                 .querySingle();
     }
 
     @Override
     public int getHierarchy() {
         return HIERARCHY_PARENT;
+    }
+
+    public List<OperationTemplate> getOperationTemplates(){
+        List<OperationTemplate> templates = new ArrayList<>();
+            templates = new Select()
+                    .from(OperationTemplate.class)
+                    .where(Condition.column(OperationTemplate$Table.CATEGORY_CATEGORY_ID).is(this.id))
+                    .queryList();
+        return templates;
+    }
+
+    public List<Operation> getOperationsFromAllHierarchy(){
+        List<Operation> operations = new ArrayList<>();
+        operations.addAll(getOperations());
+        for(SubCategory subCategory : getSubCategories()){
+            operations.addAll(subCategory.getOperations());
+        }
+        return operations;
+    }
+
+    public List<OperationTemplate> getOperationTemplatesFromAllHierarchy(){
+        List<OperationTemplate> templates = new ArrayList<>();
+        templates.addAll(getOperationTemplates());
+        for(SubCategory subCategory : getSubCategories()){
+            templates.addAll(subCategory.getOperationTemplates());
+        }
+        return templates;
     }
 }

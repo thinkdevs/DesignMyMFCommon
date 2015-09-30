@@ -15,9 +15,13 @@ import android.widget.TextView;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
+import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.database.Operation;
+import com.thinkdevs.designmymfcommon.database.OperationTemplate;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
@@ -65,7 +69,7 @@ public class RecyclerViewSubCategoriesAdapter extends
         SubCategory category = mCategories.get(i);
 
         //Сохранение id категории и ее позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_category_id, category.getId());
+        viewHolder.cardView.setTag(R.string.tag_category_ID, category.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
         //Имя категории
@@ -84,23 +88,39 @@ public class RecyclerViewSubCategoriesAdapter extends
         return mCategories.size();
     }
 
-    private void startEditor (View view){
+    private void openEditor(long id){
         Intent intent = new Intent(mContext, NewCategoryActivity.class);
-        intent.putExtra(NamesOfParametrs.IS_NEW, false);
-        long subCategoryId = (long)view.findViewById(R.id.tv_sub_category_name).getTag();
-        intent.putExtra(NamesOfParametrs.IS_SUB_CATEGORY, true);
-        intent.putExtra(NamesOfParametrs.SUB_CATEGORY_ID, subCategoryId);
-        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
+        intent.putExtra(Constants.IS_NEW, false);
+        intent.putExtra(Constants.CATEGORY_ID, id);
+        intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.HIERARCHY_SUB);
+        intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_category_editing);
         mContext.startActivity(intent);
     }
 
     private void deleteSubCategory(){
-        SubCategory subCategory;
-        subCategory = SubCategory.getSubCategoryById(idToDelete);
+
+        //Категория для удаления
+        SubCategory subCategory = SubCategory.getById(idToDelete);
+
+        //Родительская категория
+        ParentCategory parentCategory = subCategory.getParentCategory();
+
+        //Замена категорий
+        List<Operation> operations =subCategory.getOperations();
+        for(Operation operation : operations){
+            operation.setCategory(parentCategory);
+            operation.update();
+        }
+        List<OperationTemplate> templates = subCategory.getOperationTemplates();
+        for(OperationTemplate template : templates){
+            template.setCategory(parentCategory);
+            template.update();
+        }
+
         subCategory.delete();
     }
 
-    private void updateRecycleViewAfterDelete(){
+    private void updateAfterDelete(){
         mCategories.remove(positionToDelete);
         notifyItemRemoved(positionToDelete);
         notifyItemRangeChanged(positionToDelete, getItemCount());
@@ -109,7 +129,7 @@ public class RecyclerViewSubCategoriesAdapter extends
     @Override
     public void onDialogPositiveClick() {
         deleteSubCategory();
-        updateRecycleViewAfterDelete();
+        updateAfterDelete();
     }
 
     @Override
@@ -119,8 +139,8 @@ public class RecyclerViewSubCategoriesAdapter extends
 
     @Override
     public boolean onLongClick(final View v) {
-        //id операции
-        final long id = (long)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_id));
+        //id подкатегории
+        final long id = (long)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_category_ID));
         //позиция в rv
         final int position = (int)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_position_in_rv));
         //меню
@@ -132,7 +152,7 @@ public class RecyclerViewSubCategoriesAdapter extends
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        startEditor(v);
+                        openEditor(id);
                         return true;
                     case R.id.remove:
                         idToDelete = id;

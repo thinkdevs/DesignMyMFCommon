@@ -16,7 +16,7 @@ import java.util.List;
  * Таблица с подкатегориями расходов
  */
 @Table(databaseName = MoneyFlowDataBase.NAME)
-public class SubCategory extends Category {
+public class SubCategory  {
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -121,7 +121,7 @@ public class SubCategory extends Category {
         return null;
     }
 
-    public static SubCategory getSubCategoryByName(String title, ParentCategory parentCategory){
+    public static SubCategory getByName(String title, ParentCategory parentCategory){
         return  new Select()
                 .from(SubCategory.class)
                 .where(Condition.CombinedCondition
@@ -140,10 +140,19 @@ public class SubCategory extends Category {
                 .querySingle() != null;
     }
 
-    public static SubCategory getSubCategoryById(long idSubCategoryToDelete) {
+    public static SubCategory getById(long idSubCategoryToDelete) {
         return new Select()
                 .from(SubCategory.class)
                 .where(Condition.column(SubCategory$Table.ID).is(idSubCategoryToDelete))
                 .querySingle();
+    }
+
+    public List<OperationTemplate> getOperationTemplates(){
+        List<OperationTemplate> templates = new ArrayList<>();
+        templates = new Select()
+                .from(OperationTemplate.class)
+                .where(Condition.column(OperationTemplate$Table.CATEGORY_CATEGORY_ID).is(this.id))
+                .queryList();
+        return templates;
     }
 }

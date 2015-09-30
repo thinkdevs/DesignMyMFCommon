@@ -15,34 +15,36 @@ import java.util.List;
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class Logo extends BaseModel {
 
-    public static final String TYPE_CASH_ACCOUNT = "cash_account";
-    public static final String TYPE_CATEGORY     = "parentCategory";
+    public static final int TYPE_CASH_ACCOUNT = 1;
+    public static final int TYPE_CATEGORY     = 2;
 
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
-    String type; //тип логотипа
+    int type; //тип логотипа
 
     @Column
     int resourceId; //id логотипа
 
-    public long   getId() {
+    public long getId() {
         return id;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
-    public void   setType(String type) {
+
+    public void setType(int type) {
         this.type = type;
     }
 
-    public int    getResourceId() {
+    public int getResourceId() {
         return resourceId;
     }
-    public void   setResourceId(int resourceId) {
+
+    public void setResourceId(int resourceId) {
         this.resourceId = resourceId;
     }
 
@@ -52,6 +54,7 @@ public class Logo extends BaseModel {
                 .where(Condition.column(Logo$Table.TYPE).is(TYPE_CASH_ACCOUNT))
                 .queryList();
     }
+
     public static List<Logo> getAllCategoryLogos(){
         return new Select()
                 .from(Logo.class)

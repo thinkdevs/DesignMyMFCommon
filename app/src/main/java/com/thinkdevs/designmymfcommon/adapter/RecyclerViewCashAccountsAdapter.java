@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.thinkdevs.designmymfcommon.R;
+import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Category;
@@ -24,8 +25,8 @@ import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
 import com.thinkdevs.designmymfcommon.dialog.OperationTemplatesDialogFragment;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 import com.thinkdevs.designmymfcommon.utills.Formatter;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.List;
 
@@ -91,22 +92,22 @@ public class RecyclerViewCashAccountsAdapter extends
         CashAccount cashAccount = mCashAccounts.get(i);
 
         //Сохранение id счета и его позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_cash_account_id, cashAccount.getId());
+        viewHolder.cardView.setTag(R.string.tag_cash_account_ID, cashAccount.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
         //id счета для быстрого создания операций
-        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_id,cashAccount.getId());
-        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_id,cashAccount.getId());
+        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_ID,cashAccount.getId());
+        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_ID,cashAccount.getId());
 
         //Цвет бара кошелька
         viewHolder.rlTitleBar.   setBackgroundColor(
                 (mResources.getColor(cashAccount.getColor().getResourceId())));
         viewHolder.rlTitleBar.setTag(
-                R.string.tag_resource_id, cashAccount.getColor().getResourceId());
+                R.string.tag_resource_ID, cashAccount.getColor().getResourceId());
 
         //Логотип
         viewHolder.ivCashAccountLogo.setImageResource(cashAccount.getLogo().getResourceId());
-        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_id, cashAccount.getLogo().getResourceId());
+        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_ID, cashAccount.getLogo().getResourceId());
 
         //Имя
         viewHolder.tvCashAccountName.setText(cashAccount.getName());
@@ -119,7 +120,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
         //Валюта
         viewHolder.tvCurrency.setText(cashAccount.getCurrency().getStrSymbol());
-        viewHolder.tvCurrency.setTag(R.string.tag_currency_id, cashAccount.getCurrency().getId());
+        viewHolder.tvCurrency.setTag(R.string.tag_currency_ID, cashAccount.getCurrency().getId());
 
         //Последняя операция и дата последнего изменения
         Operation lastOperation = cashAccount.getLastOperation();
@@ -143,7 +144,6 @@ public class RecyclerViewCashAccountsAdapter extends
         FastOperationOnClickListener listener = new FastOperationOnClickListener();
         viewHolder.btnAddExpense.setOnClickListener(listener);
         viewHolder.btnAddProfit.setOnClickListener(listener);
-
     }
 
     @Override
@@ -151,31 +151,19 @@ public class RecyclerViewCashAccountsAdapter extends
         return mCashAccounts.size();
     }
 
-    private void startEditor (View view){
-//        Intent intent = new Intent(mContext, NewCashAccountActivity.class);
-//        intent.putExtra(NamesOfParametrs.NAME, viewHolder.tvCashAccountName.getText());
-//        intent.putExtra(NamesOfParametrs.COMMENT, viewHolder.tvCashAccountComment.getText());
-//        intent.putExtra(NamesOfParametrs.CURRENCY_STR_SYMBOL, viewHolder.tvCurrency.getText());
-//        intent.putExtra(NamesOfParametrs.AMOUNT, viewHolder.tvCashAccountAmount.getText());
-//        intent.putExtra(NamesOfParametrs.LOGO, (int) viewHolder.ivCashAccountLogo.getTag());
-//        intent.putExtra(NamesOfParametrs.COLOR,         (int) viewHolder.rlTitleBar.getTag());
-//        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE,      "Редактирование");
-//        mContext.startActivity(intent);
+    private void openEditor(long id){
+        Intent intent = new Intent(mContext, NewCashAccountActivity.class);
+        intent.putExtra(Constants.IS_NEW, false);
+        intent.putExtra(Constants.CASH_ACCOUNT_ID, id);
+        intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_cash_account_editing);
+        mContext.startActivity(intent);
     }
 
     private void deleteCashAccount(){
-        CashAccount cashAccount = CashAccount.getCashAccountByID(idToDelete);
-        List<Operation> operations = cashAccount.getAllOperations();
-
-        if(!operations.isEmpty()){
-            for(Operation operation : operations ){
-                operation.delete();
-            }
-        }
-        cashAccount.delete();
+        CashAccount.deleteByID(idToDelete);
     }
 
-    private void updateRecycleViewAfterDelete(){
+    private void updateAfterDelete(){
         mCashAccounts.remove(positionToDelete);
         notifyItemRemoved(positionToDelete);
         notifyItemRangeChanged(positionToDelete, getItemCount());
@@ -184,7 +172,7 @@ public class RecyclerViewCashAccountsAdapter extends
     @Override
     public void onDialogPositiveClick() {
         deleteCashAccount();
-        updateRecycleViewAfterDelete();
+        updateAfterDelete();
     }
 
     @Override
@@ -192,7 +180,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
     }
 
-    public void update(){
+    public void updateAfterChangeData(){
         mCashAccounts = CashAccount.getCashAccounts();
         this.notifyDataSetChanged();
     }
@@ -212,7 +200,7 @@ public class RecyclerViewCashAccountsAdapter extends
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        startEditor(v);
+                        openEditor(id);
                         return true;
                     case R.id.remove:
                         idToDelete = id;
@@ -239,7 +227,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
         @Override
         public void onClick(View v) {
-            cashAccountID = (long) v.getTag(R.string.tag_cash_account_id);
+            cashAccountID = (long) v.getTag(R.string.tag_cash_account_ID);
             switch (v.getId()){
                 case R.id.btn_add_expense:
                     typeOperation = Category.TYPE_EXPENSE;
@@ -257,10 +245,10 @@ public class RecyclerViewCashAccountsAdapter extends
             else {
                 Intent intent = new Intent(mContext, NewOperationActivity.class);
                 intent.putExtra(
-                        NamesOfParametrs.NAME,
-                        CashAccount.getCashAccountByID(cashAccountID).getName());
-                intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, mContext.getResources().getString(R.string.action_new_operation));
-                intent.putExtra(NamesOfParametrs.TYPE, typeOperation);
+                        Constants.NAME,
+                        CashAccount.getByID(cashAccountID).getName());
+                intent.putExtra(Constants.ACTIVITY_TITLE, mContext.getResources().getString(R.string.action_new_operation));
+                intent.putExtra(Constants.TYPE, typeOperation);
                 mContext.startActivity(intent);
             }
         }

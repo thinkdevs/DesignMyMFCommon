@@ -18,7 +18,7 @@ import com.thinkdevs.designmymfcommon.adapter.RecyclerViewCashAccountsAdapter;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationTemplatesAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
@@ -29,8 +29,8 @@ public class OperationTemplatesDialogFragment extends DialogFragment
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    TextView     tvTitle;
-    Button       btnNew;
+    TextView tvTitle;
+    Button   btnNew;
 
     private static int typeOperation;
     private static long cashAccountID;
@@ -58,19 +58,18 @@ public class OperationTemplatesDialogFragment extends DialogFragment
         btnNew = (Button)view.findViewById(R.id.btn_new);
         btnNew.setOnClickListener(this);
 
-        List<OperationTemplate> operationTemplateList;
-
+        List<OperationTemplate> templates;
 
         if(Category.TYPE_EXPENSE == typeOperation) {
             tvTitle.setText(getActivity().getResources().getString(R.string.operation_expense).toUpperCase());
             tvTitle.setTextColor(getResources().getColor(R.color.red));
             btnNew.setTextColor(getResources().getColor(R.color.red));
-            operationTemplateList = OperationTemplate.getExpenseOperationTemplates();
+            templates = OperationTemplate.getExpenseOperationTemplates();
         }
         else {
             tvTitle.setText(getActivity().getResources().getString(R.string.operation_profit).toUpperCase());
             tvTitle.setTextColor(getResources().getColor(R.color.green));
-            operationTemplateList = OperationTemplate.getProfitOperationTemplates();
+            templates = OperationTemplate.getProfitOperationTemplates();
             btnNew.setTextColor(getResources().getColor(R.color.green));
         }
 
@@ -81,8 +80,8 @@ public class OperationTemplatesDialogFragment extends DialogFragment
 
         mAdapter = new RecyclerViewOperationTemplatesAdapter(
                 getActivity(),
-                operationTemplateList,
-                nameCashAccount,
+                templates,
+                cashAccountID,
                 recyclerViewCashAccountsAdapter,
                 this);
         rvOperationTemplates.setAdapter(mAdapter);
@@ -93,15 +92,10 @@ public class OperationTemplatesDialogFragment extends DialogFragment
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), NewOperationActivity.class);
-        intent.putExtra(NamesOfParametrs.CASH_ACCOUNT_NAME, nameCashAccount);
-        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, getResources().getString(R.string.action_new_operation));
-        intent.putExtra(NamesOfParametrs.TYPE, typeOperation);
+        intent.putExtra(Constants.CASH_ACCOUNT_ID, cashAccountID);
+        intent.putExtra(Constants.ACTIVITY_TITLE, getResources().getString(R.string.title_activity_new_operation));
+        intent.putExtra(Constants.OPERATION_TEMPLATE_TYPE, typeOperation);
         startActivity(intent);
         dismiss();
     }
-
-    public interface NoticeDialogListener {
-        void onDialogOperationFromTempalateClick();
-    }
-
 }

@@ -31,12 +31,19 @@ public class OperationTemplate extends BaseModel {
     float amount;
 
     @Column
+    String comment;
+
+    @Column
     @ForeignKey(references = {@ForeignKeyReference(
             columnName = "category_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
     Category category;
+
+    public long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -62,6 +69,14 @@ public class OperationTemplate extends BaseModel {
         this.amount = amount;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -70,11 +85,11 @@ public class OperationTemplate extends BaseModel {
         this.category = subCategory;
     }
 
-    public static boolean isExist(String name, String type){
+    public static boolean isExist(String name, int type){
         return  new Select()
                 .from(OperationTemplate.class)
                 .where(Condition.CombinedCondition
-                        .begin(Condition.column(OperationTemplate$Table.NAME).is(name))
+                        .begin(Condition.column(OperationTemplate$Table.NAME).eq(name))
                         .and  (Condition.column(OperationTemplate$Table.TYPE).is(type)))
                 .querySingle() != null;
     }
@@ -99,7 +114,7 @@ public class OperationTemplate extends BaseModel {
                 .queryList();
     }
 
-    public static OperationTemplate getOperationTemplateByName(String name, String type){
+    public static OperationTemplate getByName(String name, String type){
         return  new Select()
                 .from(OperationTemplate.class)
                 .where(Condition.CombinedCondition
@@ -108,12 +123,23 @@ public class OperationTemplate extends BaseModel {
                 .querySingle();
     }
 
+    public static OperationTemplate getByID(long ID){
+        return new Select()
+                .from(OperationTemplate.class)
+                .where(Condition.column(OperationTemplate$Table.ID).is(ID))
+                .querySingle();
+    }
+
     public boolean isExpense(){
         return Category.TYPE_EXPENSE == this.getType();
     }
 
-    public static void newTemplateFromOperation(Operation operation){
+    public static void add(Operation operation){
 
+    }
+
+    public static void deleteByID(long ID){
+        getByID(ID).delete();
     }
 
 }

@@ -126,34 +126,42 @@ public class Operation extends BaseModel {
         return Category.TYPE_EXPENSE == this.getType();
     }
 
-    public static void newOperationFromTemplate(OperationTemplate operationTemplate, CashAccount cashAccount){
+    public static void add(long templateID, long cashAccountID){
 
+        //Шаблон операции
+        OperationTemplate template = OperationTemplate.getByID(templateID);
+        // Счет
+        CashAccount cashAccount = CashAccount.getByID(cashAccountID);
         // Получаем стоимость
-        float amount = operationTemplate.getAmount();
+        float amount = template.getAmount();
         // Получаем комментарий
-        String comment = "";
+        String comment = template.getComment();
 
         // Сохраняем операцию
         Operation operation = new Operation();
         operation.setDate(new Date(System.currentTimeMillis()));
         operation.setCashAccount(cashAccount);
-        operation.setType(operationTemplate.getType());
-        operation.setCategory(operationTemplate.getCategory());
+        operation.setType(template.getType());
+        operation.setCategory(template.getCategory());
 
         operation.setAmount(amount);
         operation.setComment(comment);
         operation.save();
 
-        amount = operationTemplate.isExpense() ? amount * -1 : amount;
+        amount = template.isExpense() ? amount * -1 : amount;
 
         cashAccount.setAmount(cashAccount.getAmount() + amount);
         cashAccount.update();
     }
 
-    public static Operation getOperationByID(long id) {
+    public static Operation getByID(long id) {
         return new Select().
                 from(Operation.class).
                 where(Condition.column(Operation$Table.ID).is(id)).
                 querySingle();
+    }
+
+    public static void deleteByID(long id){
+        getByID(id).delete();
     }
 }

@@ -19,7 +19,7 @@ import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewSubCategoriesAdapter;
 import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.database.SubCategory;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class SubCategoriesDialogFragment extends DialogFragment
         tvCount       = (TextView) view.findViewById(R.id.tv_count);
         btnNew        = (Button)view.findViewById(R.id.btn_new);
         btnNew.setOnClickListener(this);
-        parentCategory = ParentCategory.getCategoryById(idCategory);
+        parentCategory = ParentCategory.getById(idCategory);
         subCategories = parentCategory.getSubCategories();
 
         rlTitleBar.setBackgroundColor(getResources().getColor(parentCategory.getColor().getResourceId()));
@@ -86,9 +86,9 @@ public class SubCategoriesDialogFragment extends DialogFragment
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), NewCategoryActivity.class);
-        intent.putExtra(NamesOfParametrs.IS_NEW, true);
-        intent.putExtra(NamesOfParametrs.CATEGORY_ID, parentCategory.getId());
-        intent.putExtra(NamesOfParametrs.ACTIVITY_TITLE, getResources().getString(R.string.action_new_category));
+        intent.putExtra(Constants.IS_NEW, true);
+        intent.putExtra(Constants.CATEGORY_ID, parentCategory.getId());
+        intent.putExtra(Constants.ACTIVITY_TITLE, getResources().getString(R.string.action_new_category));
         startActivity(intent);
         dismiss();
     }

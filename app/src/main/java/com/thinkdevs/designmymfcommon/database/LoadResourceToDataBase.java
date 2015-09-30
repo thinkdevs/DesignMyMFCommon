@@ -18,21 +18,27 @@ public class LoadResourceToDataBase {
         colorIds.add(R.color.red);
         colorIds.add(R.color.pink);
         colorIds.add(R.color.purple);
+
         colorIds.add(R.color.deepPurple);
         colorIds.add(R.color.indigo);
         colorIds.add(R.color.blue);
+
         colorIds.add(R.color.lightBlue);
         colorIds.add(R.color.cyan);
         colorIds.add(R.color.teal);
+
         colorIds.add(R.color.green);
         colorIds.add(R.color.lightGreen);
         colorIds.add(R.color.lime);
+
         colorIds.add(R.color.yellow);
         colorIds.add(R.color.amber);
         colorIds.add(R.color.orange);
+
         colorIds.add(R.color.red);
         colorIds.add(R.color.deepOrange);
         colorIds.add(R.color.brown);
+
         colorIds.add(R.color.grey);
         colorIds.add(R.color.blueGrey);
 
@@ -69,18 +75,24 @@ public class LoadResourceToDataBase {
         logoIds.add(R.drawable.ic_home_white_24dp);
         logoIds.add(R.drawable.ic_directions_car_white_24dp);
         logoIds.add(R.drawable.ic_ambulance_white_24dp);
+
         logoIds.add(R.drawable.ic_basket_white_24dp);
         logoIds.add(R.drawable.ic_bus_white_24dp);
         logoIds.add(R.drawable.ic_dumbbell_white_24dp);
+
         logoIds.add(R.drawable.ic_hanger_white_24dp);
         logoIds.add(R.drawable.ic_paw_white_24dp);
         logoIds.add(R.drawable.ic_pill_white_24dp);
+
         logoIds.add(R.drawable.ic_readability_white_24dp);
         logoIds.add(R.drawable.ic_school_white_24dp);
         logoIds.add(R.drawable.ic_theater_white_24dp);
+        
         logoIds.add(R.drawable.ic_silverware_variant_white_24dp);
         logoIds.add(R.drawable.ic_responsive_white_24dp);
         logoIds.add(R.drawable.ic_worker_white_24dp);
+
+        logoIds.add(R.drawable.ic_remove_white_24dp);
 
         for(Integer id : logoIds){
             Logo logo = new Logo();

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -13,18 +12,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListCurrencyAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogosCashAccountSpinnerAdapter;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
-import com.thinkdevs.designmymfcommon.database.CashAccount$Table;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
 import com.thinkdevs.designmymfcommon.database.Logo;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
@@ -51,14 +48,14 @@ public class NewCashAccountActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if(extras != null)
-            setTitle(extras.getString(NamesOfParametrs.ACTIVITY_TITLE));
+            setTitle(extras.getString(Constants.ACTIVITY_TITLE));
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
 
         etTitle    = (EditText)findViewById(R.id.et_title);
-        etComment = (EditText)findViewById(R.id.et_type);
+        etComment  = (EditText)findViewById(R.id.et_type);
         etAmount   = (EditText)findViewById(R.id.et_amount);
         spLogo     = (Spinner)findViewById(R.id.sp_logos);
         spColor    = (Spinner)findViewById(R.id.sp_colors);
@@ -83,26 +80,27 @@ public class NewCashAccountActivity extends Activity {
         bundle = intent.getExtras();
         if(bundle != null){
             IS_NEW = false;
-            etTitle. setText(bundle.getString(NamesOfParametrs.NAME));
-            oldCashAccountName = bundle.getString(NamesOfParametrs.NAME);
-            etComment.  setText(bundle.getString(NamesOfParametrs.COMMENT));
-            etAmount.setText(bundle.getString(NamesOfParametrs.AMOUNT));
-            int logoId  = bundle.getInt(NamesOfParametrs.LOGO);
-            int colorId = bundle.getInt(NamesOfParametrs.COLOR);
-            String currencyShortHand = bundle.getString(NamesOfParametrs.CURRENCY_STR_SYMBOL);
+            CashAccount cashAccount = CashAccount.getByID(bundle.getLong(Constants.CASH_ACCOUNT_ID));
+            etTitle. setText(cashAccount.getName());
+            oldCashAccountName = cashAccount.getName();
+            etComment.  setText(cashAccount.getComment());
+            etAmount.setText(String.valueOf(cashAccount.getAmount()));
+            long logoId  = cashAccount.getLogo().getId();
+            long colorId = bundle.getInt(Constants.COLOR);
+            long currencyId = cashAccount.getCurrency().getId();
 
             for(int i = 0; i < logosCashAccountList.size(); i++){
-                if(logosCashAccountList.get(i).getResourceId() == logoId)
+                if(logosCashAccountList.get(i).getId() == logoId)
                     spLogo.setSelection(i);
             }
 
             for(int i = 0; i < colorList.size(); i++){
-                if(colorList.get(i).getResourceId() == colorId)
+                if(colorList.get(i).getId() == colorId)
                     spColor.setSelection(i);
             }
 
             for(int i = 0; i < currencyList.size(); i++){
-                if(currencyList.get(i).getStrSymbol().equals(currencyShortHand))
+                if(currencyList.get(i).getId() == (currencyId))
                     spCurrency.setSelection(i);
             }
         }
@@ -164,20 +162,17 @@ public class NewCashAccountActivity extends Activity {
 
             // Проверка условий и сохранение
             if(title == null || title.length() == 0){
-                Toast.makeText(this, "Введите название", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.msg_write_name), Toast.LENGTH_LONG).show();
             }
             else if(CashAccount.isExist(title) && !title.equals(oldCashAccountName)){
-                Toast.makeText(this, "Счет с таким именем уже существует", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.msg_cash_account_exist), Toast.LENGTH_LONG).show();
             }
             else {
                 CashAccount cashAccount;
                 if(IS_NEW)
                     cashAccount = new CashAccount();
                 else
-                    cashAccount = new Select()
-                            .from(CashAccount.class)
-                            .where(Condition.column(CashAccount$Table.NAME).is(bundle.getString(NamesOfParametrs.NAME)))
-                            .querySingle();
+                    cashAccount = CashAccount.getByID(bundle.getLong(Constants.CASH_ACCOUNT_ID));
                 cashAccount.setLogo(cashAccountLogo);
                 cashAccount.setColor(color);
                 cashAccount.setCurrency(currency);
@@ -192,9 +187,7 @@ public class NewCashAccountActivity extends Activity {
                     cashAccount.save();
                 else
                     cashAccount.update();
-
                 NavUtils.navigateUpFromSameTask(this);
-                Log.d("tag", "New Cash Account Activity - 'save'");
             }
 
             // Возвращаемся назад после сохранения

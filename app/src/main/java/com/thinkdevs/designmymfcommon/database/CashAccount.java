@@ -57,49 +57,55 @@ public class CashAccount extends BaseModel {
 
     List<Operation> operations; //список операций
 
-    public long     getId() {
+    public long getId() {
         return id;
     }
 
-    public String   getName() {
+    public String getName() {
         return name;
     }
-    public void     setName(String name) {
+
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String   getComment() {
+    public String getComment() {
         return comment;
     }
-    public void     setComment(String comment) {
+
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
-    public float    getAmount() {
+    public float getAmount() {
         return amount;
     }
-    public void     setAmount(float amount) {
+
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
     public Currency getCurrency() {
         return currency;
     }
-    public void     setCurrency(Currency currency) {
+
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 
-    public Logo     getLogo() {
+    public Logo getLogo() {
         return logo;
     }
-    public void     setLogo(Logo logo) {
+
+    public void setLogo(Logo logo) {
         this.logo = logo;
     }
 
-    public Color    getColor() {
+    public Color getColor() {
         return color;
     }
-    public void     setColor(Color color) {
+
+    public void setColor(Color color) {
         this.color = color;
     }
 
@@ -131,6 +137,7 @@ public class CashAccount extends BaseModel {
                 .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }
+
     public List<Operation> getProfitOperations(){
         return new Select()
                 .from(Operation.class)
@@ -150,18 +157,23 @@ public class CashAccount extends BaseModel {
     public static List<CashAccount> getCashAccounts(){
         return new Select().from(CashAccount.class).queryList();
     }
-    public static CashAccount getCashAccountByName(String title){
+
+    public static CashAccount getByName(String title){
         return new Select().from(CashAccount.class).
                 where(Condition.column(CashAccount$Table.NAME)
                         .is(title))
                 .querySingle();
     }
 
-    public static CashAccount getCashAccountByID(long id){
+    public static CashAccount getByID(long id){
         return new Select().from(CashAccount.class).
                 where(Condition.column(CashAccount$Table.ID)
                         .is(id))
                 .querySingle();
+    }
+
+    public static void deleteByID(long id){
+        getByID(id).delete();
     }
 
 }

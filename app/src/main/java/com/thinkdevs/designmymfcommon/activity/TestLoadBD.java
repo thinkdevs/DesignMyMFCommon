@@ -6,6 +6,8 @@ import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
 import com.thinkdevs.designmymfcommon.database.LoadResourceToDataBase;
 import com.thinkdevs.designmymfcommon.database.Logo;
+import com.thinkdevs.designmymfcommon.database.ParentCategory;
+import com.thinkdevs.designmymfcommon.database.SubCategory;
 
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class TestLoadBD {
         currency2.save();
         //-------------------------------- ********************************
 
-        // Сохранение кошельков в Базу данных********************************
+        // Сохранение счетов в Базу данных********************************
         CashAccount cash = new CashAccount();
         cash.setName("Кошелек");
         cash.setComment("Наличные");
@@ -66,96 +68,120 @@ public class TestLoadBD {
         cash2.setLogo(cashAccountLogos.get(1));
         cash2.setCurrency(currency);
         cash2.save();
-//
-//        CashAccount cash3 = new CashAccount();
-//        cash3.setName("Maestro");
-//        cash3.setComment("Карта");
-//        cash3.setColor(colors.get(3));
-//        cash3.setAmount(1000);
-//        cash3.setLogo(cashAccountLogos.get(1));
-//        cash3.setCurrency(currency1);
-//        cash3.save();
-//
-//        CashAccount cash4 = new CashAccount();
-//        cash4.setName("Viza Electron");
-//        cash4.setComment("Карта");
-//        cash4.setColor(colors.get(4));
-//        cash4.setAmount(123);
-//        cash4.setLogo(cashAccountLogos.get(1));
-//        cash4.setCurrency(currency);
-//        cash4.save();
 
         // --------------------------------********************************
 
-        // Сохранение категорий в Базу данных********************************
-//        ParentCategory categoryExpense = new ParentCategory();
-//        categoryExpense.setType(ParentCategory.TYPE_EXPENSE);
-//        categoryExpense.setName("Дети");
-//        categoryExpense.setColor(colors.get(0));
-//        categoryExpense.setLogo(categoryLogos.get(0));
-//        categoryExpense.save();
-//
-//        SubCategory subCategoryExpense = new SubCategory();
-//        subCategoryExpense.setName("Игрушки");
-//        subCategoryExpense.setParentCategory(categoryExpense);
-//        subCategoryExpense.save();
-//
-//        SubCategory subCategoryExpense1 = new SubCategory();
-//        subCategoryExpense1.setName("Питание");
-//        subCategoryExpense1.setParentCategory(categoryExpense);
-//        subCategoryExpense1.save();
-//
-//        SubCategory subCategoryExpense2 = new SubCategory();
-//        subCategoryExpense2.setName("Подгузники");
-//        subCategoryExpense2.setParentCategory(categoryExpense);
-//        subCategoryExpense2.save();
-//
-//        ParentCategory categoryExpense1 = new ParentCategory();
-//        categoryExpense1.setName("Автомобиль");
-//        categoryExpense1.setColor(colors.get(2));
-//        categoryExpense1.setLogo(categoryLogos.get(1));
-//        categoryExpense1.save();
-//
-//        SubCategory subCategoryExpense3 = new SubCategory();
-//        subCategoryExpense3.setName("Бензин");
-//        subCategoryExpense3.setParentCategory(categoryExpense1);
-//        subCategoryExpense3.save();
-//
-//        SubCategory subCategoryExpense4 = new SubCategory();
-//        subCategoryExpense4.setName("Запчасти");
-//        subCategoryExpense4.setParentCategory(categoryExpense1);
-//        subCategoryExpense4.save();
-//
-//        ParentCategory categoryExpense3 = new ParentCategory();
-//        categoryExpense3.setName("Образование");
-//        categoryExpense3.setType(ParentCategory.TYPE_EXPENSE);
-//        categoryExpense3.setColor(colors.get(10));
-//        categoryExpense3.setLogo(categoryLogos.get(2));
-//        categoryExpense3.save();
-//
-//        ParentCategory categoryProfit = new ParentCategory();
-//        categoryProfit.setType(ParentCategory.TYPE_PROFIT);
-//        categoryProfit.setLogo(categoryLogos.get(2));
-//        categoryProfit.setColor(colors.get(15));
-//        categoryProfit.setName("Работа");
-//        categoryProfit.save();
-//
-//        SubCategory subCategoryProfit = new SubCategory();
-//        subCategoryProfit.setParentCategory(categoryProfit);
-//        subCategoryProfit.setName("Зарплата");
-//        subCategoryProfit.save();
-//
-//        SubCategory subCategoryProfit1 = new SubCategory();
-//        subCategoryProfit1.setParentCategory(categoryProfit);
-//        subCategoryProfit1.setName("Аванс");
-//        subCategoryProfit1.save();
-//
-//        ParentCategory categoryProfit1 = new ParentCategory();
-//        categoryProfit1.setName(ParentCategory.TYPE_PROFIT);
-//        categoryProfit1.setLogo(categoryLogos.get(2));
-//        categoryProfit1.setColor(colors.get(19));
-//        categoryProfit1.setName("Халтура");
-//        categoryProfit1.save();
-        // --------------------------------********************************
+        //Without Category
+        ParentCategory category = new ParentCategory();
+        category.setType(ParentCategory.TYPE_WITHOUT);
+        category.setName("Без категории");
+        category.setColor(colors.get(18));
+        category.setLogo(categoryLogos.get(17));
+        category.save();
+
+        //Expense categories
+        ParentCategory categoryExpense1 = new ParentCategory();
+        categoryExpense1.setType(ParentCategory.TYPE_EXPENSE);
+        categoryExpense1.setName("Продукты");
+        categoryExpense1.setColor(colors.get(0));
+        categoryExpense1.setLogo(categoryLogos.get(14));
+        categoryExpense1.save();
+
+            SubCategory subCategoryExpense11 = new SubCategory();
+            subCategoryExpense11.setName("Мясо");
+            subCategoryExpense11.setParentCategory(categoryExpense1);
+            subCategoryExpense11.save();
+
+            SubCategory subCategoryExpense12 = new SubCategory();
+            subCategoryExpense12.setName("Сладости");
+            subCategoryExpense12.setParentCategory(categoryExpense1);
+            subCategoryExpense12.save();
+
+            SubCategory subCategoryExpense13 = new SubCategory();
+            subCategoryExpense13.setName("Макароны, крупы");
+            subCategoryExpense13.setParentCategory(categoryExpense1);
+            subCategoryExpense13.save();
+
+            SubCategory subCategoryExpense14 = new SubCategory();
+            subCategoryExpense14.setName("Молочные изделия");
+            subCategoryExpense14.setParentCategory(categoryExpense1);
+            subCategoryExpense14.save();
+
+        ParentCategory categoryExpense2 = new ParentCategory();
+        categoryExpense2.setName("Товары для дома");
+        categoryExpense2.setColor(colors.get(1));
+        categoryExpense2.setLogo(categoryLogos.get(2));
+        categoryExpense2.save();
+
+            SubCategory subCategoryExpense21 = new SubCategory();
+            subCategoryExpense21.setName("Ремонт");
+            subCategoryExpense21.setParentCategory(categoryExpense2);
+            subCategoryExpense21.save();
+
+            SubCategory subCategoryExpense22 = new SubCategory();
+            subCategoryExpense22.setName("Мебель");
+            subCategoryExpense22.setParentCategory(categoryExpense2);
+            subCategoryExpense22.save();
+
+            SubCategory subCategoryExpense23 = new SubCategory();
+            subCategoryExpense23.setName("Кухня");
+            subCategoryExpense23.setParentCategory(categoryExpense2);
+            subCategoryExpense23.save();
+
+        ParentCategory categoryExpense3 = new ParentCategory();
+        categoryExpense3.setName("Авто");
+        categoryExpense3.setColor(colors.get(2));
+        categoryExpense3.setLogo(categoryLogos.get(3));
+        categoryExpense3.save();
+
+            SubCategory subCategoryExpense31 = new SubCategory();
+            subCategoryExpense31.setName("Бензин");
+            subCategoryExpense31.setParentCategory(categoryExpense3);
+            subCategoryExpense31.save();
+
+            SubCategory subCategoryExpense32 = new SubCategory();
+            subCategoryExpense32.setName("Запчасти");
+            subCategoryExpense32.setParentCategory(categoryExpense3);
+            subCategoryExpense32.save();
+
+        ParentCategory categoryExpense4 = new ParentCategory();
+        categoryExpense4.setName("Животные");
+        categoryExpense4.setType(ParentCategory.TYPE_EXPENSE);
+        categoryExpense4.setColor(colors.get(3));
+        categoryExpense4.setLogo(categoryLogos.get(9));
+        categoryExpense4.save();
+
+        ParentCategory categoryExpense5 = new ParentCategory();
+        categoryExpense5.setName("Спорт");
+        categoryExpense5.setType(ParentCategory.TYPE_EXPENSE);
+        categoryExpense5.setColor(colors.get(4));
+        categoryExpense5.setLogo(categoryLogos.get(7));
+        categoryExpense5.save();
+
+    // Profit Categories
+        ParentCategory categoryProfit1 = new ParentCategory();
+        categoryProfit1.setType(ParentCategory.TYPE_PROFIT);
+        categoryProfit1.setLogo(categoryLogos.get(16));
+        categoryProfit1.setColor(colors.get(5));
+        categoryProfit1.setName("Работа");
+        categoryProfit1.save();
+
+            SubCategory subCategoryProfit11 = new SubCategory();
+            subCategoryProfit11.setParentCategory(categoryProfit1);
+            subCategoryProfit11.setName("Зарплата");
+            subCategoryProfit11.save();
+
+            SubCategory subCategoryProfit12 = new SubCategory();
+            subCategoryProfit12.setParentCategory(categoryProfit1);
+            subCategoryProfit12.setName("Аванс");
+            subCategoryProfit12.save();
+
+        ParentCategory categoryProfit2 = new ParentCategory();
+        categoryProfit2.setType(ParentCategory.TYPE_PROFIT);
+        categoryProfit2.setLogo(categoryLogos.get(15));
+        categoryProfit2.setColor(colors.get(6));
+        categoryProfit2.setName("Халтура");
+        categoryProfit2.save();
+//         --------------------------------********************************
     }
 }

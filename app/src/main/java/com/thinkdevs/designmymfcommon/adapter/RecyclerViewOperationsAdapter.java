@@ -20,10 +20,9 @@ import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 import com.thinkdevs.designmymfcommon.utills.Formatter;
-import com.thinkdevs.designmymfcommon.utills.NamesOfParametrs;
 
 import java.util.List;
 
@@ -80,19 +79,19 @@ public class RecyclerViewOperationsAdapter extends
         Operation operation = mOperations.get(i);
 
         //Сохранение id операции и ее позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_operation_id, operation.getId());
+        viewHolder.cardView.setTag(R.string.tag_operation_ID, operation.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
-        //Цвет фона логотипа
+        //Цвет фона под логотипом
         viewHolder.flLogo.setBackgroundColor(
                 (mResources.getColor(operation.getCategory().getColor().getResourceId())));
         viewHolder.flLogo.setTag(
-                R.string.tag_resource_id, (operation.getCategory().getColor().getResourceId()));
+                R.string.tag_resource_ID, (operation.getCategory().getColor().getResourceId()));
 
         //Логотип
         viewHolder.ivCategoryLogo.setImageResource(operation.getCategory().getLogo().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_id, operation.getCategory().getLogo().getResourceId());
+                R.string.tag_resource_ID, operation.getCategory().getLogo().getResourceId());
 
         //Имя категории
         viewHolder.tvCategoryName.setText(operation.getCategory().getName());
@@ -106,12 +105,13 @@ public class RecyclerViewOperationsAdapter extends
 
         //Сумма
         StringBuilder sbAmount  = new StringBuilder();
+        float amount = operation.getAmount();
         if(operation.isExpense()) {
-            sbAmount.append("-").append(operation.getAmount());
+            sbAmount.append("-").append(amount);
             viewHolder.tvAmount.setTextColor(mContext.getResources().getColor(R.color.red));
         }
         else {
-            sbAmount.append("+").append(operation.getAmount());
+            sbAmount.append("+").append(amount);
             viewHolder.tvAmount.setTextColor(mContext.getResources().getColor(R.color.green));
         }
         viewHolder.tvAmount.setText(sbAmount);
@@ -128,31 +128,16 @@ public class RecyclerViewOperationsAdapter extends
         return mOperations.size();
     }
 
-    private void startEditor (View view){
+    private void openEditor(long id){
         Intent intent = new Intent(mContext, NewOperationActivity.class);
-        String [] hierarchyCategories = ((TextView) view.findViewById(R.id.tv_category_name)).getText().toString().split("/");
-        intent.putExtra(NamesOfParametrs.IS_NEW, false);
-        intent.putExtra(NamesOfParametrs.CATEGORY_NAME, hierarchyCategories[0]);
-        intent.putExtra(NamesOfParametrs.SUB_CATEGORY_NAME, hierarchyCategories[1]);
-        boolean typeOperation = (SubCategory.getExpenseSubCategoryByName(hierarchyCategories[1]) != null);
-        intent.putExtra(
-                NamesOfParametrs.TYPE, typeOperation);
-        intent.putExtra(
-                NamesOfParametrs.AMOUNT,
-                ((TextView) view.findViewById(R.id.tv_amount)).getText().toString());
-        intent.putExtra(
-                NamesOfParametrs.ACTIVITY_TITLE, "Редактирование");
-        intent.putExtra(
-                NamesOfParametrs.CASH_ACCOUNT_NAME,
-                ((TextView) view.findViewById(R.id.tv_cash_account_name)).getText().toString());
-        intent.putExtra(NamesOfParametrs.DATE,
-                (long) (view.findViewById(R.id.tv_date)).getTag());
+        intent.putExtra(Constants.IS_NEW, false);
+        intent.putExtra(Constants.OPERATION_ID, id);
+        intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_operation_editing);
         mContext.startActivity(intent);
     }
 
     private void deleteOperation(){
-        Operation operation;
-        operation = Operation.getOperationByID(idToDelete);
+        Operation operation = Operation.getByID(idToDelete);
         CashAccount cashAccount = operation.getCashAccount();
         float cashAccountAmount = cashAccount.getAmount();
         cashAccount.setAmount(operation.isExpense()
@@ -162,7 +147,7 @@ public class RecyclerViewOperationsAdapter extends
         operation.delete();
     }
 
-    private void updateRecycleViewAfterDelete(){
+    private void updateAfterDelete(){
         mOperations.remove(positionToDelete);
         notifyItemRemoved(positionToDelete);
         notifyItemRangeChanged(positionToDelete, getItemCount());
@@ -171,7 +156,7 @@ public class RecyclerViewOperationsAdapter extends
     @Override
     public void onDialogPositiveClick() {
         deleteOperation();
-        updateRecycleViewAfterDelete();
+        updateAfterDelete();
     }
 
     @Override
@@ -193,7 +178,7 @@ public class RecyclerViewOperationsAdapter extends
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        startEditor(v);
+                        openEditor(id);
                         return true;
                     case R.id.remove:
                         idToDelete = id;
@@ -203,7 +188,7 @@ public class RecyclerViewOperationsAdapter extends
                         dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;
                     case R.id.add_to_templates:
-                        OperationTemplate.newTemplateFromOperation(Operation.getOperationByID(id));
+                        OperationTemplate.add(Operation.getByID(id));
                     default:
                         return false;
                     }
@@ -212,6 +197,5 @@ public class RecyclerViewOperationsAdapter extends
         popupMenu.show();
         return true;
     }
-
 
 }

@@ -25,10 +25,18 @@
     <string name="action_new_operation">Создать операцию</string>
     <string name="action_new_category">Создать категорию</string>
     <string name="action_save">Сохранить</string>
+
     <string name="title_activity_new_cash">Новый счет</string>
+    <string name="title_activity_cash_account_editing">Редактирование Счета</string>
+
     <string name="title_activity_new_category">Новая категория</string>
+    <string name="title_activity_category_editing">Редактирование Категории</string>
+
     <string name="title_activity_new_operation">Новая операция</string>
+    <string name="title_activity_operation_editing">Редактирование Операции</string>
+
     <string name="title_activity_new_operation_template">Новый шаблон</string>
+    <string name="title_activity_operation_template_editing">Редактирование Шаблона</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -39,12 +47,13 @@
     <!-- Keys for tags-->
     <string name="tag_id">id</string>
     <string name="tag_hierarchy">hierarchy</string>
-    <string name="tag_resource_id">resource_id</string>
-    <string name="tag_currency_id">currency_id</string>
-    <string name="tag_category_id">category_id</string>
-    <string name="tag_operation_id">operation_id</string>
+    <string name="tag_resource_ID">resource_id</string>
+    <string name="tag_currency_ID">currency_id</string>
+    <string name="tag_category_ID">category_id</string>
+    <string name="tag_operation_ID">operation_id</string>
+    <string name="tag_cash_account_ID">cash_account_id</string>
+    <string name="tag_operation_template_ID">operation_template_id</string>
     <string name="tag_position_in_rv">position_in_rv</string>
-    <string name="tag_cash_account_id">cash_account_id</string>
 
     <!-- Dialog messages-->
     <string name="msg_delete_cash_account">
@@ -57,6 +66,21 @@
     </string>
     <string name="msg_delete_sub_category">
         "При удалении, операциям и шаблонам будет присвоена родительская категория"
+    </string>
+        <string name="msg_delete_operation_template">
+        "При удалении, операциям и шаблонам будет присвоена родительская категория"
+    </string>
+    <string name="msg_can_not_be_removed">
+        "Невозможно удалить"
+    </string>
+    <string name="msg_write_name">
+        "Введите название"
+    </string>
+    <string name="msg_cash_account_exist">
+        "Счет с таким именем уже существует"
+    </string>
+        <string name="msg_category_exist">
+        "Категория с таким именем уже существует"
     </string>
 
 </resources>
