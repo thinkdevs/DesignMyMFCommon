@@ -338,7 +338,7 @@ public class NewCategoryActivity extends Activity {
             // Проверка условий и сохранение
             if (name == null || name.length() == 0)
                 Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-            else if (Category.isExistSub(name, typeCategory))
+            else if (Category.isExistSub(name, parentCategory))
                 Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
             else {
                 subCategory.setName(name);
