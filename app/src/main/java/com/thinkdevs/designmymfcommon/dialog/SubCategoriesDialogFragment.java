@@ -17,8 +17,7 @@ import android.widget.TextView;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewSubCategoriesAdapter;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
+import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
@@ -31,8 +30,8 @@ public class SubCategoriesDialogFragment extends DialogFragment
     private RecyclerView.LayoutManager mLayoutManager;
 
     private static long idCategory;
-    private ParentCategory parentCategory;
-    private List<SubCategory> subCategories;
+    private Category parentCategory;
+    private List<Category> subCategories;
 
     RelativeLayout rlTitleBar;
     ImageView ivLogo;
@@ -60,8 +59,8 @@ public class SubCategoriesDialogFragment extends DialogFragment
         tvCount       = (TextView) view.findViewById(R.id.tv_count);
         btnNew        = (Button)view.findViewById(R.id.btn_new);
         btnNew.setOnClickListener(this);
-        parentCategory = ParentCategory.getById(idCategory);
-        subCategories = parentCategory.getSubCategories();
+        parentCategory = Category.getById(idCategory);
+        subCategories  = parentCategory.getSubCategories();
 
         rlTitleBar.setBackgroundColor(getResources().getColor(parentCategory.getColor().getResourceId()));
         ivLogo.setImageResource(parentCategory.getLogo().getResourceId());

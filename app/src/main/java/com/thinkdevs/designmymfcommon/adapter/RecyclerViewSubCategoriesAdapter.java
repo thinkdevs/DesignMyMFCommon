@@ -12,14 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
@@ -29,12 +26,12 @@ public class RecyclerViewSubCategoriesAdapter extends
         RecyclerView.Adapter<RecyclerViewSubCategoriesAdapter.SubCategoryViewHolder>
         implements View.OnLongClickListener, DeleteDialogFragment.NoticeDialogListener{
 
-    private List<SubCategory> mCategories;
-    private Activity          mContext;
-    private Resources         mResources;
-    private DialogFragment    dialogDelete;
-    private int               positionToDelete;
-    private long              idToDelete;
+    private List<Category> mCategories;
+    private Activity       mContext;
+    private Resources      mResources;
+    private DialogFragment dialogDelete;
+    private int            positionToDelete;
+    private long           idToDelete;
 
     public static class SubCategoryViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
@@ -47,7 +44,7 @@ public class RecyclerViewSubCategoriesAdapter extends
         }
     }
 
-    public RecyclerViewSubCategoriesAdapter(Activity context, List<SubCategory> subCategories) {
+    public RecyclerViewSubCategoriesAdapter(Activity context, List<Category> subCategories) {
         this.mCategories = subCategories;
         this.mContext    = context;
         this.mResources  = context.getResources();
@@ -66,7 +63,7 @@ public class RecyclerViewSubCategoriesAdapter extends
     @Override
     public void onBindViewHolder(final SubCategoryViewHolder viewHolder, final int i) {
 
-        SubCategory category = mCategories.get(i);
+        Category category = mCategories.get(i);
 
         //Сохранение id категории и ее позииции в списке
         viewHolder.cardView.setTag(R.string.tag_category_ID, category.getId());
@@ -92,32 +89,17 @@ public class RecyclerViewSubCategoriesAdapter extends
         Intent intent = new Intent(mContext, NewCategoryActivity.class);
         intent.putExtra(Constants.IS_NEW, false);
         intent.putExtra(Constants.CATEGORY_ID, id);
-        intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.HIERARCHY_SUB);
+        intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.SUB);
         intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_category_editing);
         mContext.startActivity(intent);
     }
 
     private void deleteSubCategory(){
-
-        //Категория для удаления
-        SubCategory subCategory = SubCategory.getById(idToDelete);
-
-        //Родительская категория
-        ParentCategory parentCategory = subCategory.getParentCategory();
-
-        //Замена категорий
-        List<Operation> operations =subCategory.getOperations();
-        for(Operation operation : operations){
-            operation.setCategory(parentCategory);
-            operation.update();
+        Category categoryToDelete = Category.getById(idToDelete);
+        if(!categoryToDelete.deleteCategory()){
+            Toast.makeText(
+                    mContext, mResources.getString(R.string.msg_can_not_be_removed), Toast.LENGTH_LONG).show();
         }
-        List<OperationTemplate> templates = subCategory.getOperationTemplates();
-        for(OperationTemplate template : templates){
-            template.setCategory(parentCategory);
-            template.update();
-        }
-
-        subCategory.delete();
     }
 
     private void updateAfterDelete(){

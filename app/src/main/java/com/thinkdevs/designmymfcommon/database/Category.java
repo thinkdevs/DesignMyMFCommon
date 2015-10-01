@@ -5,19 +5,31 @@ import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Таблица с категориями
+ */
+@Table(databaseName = MoneyFlowDataBase.NAME)
 public class Category extends BaseModel {
 
-    public static final int HIERARCHY_PARENT = 0;
-    public static final int HIERARCHY_SUB    = 1;
+    public static final int PARENT = 0;
+    public static final int SUB    = 1;
 
-    public static final int TYPE_EXPENSE   = 1;
-    public static final int TYPE_PROFIT    = 2;
+    public static final int TYPE_WITHOUT = 0;
+    public static final int TYPE_EXPENSE = 1;
+    public static final int TYPE_PROFIT  = 2;
+
+    public static final int EMPTY_SUB_ID = 1;
+    public static final int EMPTY_PARENT_EXPENSE_ID = 2;
+    public static final int EMPTY_PARENT_PROFIT_ID  = 3;
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -30,15 +42,12 @@ public class Category extends BaseModel {
     int type;
 
     @Column
-    int hierarchy;
-
-    @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "parentCategory_id",
+            columnName = "parent_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    Category parentCategory;
+    Category parent;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -60,7 +69,7 @@ public class Category extends BaseModel {
 
     List<OperationTemplate> templates;
 
-    List<SubCategory> subCategories;
+    List<Category> subCategories;
 
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE},
             variableName = "operations")
@@ -70,6 +79,14 @@ public class Category extends BaseModel {
                     .from(Operation.class)
                     .where(Condition.column(Operation$Table.CATEGORY_CATEGORY_ID).is(this.id))
                     .queryList();
+        }
+        return operations;
+    }
+
+    public List<Operation> getOperationsFromAllHierarchy(){
+        List<Operation> operations = getOperations();
+        for(Category subCategory : getSubCategories()){
+            operations.addAll(subCategory.getOperations());
         }
         return operations;
     }
@@ -86,17 +103,26 @@ public class Category extends BaseModel {
         return templates;
     }
 
+    public List<OperationTemplate> getTemplatesFromAllHierarchy(){
+        List<OperationTemplate> templates = getTemplates();
+        for(Category subCategory : getSubCategories()){
+            templates.addAll(subCategory.getTemplates());
+        }
+        return templates;
+    }
+
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE},
             variableName = "subCategories")
-    public List<SubCategory> getSubCategories(){
+    public List<Category> getSubCategories(){
         if(subCategories == null){
             subCategories = new Select()
                     .from(Category.class)
-                    .where(Condition.column(Category$Table.PARENTCATEGORY_ID).is(this.id))
+                    .where(Condition.column(Category$Table.PARENT_PARENT_ID).is(this.id))
                     .queryList();
         }
         return subCategories;
     }
+
 
     public long getId() {
         return id;
@@ -119,19 +145,23 @@ public class Category extends BaseModel {
     }
 
     public int getHierarchy() {
-        return hierarchy;
+        if(parent == null)
+            return PARENT;
+        else
+            return SUB;
     }
 
-    public void setHierarchy(int hierarchy) {
-        this.hierarchy = hierarchy;
+    public Category getParent() {
+        return parent;
     }
 
-    public Category getParentCategory() {
-        return parentCategory;
-    }
-
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
+    public void setParent(Category parent) {
+        this.parent = parent;
+        if(parent != null) {
+            this.color = parent.getColor();
+            this.logo = parent.getLogo();
+            this.type = parent.getType();
+        }
     }
 
     public Logo getLogo() {
@@ -150,80 +180,213 @@ public class Category extends BaseModel {
         this.color = color;
     }
 
-    public static SubCategory getById(long id) {
+    public static Category getById(long id) {
         return new Select()
                 .from(Category.class)
                 .where(Condition.column(Category$Table.ID).is(id))
                 .querySingle();
     }
 
-    public static Category getByName(String title){
+    public static Category getEmptyParentCategory(int type){
+        if(type == Category.TYPE_EXPENSE)
+            return getById(EMPTY_PARENT_EXPENSE_ID);
+        else
+            return getById(EMPTY_PARENT_PROFIT_ID);
+    }
+
+    public static Category getParentCategoryByName(String name, int type){
+        if(type == TYPE_EXPENSE)
+            return getParentCategoryExpenseByName(name);
+        else
+            return getParentCategoryProfitByName(name);
+    }
+
+    private static Category getParentCategoryExpenseByName(String name){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
-                                .begin(Condition.column(Category$Table.NAME).eq(title))
-                                .and(Condition.column(Category$Table.HYERARCHY).is(HIERARCHY_PARENT))
+                    .begin(Condition.column(Category$Table.NAME).eq(name))
+                    .and(Condition.column(Category$Table.PARENT_PARENT_ID).isNull())
+                    .and(Condition.column(Category$Table.TYPE).is(TYPE_EXPENSE))
                 )
                 .querySingle();
     }
 
-    public static Category getByName(String title, Category parentCategory){
+    private static Category getParentCategoryProfitByName(String name){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
-                                .begin(Condition.column(Category$Table.NAME).eq(title))
-                                .and(Condition.column(Category$Table.PARENT).is(parentCategory.getId()))
+                    .begin(Condition.column(Category$Table.NAME).eq(name))
+                    .and(Condition.column(Category$Table.PARENT_PARENT_ID).isNull())
+                    .and(Condition.column(Category$Table.TYPE).is(TYPE_PROFIT))
                 )
                 .querySingle();
     }
 
-    public static List<ParentCategory> getExpenseCategories(){
-        return new Select()
-                .from(ParentCategory.class)
-                .where(Condition.column(ParentCategory$Table.TYPE).is(TYPE_EXPENSE))
-                .queryList();
+    public static Category getSubCategoryByName(String name, int type){
+        if(type == TYPE_EXPENSE)
+            return getSubCategoryExpenseByName(name);
+        else
+            return getSubCategoryProfitByName(name);
     }
 
-    public static List<ParentCategory> getProfitCategories(){
-        return new Select()
-                .from(ParentCategory.class)
-                .where(Condition.column(ParentCategory$Table.TYPE).is(TYPE_PROFIT))
-                .queryList();
-    }
-
-    public static ParentCategory getProfitCategoryByName(String title){
-        return new Select()
-                .from(ParentCategory.class)
-                .where(Condition.CombinedCondition
-                        .begin(Condition.column(ParentCategory$Table.NAME).is(title))
-                        .and(Condition.column(ParentCategory$Table.TYPE).is(TYPE_PROFIT)))
-                .querySingle();
-    }
-
-    public static ParentCategory getExpenseCategoryByName(String title){
-        return new Select()
-                .from(ParentCategory.class)
-                .where(Condition.CombinedCondition
-                        .begin(Condition.column(ParentCategory$Table.NAME).is(title))
-                        .and(Condition.column(ParentCategory$Table.TYPE).is(TYPE_EXPENSE)))
-                .querySingle();
-    }
-
-    public static SubCategory getExpenseSubCategories(Category parentCategory){
-        return null;
-    }
-
-    public static SubCategory getProfitSubCategories(Category parentCategory){
-        return null;
-    }
-
-    public static boolean isExist(String name, Category parentCategory){
+    private static Category getSubCategoryExpenseByName(String name){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
-                        .begin(Condition.column(Category$Table.NAME).eq(name))
-                        .and  (Condition.column(Category$Table.PARENTCATEGORY_PARENTCATEGORY_ID).is(parentCategory.getId())))
-                .querySingle() != null;
+                    .begin(Condition.column(Category$Table.NAME).eq(name))
+                    .and(Condition.column(Category$Table.PARENT_PARENT_ID).isNotNull())
+                    .and(Condition.column(Category$Table.TYPE).is(TYPE_EXPENSE))
+                )
+                .querySingle();
+    }
+
+    private static Category getSubCategoryProfitByName(String name){
+        return  new Select()
+                .from(Category.class)
+                .where(Condition.CombinedCondition
+                    .begin(Condition.column(Category$Table.NAME).eq(name))
+                    .and(Condition.column(Category$Table.PARENT_PARENT_ID).isNotNull())
+                    .and(Condition.column(Category$Table.TYPE).is(TYPE_PROFIT))
+                )
+                .querySingle();
+    }
+
+    public static List<Category> getParentCategoriesByType(int type){
+        if(type == Category.TYPE_EXPENSE)
+            return getExpenseParentCategories();
+        else
+            return getProfitParentCategories();
+    }
+
+    public static List<Category> getExpenseParentCategories(){
+        return new Select()
+                .from(Category.class)
+                .where(Condition.CombinedCondition
+                    .begin(Condition.column(Category$Table.PARENT_PARENT_ID).isNull())
+                    .and(Condition.column(Category$Table.TYPE).is(TYPE_EXPENSE)))
+                .queryList();
+    }
+
+    public static List<Category> getProfitParentCategories(){
+        return new Select()
+                .from(Category.class)
+                .where(Condition.CombinedCondition
+                    .begin(Condition.column(Category$Table.PARENT_PARENT_ID).isNull())
+                    .and(Condition.column(Category$Table.TYPE).is(TYPE_PROFIT)))
+                .queryList();
+    }
+
+    public static List<Category> getSubCategories(Category parentCategoryID){
+        List<Category> subCategories = new ArrayList<>();
+        subCategories.add(getById(EMPTY_SUB_ID));
+        subCategories.addAll(
+             new Select()
+                    .from(Category.class)
+                    .where(Condition.column(Category$Table.PARENT_PARENT_ID)
+                        .is(parentCategoryID))
+                    .queryList());
+       return subCategories;
+    }
+
+    public static boolean isExistParent(String name, int type){
+        List<String> names = getNamesParentCategories(type);
+            for(String existName : names){
+                if(existName.trim().toLowerCase().equals(name.trim().toLowerCase()))
+                    return true;
+            }
+        return false;
+    }
+
+    public static boolean isExistSub(String name, Category parent) {
+        List<String> names = parent.getNamesSubCategories();
+        for(String existName : names){
+            if(existName.trim().toLowerCase().equals(name.trim().toLowerCase()))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isParent(){
+        return parent == null;
+    }
+
+    public static boolean isEmptySubCategory(long id){
+        return id == EMPTY_SUB_ID;
+    }
+
+    public static boolean isEmptyParentCategory(long id){
+        return EMPTY_PARENT_EXPENSE_ID == id || id == EMPTY_PARENT_PROFIT_ID;
+    }
+
+    public boolean deleteCategory(){
+        if(isEmptyParentCategory(id) || isEmptySubCategory(id))
+            return false;
+        if(isParent())
+            prepToDeleteParent();
+        else
+            prepToDeleteSub();
+        delete();
+        return true;
+    }
+
+    private void prepToDeleteSub(){
+        if(operations != null){
+            for(Operation operation : operations){
+                operation.setCategory(parent);
+            }
+        }
+        if(templates != null){
+            for(OperationTemplate template : templates){
+                template.setCategory(parent);
+            }
+        }
+    }
+
+    private void prepToDeleteParent(){
+        List<Operation> operations = getOperationsFromAllHierarchy();
+        if(operations.size() != 0){
+            for(Operation operation : getOperationsFromAllHierarchy()){
+                operation.setCategory(getEmptyParentCategory(type));
+            }
+        }
+        List<OperationTemplate> templates = getTemplatesFromAllHierarchy();
+        if(templates != null) {
+            for (OperationTemplate template : templates) {
+                template.setCategory(getEmptyParentCategory(type));
+            }
+        }
+    }
+
+    public List<String> getNamesSubCategories(){
+        List<String> names = new ArrayList<>();
+        for(Category category : getSubCategories()){
+            names.add(category.getName().toLowerCase());
+        }
+        return names;
+    }
+
+    public static List<String> getNamesParentCategories(int type){
+        if(type == Category.TYPE_EXPENSE)
+            return getNamesExpenseParentCategories();
+        else
+            return getNamesProfitParentCategories();
+    }
+
+    private static List<String> getNamesExpenseParentCategories(){
+        List<String> names = new ArrayList<>();
+        for(Category category : getExpenseParentCategories()){
+            names.add(category.getName());
+        }
+        return names;
+    }
+
+    private static List<String> getNamesProfitParentCategories(){
+        List<String> names = new ArrayList<>();
+        for(Category category : getProfitParentCategories()){
+            names.add(category.getName());
+        }
+        return names;
     }
 
 }

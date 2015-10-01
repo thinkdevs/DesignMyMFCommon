@@ -19,9 +19,6 @@ import android.widget.Toast;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
 import com.thinkdevs.designmymfcommon.dialog.SubCategoriesDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
@@ -32,19 +29,19 @@ public class RecyclerViewParentCategoriesAdapter extends
         RecyclerView.Adapter<RecyclerViewParentCategoriesAdapter.CategoryViewHolder>
         implements View.OnLongClickListener, View.OnClickListener, DeleteDialogFragment.NoticeDialogListener{
 
-    private List<ParentCategory> mCategories;
-    private Activity             mContext;
-    private Resources            mResources;
-    private DialogFragment       dialogDelete;
-    private int                  positionToDelete;
-    private long                 idToDelete;
+    private List<Category> mCategories;
+    private Activity       mContext;
+    private Resources      mResources;
+    private DialogFragment dialogDelete;
+    private int            positionToDelete;
+    private long           idToDelete;
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        public CardView       cardView;
-        public FrameLayout    flLogo;
-        public ImageView      ivCategoryLogo;
-        public TextView       tvCategoryName;
-        public TextView       tvAmount;
+        public CardView    cardView;
+        public FrameLayout flLogo;
+        public ImageView   ivCategoryLogo;
+        public TextView    tvCategoryName;
+        public TextView    tvAmount;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
@@ -56,7 +53,7 @@ public class RecyclerViewParentCategoriesAdapter extends
         }
     }
 
-    public RecyclerViewParentCategoriesAdapter(Activity context, List<ParentCategory> categories) {
+    public RecyclerViewParentCategoriesAdapter(Activity context, List<Category> categories) {
         this.mCategories = categories;
         this.mContext    = context;
         this.mResources  = context.getResources();
@@ -73,7 +70,7 @@ public class RecyclerViewParentCategoriesAdapter extends
     @Override
     public void onBindViewHolder(final CategoryViewHolder viewHolder, final int i) {
 
-        ParentCategory category = mCategories.get(i);
+        Category category = mCategories.get(i);
 
         //Сохранение id категории и ее позииции в списке
         viewHolder.cardView.setTag(R.string.tag_category_ID, category.getId());
@@ -112,36 +109,19 @@ public class RecyclerViewParentCategoriesAdapter extends
         Intent intent = new Intent(mContext, NewCategoryActivity.class);
         intent.putExtra(Constants.IS_NEW, false);
         intent.putExtra(Constants.CATEGORY_ID, id);
-        intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.HIERARCHY_PARENT);
+        intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.PARENT);
         intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_category_editing);
         mContext.startActivity(intent);
 }
 
-    private void deleteParentCategory(){
-        if(idToDelete == 1) {
+    private boolean deleteCategory(){
+        Category categoryToDelete = Category.getById(idToDelete);
+        if(!categoryToDelete.deleteCategory()){
             Toast.makeText(
                     mContext, mResources.getString(R.string.msg_can_not_be_removed), Toast.LENGTH_LONG).show();
-            return;
+            return false;
         }
-        //Категория "Без категории"
-        ParentCategory withoutCategory = ParentCategory.getById(1);
-
-        //Категория для удаления
-        ParentCategory parentCategory = ParentCategory.getById(idToDelete);
-
-        //Замена категорий
-        List<Operation> operations = parentCategory.getOperationsFromAllHierarchy();
-        for(Operation operation : operations){
-            operation.setCategory(withoutCategory);
-            operation.update();
-        }
-        List<OperationTemplate> templates = parentCategory.getOperationTemplatesFromAllHierarchy();
-        for(OperationTemplate template : templates){
-            template.setCategory(withoutCategory);
-            template.update();
-        }
-
-        parentCategory.delete();
+        return true;
     }
 
     private void updateAfterDelete(){
@@ -152,8 +132,8 @@ public class RecyclerViewParentCategoriesAdapter extends
 
     @Override
     public void onDialogPositiveClick() {
-        deleteParentCategory();
-        updateAfterDelete();
+        if(deleteCategory())
+            updateAfterDelete();
     }
 
     @Override
@@ -163,8 +143,8 @@ public class RecyclerViewParentCategoriesAdapter extends
 
     @Override
     public boolean onLongClick(final View v) {
-        //id операции
-        final long id = (long)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_id));
+        //id категории
+        final long id = (long)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_ID));
         //позиция в rv
         final int position = (int)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_position_in_rv));
         //меню
@@ -198,7 +178,7 @@ public class RecyclerViewParentCategoriesAdapter extends
     @Override
     public void onClick(View v) {
         //id категории
-        long idParentCategory = (long)v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_id);
+        long idParentCategory = (long)v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_ID);
         //диалог подкатегорий
         SubCategoriesDialogFragment subCategoriesDialogFragment =
                 SubCategoriesDialogFragment.newInstance(idParentCategory);

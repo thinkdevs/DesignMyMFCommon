@@ -19,8 +19,6 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Operation;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.ArrayList;
@@ -44,10 +42,10 @@ public class NewOperationActivity extends Activity {
     EditText   etDate;
 
 
-    List<ParentCategory> listCategoriesExpense;
-    List<ParentCategory> listCategoriesProfit;
-    List<SubCategory> listSubCategoryExpense;
-    List<SubCategory> listSubCategoryProfits;
+    List<Category> listCategoriesExpense;
+    List<Category> listCategoriesProfit;
+    List<Category> listSubCategoryExpense;
+    List<Category> listSubCategoryProfits;
     List<CashAccount> listCashAccounts;
 
     List<String> listNamesCategoriesExpense;
@@ -98,18 +96,18 @@ public class NewOperationActivity extends Activity {
         listNamesSubCategoriesExpense = new ArrayList<>();
         listCashAccountNames = new ArrayList<>();
 
-        listCategoriesExpense = ParentCategory.getExpenseCategories();
+        listCategoriesExpense = Category.getExpenseParentCategories();
         listNamesCategoriesExpense = new ArrayList<>();
         if(listCategoriesExpense.size() != 0){
-            for(ParentCategory parentCategoryExpense : listCategoriesExpense){
+            for(Category parentCategoryExpense : listCategoriesExpense){
                 listNamesCategoriesExpense.add(parentCategoryExpense.getName());
             }
         }
 
-        listCategoriesProfit = ParentCategory.getProfitCategories();
+        listCategoriesProfit = Category.getProfitParentCategories();
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoriesProfit.size() != 0){
-            for(ParentCategory parentCategoryProfit : listCategoriesProfit){
+            for(Category parentCategoryProfit : listCategoriesProfit){
                 listNamesCategoriesProfit.add(parentCategoryProfit.getName());
             }
         }
@@ -117,7 +115,7 @@ public class NewOperationActivity extends Activity {
         if(listCategoriesExpense.size() != 0) {
             listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
             if (listSubCategoryExpense.size() != 0) {
-                for (SubCategory subCategoryExpense : listSubCategoryExpense) {
+                for (Category subCategoryExpense : listSubCategoryExpense) {
                     listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
                 }
             }
@@ -125,7 +123,7 @@ public class NewOperationActivity extends Activity {
         if(listCategoriesProfit.size() != 0) {
             listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
             if (listSubCategoryProfits.size() != 0) {
-                for (SubCategory subCategoryProfit : listSubCategoryProfits) {
+                for (Category subCategoryProfit : listSubCategoryProfits) {
                     listNamesSubCategoriesProfit.add(subCategoryProfit.getName());
                 }
             }
@@ -141,19 +139,19 @@ public class NewOperationActivity extends Activity {
         adapterExpense = new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesCategoriesExpense);
+                Category.getNamesParentCategories(Category.TYPE_EXPENSE));
 
         adapterProfit = new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesCategoriesProfit);
+                Category.getNamesParentCategories(Category.TYPE_PROFIT));
 
         spCategory.setAdapter(adapterExpense);
 
 
         List<String> subCategoryNames;
         if(listCategoriesExpense.size() != 0)
-            subCategoryNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0));
+            subCategoryNames = listCategoriesExpense.get(0).getNamesSubCategories();
         else
             subCategoryNames = new ArrayList<>();
 
@@ -177,7 +175,7 @@ public class NewOperationActivity extends Activity {
                         spCategory.setAdapter(adapterExpense);
 
                         if(listCategoriesExpense.size() != 0)
-                            subCategoryNameList = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(0));
+                            subCategoryNameList = listCategoriesExpense.get(0).getNamesSubCategories();
                         else
                             subCategoryNameList = new ArrayList<String>();
                         spSubCategory.setAdapter(new ArrayAdapter<String>(
@@ -188,7 +186,7 @@ public class NewOperationActivity extends Activity {
                     case R.id.rb_operation_profit:
                         typeOperation = Category.TYPE_PROFIT;
                         if(listCategoriesProfit.size() != 0)
-                            subCategoryNameList = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(0));
+                            subCategoryNameList = listCategoriesProfit.get(0).getNamesSubCategories();
                         else
                             subCategoryNameList = new ArrayList<String>();
                         spCategory.setAdapter(adapterProfit);
@@ -206,9 +204,9 @@ public class NewOperationActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> listNames;
                 if(typeOperation == Category.TYPE_EXPENSE)
-                    listNames = getListNamesSubCategoriesByCategory(listCategoriesExpense.get(position));
+                    listNames = listCategoriesExpense.get(position).getNamesSubCategories();
                 else
-                    listNames = getListNamesSubCategoriesByCategory(listCategoriesProfit.get(position));
+                    listNames = listCategoriesProfit.get(position).getNamesSubCategories();
                 spSubCategory.setAdapter(
                         new ArrayAdapter<String>(
                                 NewOperationActivity.this,
@@ -233,13 +231,13 @@ public class NewOperationActivity extends Activity {
                 rgTypeOperation.check(R.id.rb_operation_expense);
 
                 for(int i = 0; i < listNamesCategoriesExpense.size(); i++) {
-                    if(operation.getCategory().getHierarchy() == Category.HIERARCHY_PARENT) {
+                    if(operation.getCategory().getHierarchy() == Category.PARENT) {
                         if (listNamesCategoriesExpense.get(i).equals(operation.getCategory().getName()))
                             spCategory.setSelection(i);
                     }
                     else {
                         if (listNamesCategoriesExpense.get(i).
-                                equals(((SubCategory) (operation.getCategory())).getParentCategory().getName()))
+                                equals((operation.getCategory()).getParent().getName()))
                             spCategory.setSelection(i);
                     }
                 }
@@ -391,17 +389,6 @@ public class NewOperationActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private List<String> getListNamesSubCategoriesByCategory(ParentCategory parentCategory){
-        ArrayList<String> result = new ArrayList<>();
-        List<SubCategory> subCategories = parentCategory.getSubCategories();
-        if(subCategories.size() != 0){
-            for(SubCategory subCategory : subCategories){
-                result.add(subCategory.getName());
-            }
-        }
-        return result;
     }
 
 //    private boolean isChangedCashAccount(){

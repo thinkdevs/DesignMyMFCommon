@@ -24,8 +24,6 @@ import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Logo;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
-import com.thinkdevs.designmymfcommon.database.SubCategory;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.ArrayList;
@@ -46,12 +44,10 @@ public class NewCategoryActivity extends Activity {
     List<View> listViewsCategory; // Список элементов управления категорий
     List<View> listViewsSubCategory; // Cписок элементов управления подкатегорий
 
-    List<ParentCategory> listParentCategoryExpense;
-    List<String>         listNamesCategoriesExpense;
-    List<ParentCategory> listParentCategoryProfit;
-    List<String>         listNamesCategoriesProfit;
-    List<Color>          listColor;
-    List<Logo>           listLogoCategory;
+    List<Category> listParentCategoryExpense;
+    List<Category> listParentCategoryProfit;
+    List<Color>    listColor;
+    List<Logo>     listLogoCategory;
 
     int typeHierarchy;
     int typeCategory ;
@@ -79,9 +75,9 @@ public class NewCategoryActivity extends Activity {
         //Тип иерархии
         rgTypeHierarchy = ((RadioGroup) findViewById(R.id.rg_type_hierarchy));
         if(rgTypeHierarchy.getCheckedRadioButtonId() == R.id.rb_category)
-            typeHierarchy = Category.HIERARCHY_PARENT;
+            typeHierarchy = Category.PARENT;
         else
-            typeHierarchy = Category.HIERARCHY_SUB;
+            typeHierarchy = Category.SUB;
 
         //Тип категории
         rgTypeCategory = ((RadioGroup) findViewById(R.id.rg_type_category));
@@ -108,29 +104,16 @@ public class NewCategoryActivity extends Activity {
         listViewsSubCategory.add(tvColor);
         listViewsSubCategory.add(spColor);
 
-        listParentCategoryExpense = ParentCategory.getExpenseCategories();
-        listParentCategoryProfit = ParentCategory.getProfitCategories();
         listColor = Color.getColors();
         listLogoCategory = Logo.getAllCategoryLogos();
 
-        listNamesCategoriesExpense = new ArrayList<>();
-        if(listParentCategoryExpense.size() != 0){
-            for(ParentCategory parentCategory : listParentCategoryExpense){
-                listNamesCategoriesExpense.add(parentCategory.getName());
-            }
-        }
+        listParentCategoryExpense = Category.getExpenseParentCategories();
+        listParentCategoryProfit  = Category.getProfitParentCategories();
 
         spCategory.setAdapter(new ArrayAdapter<String>(
                 NewCategoryActivity.this,
                 android.R.layout.simple_list_item_1,
-                listNamesCategoriesExpense));
-
-        listNamesCategoriesProfit = new ArrayList<>();
-        if(listParentCategoryProfit.size() != 0){
-            for(ParentCategory parentCategory : listParentCategoryProfit){
-                listNamesCategoriesProfit.add(parentCategory.getName());
-            }
-        }
+                Category.getNamesParentCategories(typeCategory)));
 
         spColor.setAdapter(new ListColorAdapter(this, listColor));
         spLogo.setAdapter(new ListLogoCategorySpinnerAdapter(this, listLogoCategory));
@@ -140,11 +123,11 @@ public class NewCategoryActivity extends Activity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_category:
-                        typeHierarchy = Category.HIERARCHY_PARENT;
+                        typeHierarchy = Category.PARENT;
                         hideAndShowViews(listViewsCategory, listViewsSubCategory);
                         break;
                     case R.id.radioButton_subCategory:
-                        typeHierarchy = Category.HIERARCHY_SUB;
+                        typeHierarchy = Category.SUB;
                         hideAndShowViews(listViewsSubCategory, listViewsCategory);
                         break;
                 }
@@ -157,19 +140,15 @@ public class NewCategoryActivity extends Activity {
                 switch (checkedId) {
                     case R.id.rb_operation_expense:
                         typeCategory = Category.TYPE_EXPENSE;
-                        spCategory.setAdapter(new ArrayAdapter<String>(
-                                NewCategoryActivity.this,
-                                android.R.layout.simple_list_item_1,
-                                listNamesCategoriesExpense));
                         break;
                     case R.id.rb_operation_profit:
                         typeCategory = Category.TYPE_PROFIT;
-                        spCategory.setAdapter(new ArrayAdapter<String>(
-                                NewCategoryActivity.this,
-                                android.R.layout.simple_list_item_1,
-                                listNamesCategoriesProfit));
                         break;
                 }
+                spCategory.setAdapter(new ArrayAdapter<String>(
+                        NewCategoryActivity.this,
+                        android.R.layout.simple_list_item_1,
+                        Category.getNamesParentCategories(typeCategory)));
             }
         });
 
@@ -178,13 +157,13 @@ public class NewCategoryActivity extends Activity {
             //Редактирование
             if (!IS_NEW) {
                 //Как подкатегория
-                if (bundle.getInt(Constants.CATEGORY_HIERARCHY) == Category.HIERARCHY_SUB){
+                if (bundle.getInt(Constants.CATEGORY_HIERARCHY) == Category.SUB){
                     //Тип иерархии
-                    oldTypeHierarchy = Category.HIERARCHY_SUB;
+                    oldTypeHierarchy = Category.SUB;
                     rgTypeHierarchy.check(R.id.radioButton_subCategory);
-                    SubCategory subCategory =
-                            SubCategory.getById(
-                                    bundle.getLong(Constants.SUB_CATEGORY_ID));
+                    Category subCategory =
+                            Category.getById(
+                                    bundle.getLong(Constants.CATEGORY_ID));
                     //Имя
                     etName.setText(subCategory.getName());
 
@@ -192,14 +171,14 @@ public class NewCategoryActivity extends Activity {
                     if (subCategory.getType() == Category.TYPE_PROFIT) {
                         rgTypeCategory.check(R.id.rb_operation_profit);
                         for (int i = 0; i < listParentCategoryProfit.size(); i++) {
-                            if (listParentCategoryProfit.get(i).getId() == subCategory.getParentCategory().getId()) {
+                            if (listParentCategoryProfit.get(i).getId() == subCategory.getParent().getId()) {
                                 spCategory.setSelection(i);
                                 break;
                             }
                         }
                     } else {
                         for (int i = 0; i < listParentCategoryExpense.size(); i++) {
-                            if (listParentCategoryExpense.get(i).getId() == subCategory.getParentCategory().getId()) {
+                            if (listParentCategoryExpense.get(i).getId() == subCategory.getParent().getId()) {
                                 spCategory.setSelection(i);
                                 break;
                             }
@@ -208,8 +187,8 @@ public class NewCategoryActivity extends Activity {
                 }
                 //Как категория
                 else {
-                    ParentCategory parentCategory =
-                            ParentCategory.getById(bundle.getLong(Constants.CATEGORY_ID));
+                    Category parentCategory =
+                            Category.getById(bundle.getLong(Constants.CATEGORY_ID));
                     //Тип иерархии
                     rgTypeHierarchy.check(R.id.rb_category);
                     //Имя
@@ -249,8 +228,8 @@ public class NewCategoryActivity extends Activity {
             }
             // Новая подкатегория с изветсной категорией
             else {
-                ParentCategory parentCategory =
-                        ParentCategory.getById(bundle.getLong(Constants.CATEGORY_ID));
+                Category parentCategory =
+                        Category.getById(bundle.getLong(Constants.CATEGORY_ID));
                 //Тип иерархии
                 rgTypeHierarchy.check(R.id.radioButton_subCategory);
 
@@ -303,16 +282,16 @@ public class NewCategoryActivity extends Activity {
         if (id == R.id.action_save) {
 
             // Сохранение как категории
-            if (typeHierarchy == Category.HIERARCHY_PARENT) {
-                ParentCategory parentCategory;
-                SubCategory subCategoryOld = null;
+            if (typeHierarchy == Category.PARENT) {
+                Category parentCategory;
+                Category subCategoryOld = null;
                 if (IS_NEW)
-                    parentCategory = new ParentCategory();
+                    parentCategory = new Category();
                 else if (isTypeHierarchyChanged()) {
-                    subCategoryOld = SubCategory.getById(bundle.getLong(Constants.SUB_CATEGORY_ID));
-                    parentCategory = new ParentCategory();
+                    subCategoryOld = Category.getById(bundle.getLong(Constants.SUB_CATEGORY_ID));
+                    parentCategory = new Category();
                 } else
-                    parentCategory = ParentCategory.getById(bundle.getLong(Constants.CATEGORY_ID));
+                    parentCategory = Category.getById(bundle.getLong(Constants.CATEGORY_ID));
                 String title = String.valueOf(etName.getText());
                 parentCategory.setType(typeCategory);
 
@@ -325,7 +304,7 @@ public class NewCategoryActivity extends Activity {
                 // Проверка условий и сохранение
                 if (title == null || title.length() == 0) {
                     Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-                } else if (ParentCategory.isExist(title, typeCategory)) {
+                } else if (Category.isExistParent(title, typeCategory)) {
                     Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
                 } else {
                     parentCategory.setName(title);
@@ -333,43 +312,37 @@ public class NewCategoryActivity extends Activity {
                     parentCategory.setColor(color);
                     parentCategory.setLogo(logoCategory);
                     parentCategory.save();
-
                     NavUtils.navigateUpFromSameTask(this);
                 }
-
                 if (subCategoryOld != null) {
                     changeTypeHierarchySubCategory(subCategoryOld, parentCategory);
                 }
-
                 return true;
-
             }
 
         // Сохранение как подкатегории
         else {
-            SubCategory subCategory;
-            ParentCategory oldParentCategory = null;
+            Category subCategory;
+            Category oldParentCategory = null;
             if (IS_NEW)
-                subCategory = new SubCategory();
+                subCategory = new Category();
             else if (isTypeHierarchyChanged()) {
-                oldParentCategory = ParentCategory.getById(bundle.getLong(Constants.CATEGORY_ID));
-                subCategory = new SubCategory();
+                oldParentCategory = Category.getById(bundle.getLong(Constants.CATEGORY_ID));
+                subCategory = new Category();
             } else
-                subCategory = SubCategory.getById(bundle.getLong(Constants.SUB_CATEGORY_ID));
+                subCategory = Category.getById(bundle.getLong(Constants.SUB_CATEGORY_ID));
 
             String name = String.valueOf(etName.getText());
             String categoryName = String.valueOf(((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
-            ParentCategory parentCategory = typeCategory == Category.TYPE_EXPENSE
-                    ? ParentCategory.getExpenseCategoryByName(categoryName)
-                    : ParentCategory.getProfitCategoryByName(categoryName);
+            Category parentCategory = Category.getParentCategoryByName(categoryName, typeCategory);
             // Проверка условий и сохранение
             if (name == null || name.length() == 0)
                 Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-            else if (SubCategory.isExist(name, parentCategory))
+            else if (Category.isExistSub(name, typeCategory))
                 Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
             else {
                 subCategory.setName(name);
-                subCategory.setParentCategory(parentCategory);
+                subCategory.setParent(parentCategory);
                 subCategory.save();
                 NavUtils.navigateUpFromSameTask(this);
             }
@@ -402,7 +375,7 @@ public class NewCategoryActivity extends Activity {
         return typeHierarchy != oldTypeHierarchy;
     }
 
-    private void changeTypeHierarchySubCategory(SubCategory subCategory, ParentCategory parentCategory){
+    private void changeTypeHierarchySubCategory(Category subCategory, Category parentCategory){
 
         //Замена категорий
         List<Operation> operations = subCategory.getOperations();
@@ -410,7 +383,7 @@ public class NewCategoryActivity extends Activity {
             operation.setCategory(parentCategory);
             operation.update();
         }
-        List<OperationTemplate> templates = subCategory.getOperationTemplates();
+        List<OperationTemplate> templates = subCategory.getTemplates();
         for(OperationTemplate template : templates){
             template.setCategory(parentCategory);
             template.update();
@@ -419,7 +392,7 @@ public class NewCategoryActivity extends Activity {
         subCategory.delete();
     }
 
-    private void changeTypeHierarchyParentCategory(ParentCategory parentCategory, SubCategory subCategory){
+    private void changeTypeHierarchyParentCategory(Category parentCategory, Category subCategory){
 
         //Замена категорий
         List<Operation> operations = parentCategory.getOperationsFromAllHierarchy();
@@ -427,7 +400,7 @@ public class NewCategoryActivity extends Activity {
             operation.setCategory(subCategory);
             operation.update();
         }
-        List<OperationTemplate> templates = parentCategory.getOperationTemplatesFromAllHierarchy();
+        List<OperationTemplate> templates = parentCategory.getTemplatesFromAllHierarchy();
         for(OperationTemplate template : templates){
             template.setCategory(subCategory);
             template.update();

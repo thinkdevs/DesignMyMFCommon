@@ -10,6 +10,10 @@
     <string name="remove">Удалить</string>
     <string name="add_in_templates">В шаллоны</string>
 
+    <!-- Date Base -->
+    <string name="empty_parent_category_name">Без категории</string>
+    <string name="empty_sub_category_name">нет</string>
+
     <!-- Menu-->
     <string name="title_section_wallets">Счета</string>
     <string name="title_section_expenses">Расходы</string>
@@ -60,8 +64,8 @@
         "При удалении счета будут удалены все операции"
     </string>
     <string name="msg_delete_operation">Вы уверены ?</string>
-    <string name="msg_delete_parent_category">
-        "При удалении, будут удаленны все подкатегории,
+    <string name="msg_delete_parent_category">"
+        При удалении, будут удаленны все подкатегории,
         операциям и шаблонам данных категорий будет присвоена категория прочее"
     </string>
     <string name="msg_delete_sub_category">

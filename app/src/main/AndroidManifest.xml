@@ -16,8 +16,8 @@
             <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN"/>
-                <parentCategory
-                    android:name="android.intent.parentCategory.LAUNCHER"/>
+                <category
+                    android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>`
 

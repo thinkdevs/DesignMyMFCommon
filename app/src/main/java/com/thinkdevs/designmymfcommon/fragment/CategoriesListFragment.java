@@ -21,7 +21,7 @@ import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapter;
-import com.thinkdevs.designmymfcommon.database.ParentCategory;
+import com.thinkdevs.designmymfcommon.database.Category;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class CategoriesListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    boolean typeCategory = true; // if TRUE then Expensive
+    int typeCategory = Category.TYPE_EXPENSE;
 
     RadioGroup radioGroupType;
 
@@ -81,11 +81,14 @@ public class CategoriesListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(CategoriesListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<ParentCategory> categoriesList = ParentCategory.getExpenseCategories();
+        List<Category> categoriesList = Category.getExpenseParentCategories();
         mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categoriesList);
 
         radioGroupType = ((RadioGroup) view.findViewById(R.id.rg_type_category));
-        typeCategory = (radioGroupType.getCheckedRadioButtonId() == R.id.rb_operation_expense);
+        if(radioGroupType.getCheckedRadioButtonId() == R.id.rb_operation_expense)
+            typeCategory = Category.TYPE_EXPENSE;
+        else
+            typeCategory = Category.TYPE_PROFIT;
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -95,13 +98,13 @@ public class CategoriesListFragment extends Fragment {
 
                 switch (checkedId) {
                     case R.id.rb_type_expense:
-                        typeCategory = true;
+                        typeCategory = Category.TYPE_EXPENSE;
                         mAdapter = getAdapter(typeCategory);
                         mRecyclerView.setAdapter(mAdapter);
                         Log.d("categories", "expense");
                         break;
                     case R.id.rb_type_profit:
-                        typeCategory = false;
+                        typeCategory = Category.TYPE_PROFIT;
                         mAdapter = getAdapter(typeCategory);
                         mRecyclerView.setAdapter(mAdapter);
                         Log.d("categories", "profit");
@@ -121,12 +124,8 @@ public class CategoriesListFragment extends Fragment {
         return view;
     }
 
-    private RecyclerViewParentCategoriesAdapter getAdapter(boolean typeCategory) {
-        List<ParentCategory> categories;
-        if(typeCategory)
-            categories = ParentCategory.getExpenseCategories();
-        else
-            categories = ParentCategory.getProfitCategories();
+    private RecyclerViewParentCategoriesAdapter getAdapter(int typeCategory) {
+        List<Category> categories = Category.getParentCategoriesByType(typeCategory);
 
         return new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categories);
     }
