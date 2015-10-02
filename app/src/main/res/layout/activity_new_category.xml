@@ -19,6 +19,62 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_name" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Тип иерархии"
+        android:id="@+id/textView_type"
+        android:layout_marginTop="4dp" />
+
+    <RadioGroup
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rg_hierarchy" >
+
+        <RadioButton
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Основная"
+            android:id="@+id/rb_parent"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Подкатегория"
+            android:id="@+id/rb_sub"
+            android:checked="false" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Тип категории"
+        android:id="@+id/textView_type_category"
+        android:layout_marginTop="4dp" />
+
+    <RadioGroup
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rg_type">
+
+        <RadioButton
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Расходы"
+            android:id="@+id/rb_operation_expense"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Доходы"
+            android:id="@+id/rb_operation_profit"
+            android:checked="false" />
+    </RadioGroup>
+
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -80,62 +136,6 @@
                 android:spinnerMode="dialog" />
         </LinearLayout>
     </RelativeLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Тип иерархии"
-        android:id="@+id/textView_type"
-        android:layout_marginTop="4dp" />
-
-    <RadioGroup
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rg_hierarchy" >
-
-        <RadioButton
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:text="Основная"
-            android:id="@+id/rb_parent"
-            android:checked="true" />
-
-        <RadioButton
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:text="Подкатегория"
-            android:id="@+id/rb_sub"
-            android:checked="false" />
-    </RadioGroup>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Тип категории"
-        android:id="@+id/textView_type_category"
-        android:layout_marginTop="4dp" />
-
-    <RadioGroup
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rg_type">
-
-        <RadioButton
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:text="Расходы"
-            android:id="@+id/rb_operation_expense"
-            android:checked="true" />
-
-        <RadioButton
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:text="Доходы"
-            android:id="@+id/rb_operation_profit"
-            android:checked="false" />
-    </RadioGroup>
 
     <TextView
         android:layout_width="match_parent"
