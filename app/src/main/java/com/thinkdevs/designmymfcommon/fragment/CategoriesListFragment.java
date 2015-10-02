@@ -22,6 +22,7 @@ import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
@@ -36,9 +37,9 @@ public class CategoriesListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    int typeCategory = Category.TYPE_EXPENSE;
+    private int mType = Category.EXPENSE;
 
-    RadioGroup radioGroupType;
+    private RadioGroup mRgType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class CategoriesListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recycler_view_categories_list, container, false);
 
@@ -84,28 +85,28 @@ public class CategoriesListFragment extends Fragment {
         List<Category> categoriesList = Category.getExpenseParentCategories();
         mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categoriesList);
 
-        radioGroupType = ((RadioGroup) view.findViewById(R.id.rg_type_category));
-        if(radioGroupType.getCheckedRadioButtonId() == R.id.rb_operation_expense)
-            typeCategory = Category.TYPE_EXPENSE;
+        mRgType = ((RadioGroup) view.findViewById(R.id.rg_type));
+        if(mRgType.getCheckedRadioButtonId() == R.id.rb_operation_expense)
+            mType = Category.EXPENSE;
         else
-            typeCategory = Category.TYPE_PROFIT;
+            mType = Category.PROFIT;
 
         mRecyclerView.setAdapter(mAdapter);
 
-        radioGroupType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mRgType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 switch (checkedId) {
                     case R.id.rb_type_expense:
-                        typeCategory = Category.TYPE_EXPENSE;
-                        mAdapter = getAdapter(typeCategory);
+                        mType = Category.EXPENSE;
+                        mAdapter = getAdapter(mType);
                         mRecyclerView.setAdapter(mAdapter);
                         Log.d("categories", "expense");
                         break;
                     case R.id.rb_type_profit:
-                        typeCategory = Category.TYPE_PROFIT;
-                        mAdapter = getAdapter(typeCategory);
+                        mType = Category.PROFIT;
+                        mAdapter = getAdapter(mType);
                         mRecyclerView.setAdapter(mAdapter);
                         Log.d("categories", "profit");
                         break;
@@ -113,11 +114,14 @@ public class CategoriesListFragment extends Fragment {
             }
         });
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NewCategoryActivity.class));
+                Intent intent = new Intent(getActivity(), NewCategoryActivity.class);
+                intent.putExtra(Constants.OPEN_AS, Category.CREATE_PARENT);
+                intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_new_category);
+                startActivity(intent);
             }
         });
 
@@ -125,7 +129,7 @@ public class CategoriesListFragment extends Fragment {
     }
 
     private RecyclerViewParentCategoriesAdapter getAdapter(int typeCategory) {
-        List<Category> categories = Category.getParentCategoriesByType(typeCategory);
+        List<Category> categories = Category.getParentCategories(typeCategory);
 
         return new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categories);
     }

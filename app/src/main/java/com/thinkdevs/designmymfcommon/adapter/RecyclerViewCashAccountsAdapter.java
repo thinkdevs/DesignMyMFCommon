@@ -153,7 +153,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
     private void openEditor(long id){
         Intent intent = new Intent(mContext, NewCashAccountActivity.class);
-        intent.putExtra(Constants.IS_NEW, false);
+        intent.putExtra(Constants.OPEN_AS, false);
         intent.putExtra(Constants.CASH_ACCOUNT_ID, id);
         intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_cash_account_editing);
         mContext.startActivity(intent);
@@ -230,11 +230,11 @@ public class RecyclerViewCashAccountsAdapter extends
             cashAccountID = (long) v.getTag(R.string.tag_cash_account_ID);
             switch (v.getId()){
                 case R.id.btn_add_expense:
-                    typeOperation = Category.TYPE_EXPENSE;
+                    typeOperation = Category.EXPENSE;
                     templates = OperationTemplate.getExpenseOperationTemplates();
                     break;
                 case R.id.btn_add_profit:
-                    typeOperation = Category.TYPE_PROFIT;
+                    typeOperation = Category.PROFIT;
                     templates = OperationTemplate.getProfitOperationTemplates();
             }
 

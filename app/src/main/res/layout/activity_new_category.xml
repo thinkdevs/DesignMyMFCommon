@@ -17,7 +17,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText_title" />
+        android:id="@+id/et_name" />
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -46,7 +46,7 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:id="@+id/spinner_color"
+                android:id="@+id/sp_color"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:spinnerMode="dialog" />
@@ -74,7 +74,7 @@
             <Spinner
                 android:layout_width="125dp"
                 android:layout_height="60dp"
-                android:id="@+id/spinner_logo"
+                android:id="@+id/sp_logo"
                 android:layout_marginRight="4dp"
                 android:layout_marginLeft="4dp"
                 android:spinnerMode="dialog" />
@@ -92,20 +92,20 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/rg_type_hierarchy" >
+        android:id="@+id/rg_hierarchy" >
 
         <RadioButton
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Основная"
-            android:id="@+id/rb_category"
+            android:id="@+id/rb_parent"
             android:checked="true" />
 
         <RadioButton
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Подкатегория"
-            android:id="@+id/radioButton_subCategory"
+            android:id="@+id/rb_sub"
             android:checked="false" />
     </RadioGroup>
 
@@ -120,7 +120,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rg_type_category">
+        android:id="@+id/rg_type">
 
         <RadioButton
             android:layout_width="140dp"

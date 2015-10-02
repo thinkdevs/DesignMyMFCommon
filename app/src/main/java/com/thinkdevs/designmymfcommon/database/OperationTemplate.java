@@ -103,14 +103,14 @@ public class OperationTemplate extends BaseModel {
     public static List<OperationTemplate> getExpenseOperationTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
-                .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.TYPE_EXPENSE))
+                .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.EXPENSE))
                 .queryList();
     }
 
     public static List<OperationTemplate> getProfitOperationTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
-                .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.TYPE_PROFIT))
+                .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.PROFIT))
                 .queryList();
     }
 
@@ -131,7 +131,7 @@ public class OperationTemplate extends BaseModel {
     }
 
     public boolean isExpense(){
-        return Category.TYPE_EXPENSE == this.getType();
+        return Category.EXPENSE == this.getType();
     }
 
     public static void add(Operation operation){

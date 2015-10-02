@@ -73,9 +73,9 @@ public class NewOperationTemplateActivity extends Activity {
 
         //Тип операции
         if(radioGroupType.getCheckedRadioButtonId() == R.id.rb_expense)
-            typeOperation = Category.TYPE_EXPENSE;
+            typeOperation = Category.EXPENSE;
         else
-            typeOperation = Category.TYPE_PROFIT;
+            typeOperation = Category.PROFIT;
 
         spCategory     = ((Spinner) findViewById(R.id.sp_category));
         spSubCategory  = ((Spinner) findViewById(R.id.sp_subCategory));
@@ -85,7 +85,7 @@ public class NewOperationTemplateActivity extends Activity {
         listNamesSubCategoriesExpense = new ArrayList<>();
 
 
-        listCategoriesExpense = Category.getParentCategoriesByType(typeOperation);
+        listCategoriesExpense = Category.getParentCategories(typeOperation);
         listNamesCategoriesExpense = new ArrayList<>();
         if(listCategoriesExpense.size() != 0){
             for(Category parentCategoryExpense : listCategoriesExpense){
@@ -93,7 +93,7 @@ public class NewOperationTemplateActivity extends Activity {
             }
         }
 
-        listCategoriesProfit = Category.getParentCategoriesByType(typeOperation);
+        listCategoriesProfit = Category.getParentCategories(typeOperation);
         listNamesCategoriesProfit = new ArrayList<>();
         if(listCategoriesProfit.size() != 0){
             for(Category parentCategoryProfit : listCategoriesProfit){
@@ -149,7 +149,7 @@ public class NewOperationTemplateActivity extends Activity {
                 List<String> subCategoryNameList;
                 switch (checkedId) {
                     case R.id.rb_expense:
-                        typeOperation = Category.TYPE_EXPENSE;
+                        typeOperation = Category.EXPENSE;
                         spCategory.setAdapter(adapterExpense);
                         if(listCategoriesExpense.size() != 0)
                             subCategoryNameList = listCategoriesExpense.get(0).getNamesSubCategories();
@@ -161,7 +161,7 @@ public class NewOperationTemplateActivity extends Activity {
                                 subCategoryNameList));
                         break;
                     case R.id.rb_profit:
-                        typeOperation = Category.TYPE_PROFIT;
+                        typeOperation = Category.PROFIT;
                         if(listCategoriesExpense.size() != 0)
                             subCategoryNameList = listCategoriesProfit.get(0).getNamesSubCategories();
                         else
@@ -180,7 +180,7 @@ public class NewOperationTemplateActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> listNames;
-                if(typeOperation == Category.TYPE_EXPENSE)
+                if(typeOperation == Category.EXPENSE)
                     listNames = listCategoriesExpense.get(position).getNamesSubCategories();
                 else
                     listNames = listCategoriesProfit.get(position).getNamesSubCategories();
@@ -205,8 +205,8 @@ public class NewOperationTemplateActivity extends Activity {
 
             OperationTemplate operationTemplate = OperationTemplate.getByID(bundle.getLong(Constants.OPERATION_TEMPLATE_ID));
 
-            if(Category.TYPE_EXPENSE == operationTemplate.getType()){
-                typeOperation = Category.TYPE_EXPENSE;
+            if(Category.EXPENSE == operationTemplate.getType()){
+                typeOperation = Category.EXPENSE;
                 radioGroupType.check(R.id.rb_expense);
 
                 Log.d("oper", String.valueOf(listNamesCategoriesExpense.size()));
@@ -223,7 +223,7 @@ public class NewOperationTemplateActivity extends Activity {
                 }
             }
             else{
-                typeOperation = Category.TYPE_PROFIT;
+                typeOperation = Category.PROFIT;
                 radioGroupType.check(R.id.rb_profit);
                 for(int i = 0; i < listNamesCategoriesProfit.size(); i++) {
                     if (listNamesCategoriesProfit.get(i).equals(bundle.getString(Constants.CATEGORY_NAME)))
@@ -274,13 +274,13 @@ public class NewOperationTemplateActivity extends Activity {
             String stringCategory = String.valueOf(((((TextView) spCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
 
             //Получаем категорию
-            Category parentCategory = Category.getParentCategoryByName(stringCategory, typeOperation);
+            Category parentCategory = Category.getParentCategory(stringCategory, typeOperation);
 
             // Получаем подкатегорию
             String stringSubCategory = String.valueOf(((((TextView) spSubCategory.getSelectedView().findViewById(android.R.id.text1))).getText()));
             Category subCategory = null;
             if(!"".equals(stringSubCategory))
-                subCategory = Category.getSubCategoryByName(stringSubCategory, typeOperation);
+                subCategory = Category.getSubCategory(stringSubCategory, typeOperation);
 
             // Получаем сумму
             String amountString = String.valueOf(etAmount.getText());

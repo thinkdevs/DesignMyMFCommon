@@ -80,9 +80,9 @@ public class NewOperationActivity extends Activity {
 
         rgTypeOperation = ((RadioGroup) findViewById(R.id.rg_type_operation));
         if(rgTypeOperation.getCheckedRadioButtonId() == R.id.rb_operation_expense)
-            typeOperation = Category.TYPE_EXPENSE;
+            typeOperation = Category.EXPENSE;
         else
-            typeOperation = Category.TYPE_PROFIT;
+            typeOperation = Category.PROFIT;
 
         spCashAccount = ((Spinner) findViewById(R.id.sp_cash));
         spCategory    = ((Spinner) findViewById(R.id.sp_category));
@@ -139,12 +139,12 @@ public class NewOperationActivity extends Activity {
         adapterExpense = new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                Category.getNamesParentCategories(Category.TYPE_EXPENSE));
+                Category.getNamesParentCategories(Category.EXPENSE));
 
         adapterProfit = new ArrayAdapter<String>(
                 NewOperationActivity.this,
                 android.R.layout.simple_list_item_1,
-                Category.getNamesParentCategories(Category.TYPE_PROFIT));
+                Category.getNamesParentCategories(Category.PROFIT));
 
         spCategory.setAdapter(adapterExpense);
 
@@ -171,7 +171,7 @@ public class NewOperationActivity extends Activity {
                 List<String> subCategoryNameList;
                 switch (checkedId) {
                     case R.id.rb_operation_expense:
-                        typeOperation = Category.TYPE_EXPENSE;
+                        typeOperation = Category.EXPENSE;
                         spCategory.setAdapter(adapterExpense);
 
                         if(listCategoriesExpense.size() != 0)
@@ -184,7 +184,7 @@ public class NewOperationActivity extends Activity {
                                 subCategoryNameList));
                         break;
                     case R.id.rb_operation_profit:
-                        typeOperation = Category.TYPE_PROFIT;
+                        typeOperation = Category.PROFIT;
                         if(listCategoriesProfit.size() != 0)
                             subCategoryNameList = listCategoriesProfit.get(0).getNamesSubCategories();
                         else
@@ -203,7 +203,7 @@ public class NewOperationActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> listNames;
-                if(typeOperation == Category.TYPE_EXPENSE)
+                if(typeOperation == Category.EXPENSE)
                     listNames = listCategoriesExpense.get(position).getNamesSubCategories();
                 else
                     listNames = listCategoriesProfit.get(position).getNamesSubCategories();
@@ -221,13 +221,13 @@ public class NewOperationActivity extends Activity {
         });
 
         if(bundle != null){
-            if(bundle.containsKey(Constants.IS_NEW))
-                IS_NEW = bundle.getBoolean(Constants.IS_NEW);
+            if(bundle.containsKey(Constants.OPEN_AS))
+                IS_NEW = bundle.getBoolean(Constants.OPEN_AS);
 
             Operation operation = Operation.getByID(bundle.getLong(Constants.OPERATION_ID));
 
-            if(operation.getType() == Category.TYPE_EXPENSE){
-                oldTypeOperation = Category.TYPE_EXPENSE;
+            if(operation.getType() == Category.EXPENSE){
+                oldTypeOperation = Category.EXPENSE;
                 rgTypeOperation.check(R.id.rb_operation_expense);
 
                 for(int i = 0; i < listNamesCategoriesExpense.size(); i++) {
@@ -245,7 +245,7 @@ public class NewOperationActivity extends Activity {
 
             }
             else{
-                typeOperation = Category.TYPE_PROFIT;
+                typeOperation = Category.PROFIT;
                 rgTypeOperation.check(R.id.rb_operation_profit);
                 for(int i = 0; i < listNamesCategoriesProfit.size(); i++) {
                     if (listNamesCategoriesProfit.get(i).equals(bundle.getString(Constants.CATEGORY_NAME)))
@@ -301,7 +301,7 @@ public class NewOperationActivity extends Activity {
         if(id == R.id.action_save){
 //            Log.d("oper", "сохраняем");
 //            Operation operation;
-//            if(IS_NEW)
+//            if(OPEN_AS)
 //                operation = new Operation();
 //            else
 //                operation = Operation.getByID(time);
@@ -334,14 +334,14 @@ public class NewOperationActivity extends Activity {
 //                comment = "";
 //
 //            // Сохраняем операцию
-//            operation.setType(typeOperation ? Operation.TYPE_EXPENSE : Operation.TYPE_PROFIT);
+//            operation.setType(typeOperation ? Operation.EXPENSE : Operation.PROFIT);
 //            operation.setCashAccount(cashAccount);
 //            operation.setDate(new Date(System.currentTimeMillis()));
 //            operation.setCategory(subCategory);
 //            operation.setAmount(amount);
 //            operation.setComment(comment);
 //
-//            if(IS_NEW){
+//            if(OPEN_AS){
 //                operation.save();
 //                cashAccount.setAmount(cashAccount.getAmount() + getReallyAmount(amount, typeOperation));
 //                cashAccount.update();

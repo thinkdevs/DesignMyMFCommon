@@ -16,7 +16,7 @@ public class Constants {
 
     // Common
     public static final String ACTIVITY_TITLE = "0";
-    public static final String IS_NEW         = "1";
+    public static final String OPEN_AS        = "1";
 
     //  Cash Account
     public static final String CASH_ACCOUNT_ID      = "00";

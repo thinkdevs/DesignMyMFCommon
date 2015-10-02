@@ -87,7 +87,7 @@ public class RecyclerViewSubCategoriesAdapter extends
 
     private void openEditor(long id){
         Intent intent = new Intent(mContext, NewCategoryActivity.class);
-        intent.putExtra(Constants.IS_NEW, false);
+        intent.putExtra(Constants.OPEN_AS, Category.EDIT_SUB);
         intent.putExtra(Constants.CATEGORY_ID, id);
         intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.SUB);
         intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_category_editing);

@@ -133,7 +133,7 @@ public class CashAccount extends BaseModel {
         return new Select()
                 .from(Operation.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Operation$Table.TYPE).is(Category.TYPE_EXPENSE))
+                .begin(Condition.column(Operation$Table.TYPE).is(Category.EXPENSE))
                 .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }
@@ -142,7 +142,7 @@ public class CashAccount extends BaseModel {
         return new Select()
                 .from(Operation.class)
                 .where(Condition.CombinedCondition
-                .begin(Condition.column(Operation$Table.TYPE).is(Category.TYPE_PROFIT))
+                .begin(Condition.column(Operation$Table.TYPE).is(Category.PROFIT))
                 .and(Condition.column(Operation$Table.CASHACCOUNT_CASHACCOUNT_ID).is(this.getId())))
                 .queryList();
     }

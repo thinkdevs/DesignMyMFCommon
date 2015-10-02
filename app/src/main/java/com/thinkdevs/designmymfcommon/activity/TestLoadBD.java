@@ -71,14 +71,14 @@ public class TestLoadBD {
 
         //Without Sub Category Expense
         Category categoryEmptySub = new Category();
-        categoryEmptySub.setType(Category.TYPE_WITHOUT);
+        categoryEmptySub.setType(Category.WITHOUT_TYPE);
         categoryEmptySub.setName("");
         categoryEmptySub.setColor(colors.get(18));
         categoryEmptySub.save();
 
         //Without Parent Category Expense
         Category categoryEmptyParentExpense = new Category();
-        categoryEmptyParentExpense.setType(Category.TYPE_EXPENSE);
+        categoryEmptyParentExpense.setType(Category.EXPENSE);
         categoryEmptyParentExpense.setName("Без категории");
         categoryEmptyParentExpense.setColor(colors.get(18));
         categoryEmptyParentExpense.setLogo(categoryLogos.get(15));
@@ -86,7 +86,7 @@ public class TestLoadBD {
 
         //Without Parent Category Profit
         Category categoryEmptyParentProfit = new Category();
-        categoryEmptyParentProfit.setType(Category.TYPE_PROFIT);
+        categoryEmptyParentProfit.setType(Category.PROFIT);
         categoryEmptyParentProfit.setName("Без категории");
         categoryEmptyParentProfit.setColor(colors.get(18));
         categoryEmptyParentProfit.setLogo(categoryLogos.get(15));
@@ -94,7 +94,7 @@ public class TestLoadBD {
 
         //Expense categories
         Category categoryExpense1 = new Category();
-        categoryExpense1.setType(Category.TYPE_EXPENSE);
+        categoryExpense1.setType(Category.EXPENSE);
         categoryExpense1.setName("Продукты");
         categoryExpense1.setColor(colors.get(0));
         categoryExpense1.setLogo(categoryLogos.get(12));
@@ -122,7 +122,7 @@ public class TestLoadBD {
 
         Category categoryExpense2 = new Category();
         categoryExpense2.setName("Товары для дома");
-        categoryExpense2.setType(Category.TYPE_EXPENSE);
+        categoryExpense2.setType(Category.EXPENSE);
         categoryExpense2.setColor(colors.get(1));
         categoryExpense2.setLogo(categoryLogos.get(0));
         categoryExpense2.save();
@@ -144,7 +144,7 @@ public class TestLoadBD {
 
         Category categoryExpense3 = new Category();
         categoryExpense3.setName("Авто");
-        categoryExpense3.setType(Category.TYPE_EXPENSE);
+        categoryExpense3.setType(Category.EXPENSE);
         categoryExpense3.setColor(colors.get(2));
         categoryExpense3.setLogo(categoryLogos.get(1));
         categoryExpense3.save();
@@ -161,14 +161,14 @@ public class TestLoadBD {
 
         Category categoryExpense4 = new Category();
         categoryExpense4.setName("Животные");
-        categoryExpense4.setType(Category.TYPE_EXPENSE);
+        categoryExpense4.setType(Category.EXPENSE);
         categoryExpense4.setColor(colors.get(3));
         categoryExpense4.setLogo(categoryLogos.get(7));
         categoryExpense4.save();
 
         Category categoryExpense5 = new Category();
         categoryExpense5.setName("Спорт");
-        categoryExpense5.setType(Category.TYPE_EXPENSE);
+        categoryExpense5.setType(Category.EXPENSE);
         categoryExpense5.setColor(colors.get(4));
         categoryExpense5.setLogo(categoryLogos.get(5));
         categoryExpense5.save();
@@ -176,7 +176,7 @@ public class TestLoadBD {
     // Profit Categories
         Category categoryProfit1 = new Category();
         categoryProfit1.setName("Работа");
-        categoryProfit1.setType(Category.TYPE_PROFIT);
+        categoryProfit1.setType(Category.PROFIT);
         categoryProfit1.setLogo(categoryLogos.get(14));
         categoryProfit1.setColor(colors.get(5));
         categoryProfit1.save();
@@ -193,7 +193,7 @@ public class TestLoadBD {
 
         Category categoryProfit2 = new Category();
         categoryProfit2.setName("Халтура");
-        categoryProfit2.setType(Category.TYPE_PROFIT);
+        categoryProfit2.setType(Category.PROFIT);
         categoryProfit2.setLogo(categoryLogos.get(13));
         categoryProfit2.setColor(colors.get(6));
         categoryProfit2.save();

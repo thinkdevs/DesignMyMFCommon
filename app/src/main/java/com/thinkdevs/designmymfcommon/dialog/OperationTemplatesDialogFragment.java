@@ -60,7 +60,7 @@ public class OperationTemplatesDialogFragment extends DialogFragment
 
         List<OperationTemplate> templates;
 
-        if(Category.TYPE_EXPENSE == typeOperation) {
+        if(Category.EXPENSE == typeOperation) {
             tvTitle.setText(getActivity().getResources().getString(R.string.operation_expense).toUpperCase());
             tvTitle.setTextColor(getResources().getColor(R.color.red));
             btnNew.setTextColor(getResources().getColor(R.color.red));

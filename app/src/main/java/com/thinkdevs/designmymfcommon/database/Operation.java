@@ -111,19 +111,19 @@ public class Operation extends BaseModel {
     public static List<Operation> getExpenseOperations(){
         return new Select()
                 .from(Operation.class)
-                .where(Condition.column(Operation$Table.TYPE).is(Category.TYPE_EXPENSE))
+                .where(Condition.column(Operation$Table.TYPE).is(Category.EXPENSE))
                 .queryList();
     }
 
     public static List<Operation> getProfitOperations(){
         return new Select()
                 .from(Operation.class)
-                .where(Condition.column(Operation$Table.TYPE).is(Category.TYPE_PROFIT))
+                .where(Condition.column(Operation$Table.TYPE).is(Category.PROFIT))
                 .queryList();
     }
 
     public boolean isExpense(){
-        return Category.TYPE_EXPENSE == this.getType();
+        return Category.EXPENSE == this.getType();
     }
 
     public static void add(long templateID, long cashAccountID){

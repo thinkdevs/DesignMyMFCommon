@@ -149,7 +149,7 @@ public class RecyclerViewOperationTemplatesAdapter extends
 
     private void openEditor(long id){
         Intent intent = new Intent(mContext, NewOperationTemplateActivity.class);
-        intent.putExtra(Constants.IS_NEW, false);
+        intent.putExtra(Constants.OPEN_AS, false);
         intent.putExtra(
                 Constants.OPERATION_TEMPLATE_ID, id);
         intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_operation_template_editing);
