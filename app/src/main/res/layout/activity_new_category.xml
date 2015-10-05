@@ -17,7 +17,8 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/et_name" />
+        android:id="@+id/et_name"
+        android:textColor="#212121" />
 
     <TextView
         android:layout_width="match_parent"

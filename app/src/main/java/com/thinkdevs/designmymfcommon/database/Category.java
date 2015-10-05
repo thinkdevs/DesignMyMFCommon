@@ -407,4 +407,12 @@ public class Category extends BaseModel {
         return names;
     }
 
+    public  void updateSubs (){
+        List<Category> subs = this.getSubCategories();
+        for(Category sub : subs){
+            sub.setParent(this);
+            sub.save();
+        }
+    }
+
 }

@@ -188,7 +188,7 @@ public class RecyclerViewCashAccountsAdapter extends
     @Override
     public boolean onLongClick(final View v) {
         //id операции
-        final long id = (long)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_id));
+        final long id = (long)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_cash_account_ID));
         //позиция в rv
         final int position = (int)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_position_in_rv));
         //меню

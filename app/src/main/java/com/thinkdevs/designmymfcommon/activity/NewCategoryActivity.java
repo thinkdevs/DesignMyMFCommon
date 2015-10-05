@@ -30,6 +30,7 @@ import java.util.List;
 public class NewCategoryActivity extends Activity {
 
     private RadioGroup mRgHierarchy;
+    private TextView   mTvRgType;
     private RadioGroup mRgType;
     private TextView   mTvCategory;
     private Spinner    mSpCategory;
@@ -60,10 +61,7 @@ public class NewCategoryActivity extends Activity {
 
         mIntent = getIntent();
         mBundle = mIntent.getExtras();
-        if(mBundle != null) {
-            setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
-            mOpenAs = mBundle.getInt(Constants.OPEN_AS);
-        }
+
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -71,25 +69,26 @@ public class NewCategoryActivity extends Activity {
 
         //Тип иерархии
         mRgHierarchy = ((RadioGroup) findViewById(R.id.rg_hierarchy));
-        if(mRgHierarchy.getCheckedRadioButtonId() == R.id.rb_parent)
+        if (mRgHierarchy.getCheckedRadioButtonId() == R.id.rb_parent)
             mHierarchy = Category.PARENT;
         else
             mHierarchy = Category.SUB;
 
         //Тип категории
+        mTvRgType = ((TextView) findViewById(R.id.textView_type_category));
         mRgType = ((RadioGroup) findViewById(R.id.rg_type));
-        if(mRgType.getCheckedRadioButtonId() == R.id.rb_operation_expense)
+        if (mRgType.getCheckedRadioButtonId() == R.id.rb_operation_expense)
             mType = Category.EXPENSE;
         else
             mType = Category.PROFIT;
 
         mTvCategory = ((TextView) findViewById(R.id.tv_category));
         mSpCategory = ((Spinner) findViewById(R.id.sp_category));
-        mEtName     = ((EditText) findViewById(R.id.et_name));
-        mTvLogo     = ((TextView) findViewById(R.id.textView_logo));
-        mSpLogo     = ((Spinner) findViewById(R.id.sp_logo));
-        mTvColor    = ((TextView) findViewById(R.id.textView_color));
-        mSpColor    = ((Spinner) findViewById(R.id.sp_color));
+        mEtName = ((EditText) findViewById(R.id.et_name));
+        mTvLogo = ((TextView) findViewById(R.id.textView_logo));
+        mSpLogo = ((Spinner) findViewById(R.id.sp_logo));
+        mTvColor = ((TextView) findViewById(R.id.textView_color));
+        mSpColor = ((Spinner) findViewById(R.id.sp_color));
 
         mCategoryEditViews = new ArrayList<>();
         mCategoryEditViews.add(mTvCategory);
@@ -145,6 +144,19 @@ public class NewCategoryActivity extends Activity {
                         Category.getNamesParentCategories(mType)));
             }
         });
+
+        if (mBundle != null) {
+            setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
+            mOpenAs = mBundle.getInt(Constants.OPEN_AS);
+            if (mIsOpenAsEditor()) {
+                setTitle(getResources().getString(R.string.title_activity_category_editing));
+                //Скрываем RadioGroup смены типа
+                mTvRgType.setVisibility(View.GONE);
+                mRgType.setVisibility(View.GONE);
+            }
+            else
+                setTitle(getResources().getString(R.string.title_activity_new_category));
+        }
 
         mOpenEditor();
     }
@@ -221,6 +233,8 @@ public class NewCategoryActivity extends Activity {
     private void mOpenEditorParent(Category parent){
         //Тип иерархии
         mRgHierarchy.check(R.id.rb_parent);
+        //Тип категории
+        mCheckRgType(parent.getType());
         //Имя
         mEtName.setText(parent.getName());
         //Цвет
@@ -333,7 +347,7 @@ public class NewCategoryActivity extends Activity {
         // Проверка условий и сохранение
         if (name == null || name.length() == 0) {
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-        } else if (Category.isExistParent(name, mType)) {
+        } else if (Category.isExistParent(name, mType) && !mIsOpenAsEditor()) {
             Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
         } else {
             parent.setName(name);
@@ -341,6 +355,7 @@ public class NewCategoryActivity extends Activity {
             parent.setColor(color);
             parent.setLogo(logo);
             parent.save();
+            parent.updateSubs();
             NavUtils.navigateUpFromSameTask(this);
         }
     }
@@ -354,7 +369,7 @@ public class NewCategoryActivity extends Activity {
         // Проверка условий и сохранение
         if (name == null || name.length() == 0)
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-        else if (parent.isExistSub(name))
+        else if (parent.isExistSub(name) && !mIsOpenAsEditor())
             Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
         else {
             sub.setName(name);
@@ -366,6 +381,10 @@ public class NewCategoryActivity extends Activity {
 
     private boolean mIsHierarchyChanged(){
         return mHierarchyOld != mHierarchy;
+    }
+
+    private boolean mIsOpenAsEditor(){
+        return Category.EDIT_SUB == mOpenAs || mOpenAs == Category.EDIT_PARENT;
     }
 
 }

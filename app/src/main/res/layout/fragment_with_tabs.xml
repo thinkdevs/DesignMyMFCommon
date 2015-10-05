@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
     <TabHost
         android:layout_width="match_parent"
@@ -24,7 +24,8 @@
                 android:tabStripEnabled="true"
                 android:tabStripLeft="@color/red"
                 android:tabStripRight="@color/green"
-                android:dividerHeight="1dp">
+                android:dividerHeight="1dp"
+                android:divider="@drawable/divider_vertical_white">
             </TabWidget>
 
             <FrameLayout

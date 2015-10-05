@@ -92,8 +92,10 @@ public class CategoriesListFragmentWithTabs extends Fragment {
         mRvExpense.setLayoutManager(mLayoutManagerExpense);
         mRvProfit.setLayoutManager(mLayoutManagerProfit);
 
-        List<Category> expenseCategories = Category.getExpenseParentCategories();
-        List<Category> profitCategories  = Category.getProfitParentCategories();
+        List<Category> expenseCategories
+                = Category.getParentCategoriesWithoutEmpty(Category.EXPENSE);
+        List<Category> profitCategories
+                = Category.getParentCategoriesWithoutEmpty(Category.PROFIT);
 
         mAdapterExpense =
                 new RecyclerViewParentCategoriesAdapter(CategoriesListFragmentWithTabs.this.getActivity(), expenseCategories);

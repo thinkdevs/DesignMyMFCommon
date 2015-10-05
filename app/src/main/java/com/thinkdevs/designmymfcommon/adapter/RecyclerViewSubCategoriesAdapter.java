@@ -90,7 +90,6 @@ public class RecyclerViewSubCategoriesAdapter extends
         intent.putExtra(Constants.OPEN_AS, Category.EDIT_SUB);
         intent.putExtra(Constants.CATEGORY_ID, id);
         intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.SUB);
-        intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_category_editing);
         mContext.startActivity(intent);
     }
 

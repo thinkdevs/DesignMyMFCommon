@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.fragment.CashAccountsListFragment;
-import com.thinkdevs.designmymfcommon.fragment.CategoriesListFragment;
 import com.thinkdevs.designmymfcommon.fragment.CategoriesListFragmentWithTabs;
 import com.thinkdevs.designmymfcommon.fragment.NavigationDrawerFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationTemplatesListFragment;

@@ -110,7 +110,6 @@ public class RecyclerViewParentCategoriesAdapter extends
         intent.putExtra(Constants.OPEN_AS, Category.EDIT_PARENT);
         intent.putExtra(Constants.CATEGORY_ID, id);
         intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.PARENT);
-        intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_category_editing);
         mContext.startActivity(intent);
 }
 
