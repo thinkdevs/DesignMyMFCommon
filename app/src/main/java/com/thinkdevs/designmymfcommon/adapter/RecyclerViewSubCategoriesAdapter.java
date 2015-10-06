@@ -66,7 +66,7 @@ public class RecyclerViewSubCategoriesAdapter extends
         Category category = mCategories.get(i);
 
         //Сохранение id категории и ее позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_category_ID, category.getId());
+        viewHolder.cardView.setTag(R.string.tag_category_id, category.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
         //Имя категории
@@ -121,7 +121,7 @@ public class RecyclerViewSubCategoriesAdapter extends
     @Override
     public boolean onLongClick(final View v) {
         //id подкатегории
-        final long id = (long)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_category_ID));
+        final long id = (long)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_category_id));
         //позиция в rv
         final int position = (int)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_position_in_rv));
         //меню

@@ -8,7 +8,6 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thinkdevs.designmymfcommon.R;
+import com.thinkdevs.designmymfcommon.adapter.ListCategoriesSpinnerAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogoCategorySpinnerAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
@@ -103,10 +103,9 @@ public class NewCategoryActivity extends Activity {
         mColors = Color.getColors();
         mLogos = Logo.getAllCategoryLogos();
 
-        mSpCategory.setAdapter(new ArrayAdapter<String>(
+        mSpCategory.setAdapter(new ListCategoriesSpinnerAdapter(
                 NewCategoryActivity.this,
-                android.R.layout.simple_list_item_1,
-                Category.getNamesParentCategories(mType)));
+                Category.getParentCategoriesWithoutEmpty(mType)));
 
         mSpColor.setAdapter(new ListColorAdapter(this, mColors));
         mSpLogo.setAdapter(new ListLogoCategorySpinnerAdapter(this, mLogos));
@@ -138,10 +137,9 @@ public class NewCategoryActivity extends Activity {
                         mType = Category.PROFIT;
                         break;
                 }
-                mSpCategory.setAdapter(new ArrayAdapter<String>(
+                mSpCategory.setAdapter(new ListCategoriesSpinnerAdapter(
                         NewCategoryActivity.this,
-                        android.R.layout.simple_list_item_1,
-                        Category.getNamesParentCategories(mType)));
+                        Category.getParentCategoriesWithoutEmpty(mType)));
             }
         });
 
@@ -263,7 +261,7 @@ public class NewCategoryActivity extends Activity {
         //Тип категории.
         mCheckRgType(type);
         //Категория
-        parentCategories = Category.getParentCategories(type);
+        parentCategories = Category.getParentCategoriesWithoutEmpty(type);
         for (int i = 0; i < parentCategories.size(); i++) {
             if (parentCategories.get(i).getId() == sub.getParent().getId()) {
                 mSpCategory.setSelection(i);
@@ -280,7 +278,7 @@ public class NewCategoryActivity extends Activity {
         //Тип категории.
         mCheckRgType(type);
         //Категория
-        parentCategories = Category.getParentCategories(type);
+        parentCategories = Category.getParentCategoriesWithoutEmpty(type);
         for (int i = 0; i < parentCategories.size(); i++) {
             if (parentCategories.get(i).getId() == parent.getId()) {
                 mSpCategory.setSelection(i);
@@ -364,8 +362,8 @@ public class NewCategoryActivity extends Activity {
         //Имя
         String name = String.valueOf(mEtName.getText());
         //Родительская категория
-        String parentName = String.valueOf(((TextView) mSpCategory.getSelectedView().findViewById(android.R.id.text1)).getText());
-        Category parent = Category.getParentCategory(parentName, mType);
+        long parentId = (long)(mSpCategory.getSelectedView().findViewById(R.id.cv_parent_category)).getTag(R.string.tag_category_id);
+        Category parent = Category.getById(parentId);
         // Проверка условий и сохранение
         if (name == null || name.length() == 0)
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();

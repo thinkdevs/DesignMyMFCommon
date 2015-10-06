@@ -1,10 +1,10 @@
 package com.thinkdevs.designmymfcommon.activity;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -12,13 +12,13 @@ import android.view.MenuItem;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.fragment.CashAccountsListFragment;
-import com.thinkdevs.designmymfcommon.fragment.CategoriesListFragmentWithTabs;
 import com.thinkdevs.designmymfcommon.fragment.NavigationDrawerFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationTemplatesListFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationsListFragment;
+import com.thinkdevs.designmymfcommon.fragment.CategoriesSlidingTabsFragment;
 
 
-public class MainNavigationDrawerActivity extends Activity
+public class MainNavigationDrawerActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -56,7 +56,7 @@ public class MainNavigationDrawerActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
 
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         switch (position){
             case 0: fragmentManager.beginTransaction()
@@ -72,7 +72,7 @@ public class MainNavigationDrawerActivity extends Activity
                     .commit();
                 break;
             case 3: fragmentManager.beginTransaction()
-                    .replace(R.id.container, CategoriesListFragmentWithTabs.newInstance(position + 1))
+                    .replace(R.id.container, CategoriesSlidingTabsFragment.newInstance(position + 1))
                     .commit();
                 break;
             case 4: fragmentManager.beginTransaction()

@@ -53,7 +53,7 @@
     <string name="tag_hierarchy">hierarchy</string>
     <string name="tag_resource_ID">resource_id</string>
     <string name="tag_currency_ID">currency_id</string>
-    <string name="tag_category_ID">category_id</string>
+    <string name="tag_category_id">category_id</string>
     <string name="tag_operation_ID">operation_id</string>
     <string name="tag_cash_account_ID">cash_account_id</string>
     <string name="tag_operation_template_ID">operation_template_id</string>
