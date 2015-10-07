@@ -1,6 +1,5 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,29 +15,25 @@ import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
-import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
-import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationsAdapter;
-import com.thinkdevs.designmymfcommon.database.Operation;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewCashAccountsAdapter;
+import com.thinkdevs.designmymfcommon.database.CashAccount;
 
 import java.util.List;
 
-public class OperationsListFragment extends Fragment {
+public class TestNewDesignListFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private int sectionNumber;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("tag", "Operation Templates List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
+        Log.d("tag", "Cash Accounts List Fragment - 'onCreate' savedInstance = " + savedInstanceState);
         super.onCreate(savedInstanceState);
 
         // Включаем отображение меню
@@ -46,27 +41,17 @@ public class OperationsListFragment extends Fragment {
 
     }
 
-    public static OperationsListFragment newInstance(int sectionNumber) {
-        Log.d("tag", "Operation Templates List Fragment - 'newInstance'");
-        OperationsListFragment fragment = new OperationsListFragment();
-        fragment.sectionNumber = sectionNumber;
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
+    public static TestNewDesignListFragment newInstance() {
+
+        TestNewDesignListFragment fragment = new TestNewDesignListFragment();
         return fragment;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        Log.d("tag", "Operation Templates List Fragment - 'onAttach'");
-        super.onAttach(activity);
-        ((MainNavigationDrawerActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("tag", "Cash Accounts List Fragment - 'onCreateView'");
         View view = inflater.inflate(R.layout.fragment_recycler_view_list, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_list);
@@ -76,22 +61,21 @@ public class OperationsListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(OperationsListFragment.this.getActivity());
+        mLayoutManager = new LinearLayoutManager(TestNewDesignListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<Operation> operationList = sectionNumber == 2
-                ? Operation.getExpenseOperations()
-                : Operation.getProfitOperations();
+        List<CashAccount> cashes = CashAccount.getCashAccounts();
 
         // specify an adapter (see also next example)
-        mAdapter = new RecyclerViewOperationsAdapter(OperationsListFragment.this.getActivity(), operationList);
+        mAdapter = new RecyclerViewCashAccountsAdapter(TestNewDesignListFragment.this.getActivity(), cashes);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
+        floatingActionButton.attachToRecyclerView(mRecyclerView);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NewOperationActivity.class));
+                startActivity(new Intent(getActivity(), NewCashAccountActivity.class));
             }
         });
 
@@ -100,14 +84,14 @@ public class OperationsListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d("tag", "Operation Templates List Fragment - 'onCreateOptionsMenu'");
+        Log.d("tag", "Cash Accounts List Fragment - 'onCreateOptionsMenu'");
 //        inflater.inflate(R.menu.menu_cashes_list, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("tag", "Operation Templates List Fragment - 'onOptionsItemSelected'");
+        Log.d("tag", "Cash Accounts List Fragment - 'onOptionsItemSelected'");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in d.xml.
@@ -120,7 +104,6 @@ public class OperationsListFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }
 

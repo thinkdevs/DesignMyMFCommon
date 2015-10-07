@@ -136,14 +136,14 @@ public class CategoriesSlidingTabsFragment extends Fragment {
          */
         mTabs.add(new SamplePagerItem(
                 getString(R.string.operation_expense), // Title
-                getResources().getColor(R.color.red), // Indicator color
+                Color.WHITE, // Indicator color
                 Color.WHITE, // Divider color
                 Category.EXPENSE
         ));
 
         mTabs.add(new SamplePagerItem(
                 getString(R.string.operation_profit), // Title
-                getResources().getColor(R.color.green), // Indicator color
+                Color.WHITE, // Indicator color
                 Color.WHITE, // Divider color
                 Category.PROFIT
         ));

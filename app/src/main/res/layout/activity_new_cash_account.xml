@@ -1,12 +1,22 @@
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/test_new_design_toolbar" />
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/sv">
+    android:id="@+id/sv"
+    android:background="#f9f9f9">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,37 +28,125 @@
         tools:context="ru.tikhanovskiy.mymoneyflow.activity.NewCashActivity"
         android:orientation="vertical">
 
+
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Название"
             android:id="@+id/tv_title"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
-        <EditText
+
+        <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/et_title"
-            android:text="Счет"
-            android:layout_marginLeft="4dp"
+            android:id="@+id/test"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:singleLine="true"
+            android:textColor="?android:textColor"
+            android:ems="10"
+            android:hint="Название"
+            app:met_floatingLabel="highlight"
+            app:met_minCharacters="0"
+            app:met_maxCharacters="10"
+            app:met_helperText="Integer"
+            app:met_errorColor="@color/red"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:errorTextAppearance="@color/red">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_title"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:singleLine="true"
+                android:textColor="?android:textColor"
+                android:ems="10"
+                android:hint="Название"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tvCounter"
+            android:layout_gravity="right"
             android:layout_marginRight="4dp"
-            android:singleLine="true" />
+            android:textColor="@color/grey"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Комментарий"
             android:id="@+id/tv_comment"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_type"
-            android:text="Кошелек"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="?android:textColor"
+            android:hint="Комментарий"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Средства"
+            android:id="@+id/tv_amount"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/et_amount"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:singleLine="true"
+                android:textColor="?android:textColor"
+                android:hint="Средства" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Валюта"
+            android:id="@+id/tv_currency"
+            android:layout_marginTop="8dp"
+            android:textColor="?android:colorAccent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sp_currency"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:spinnerMode="dialog" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -72,7 +170,9 @@
                     android:text="Цвет"
                     android:id="@+id/tv_color"
                     android:layout_marginTop="8dp"
-                    android:layout_marginLeft="150dp" />
+                    android:layout_marginLeft="150dp"
+                    android:textColor="?android:colorAccent"
+                    android:layout_marginRight="4dp" />
 
                 <Spinner
                     android:layout_width="match_parent"
@@ -94,13 +194,16 @@
                 android:layout_marginTop="0dp"
                 android:layout_alignParentStart="true">
 
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Логотип"
                     android:id="@+id/tv_logo"
                     android:layout_marginTop="8dp"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginRight="4dp"
+                    android:textColor="?android:colorAccent"
+                    android:layout_marginLeft="4dp" />
 
                 <Spinner
                     android:layout_width="125dp"
@@ -114,38 +217,7 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Средства"
-            android:id="@+id/tv_amount"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:ems="10"
-            android:id="@+id/et_amount"
-            android:text="0"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Валюта"
-            android:id="@+id/tv_currency"
-            android:layout_marginTop="8dp" />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sp_currency"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:spinnerMode="dialog" />
 
     </LinearLayout>
 </ScrollView>
+</LinearLayout>

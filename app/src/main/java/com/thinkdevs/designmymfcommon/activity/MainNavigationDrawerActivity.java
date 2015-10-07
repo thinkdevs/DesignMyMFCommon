@@ -22,7 +22,7 @@ public class MainNavigationDrawerActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     * Fragment managing the behaviors, interactions and presentation of the navigation test_new_design_drawer_view.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -45,7 +45,7 @@ public class MainNavigationDrawerActivity extends FragmentActivity
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
-        // Set up the drawer.
+        // Set up the test_new_design_drawer_view.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -135,7 +135,7 @@ public class MainNavigationDrawerActivity extends FragmentActivity
         Log.d("tag", "Main Navigation Drawer Activity - 'onCreateOptionMenu'");
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
+            // if the test_new_design_drawer_view is not showing. Otherwise, let the test_new_design_drawer_view
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
             restoreActionBar();

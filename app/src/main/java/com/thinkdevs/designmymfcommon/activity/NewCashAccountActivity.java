@@ -1,18 +1,25 @@
 package com.thinkdevs.designmymfcommon.activity;
 
-import android.app.ActionBar;
-import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListCurrencyAdapter;
@@ -26,7 +33,7 @@ import com.thinkdevs.designmymfcommon.utills.Constants;
 import java.util.List;
 
 
-public class NewCashAccountActivity extends Activity {
+public class NewCashAccountActivity extends AppCompatActivity {
 
     private boolean IS_NEW = true;
 
@@ -50,9 +57,15 @@ public class NewCashAccountActivity extends Activity {
         if(extras != null)
             setTitle(extras.getString(Constants.ACTIVITY_TITLE));
 
-        ActionBar actionBar = getActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Новый счет");
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
+
+        setupFloatingLabelError();
 
         etTitle    = (EditText)findViewById(R.id.et_title);
         etComment  = (EditText)findViewById(R.id.et_type);
@@ -163,6 +176,7 @@ public class NewCashAccountActivity extends Activity {
             // Проверка условий и сохранение
             if(title == null || title.length() == 0){
                 Toast.makeText(this, getResources().getString(R.string.msg_write_name), Toast.LENGTH_LONG).show();
+                requestFocus(etTitle);
             }
             else if(CashAccount.isExist(title) && !title.equals(oldCashAccountName)){
                 Toast.makeText(this, getResources().getString(R.string.msg_cash_account_exist), Toast.LENGTH_LONG).show();
@@ -194,5 +208,66 @@ public class NewCashAccountActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+//    private void setupFloatingLabelError() {
+//        final TextInputLayout floatingUsernameLabel = (TextInputLayout) findViewById(R.id.tilName);
+//        floatingUsernameLabel.getEditText().addTextChangedListener(new TextWatcher() {
+//            // ...
+//            @Override
+//            public void onTextChanged(CharSequence text, int start, int count, int after) {
+//                if (text.length() > 10) {
+//                    floatingUsernameLabel.setError("Рекомендуемая длинна 10 символов");
+//                    floatingUsernameLabel.setErrorEnabled(true);
+//                } else {
+//                    floatingUsernameLabel.setErrorEnabled(false);
+//                }
+//            }
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count,
+//                                          int after) {
+//                // TODO Auto-generated method stub
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+//    }
+
+
+        private void setupFloatingLabelError() {
+        final MaterialEditText floatingUsernameLabel = (MaterialEditText) findViewById(R.id.test);
+        floatingUsernameLabel.addTextChangedListener(new TextWatcher() {
+            // ...
+            @Override
+            public void onTextChanged(CharSequence text, int start, int count, int after) {
+                if (text.length() > 10) {
+                    floatingUsernameLabel.setFloatingLabelTextColor(android.graphics.Color.RED);
+
+                } else {
+                    floatingUsernameLabel.setFloatingLabelTextColor(getResources().getColor(R.color.teal));
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 }

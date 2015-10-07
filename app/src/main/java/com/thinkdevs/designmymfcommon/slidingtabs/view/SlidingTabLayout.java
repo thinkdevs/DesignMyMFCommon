@@ -168,10 +168,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
     }
 
-    public void setDistributeEvenly(boolean distributeEvenly) {
-        mDistributeEvenly = distributeEvenly;
-    }
-
     /**
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * {@link #setCustomTabView(int, int)}.
@@ -200,6 +196,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         textView.setPadding(padding, padding, padding, padding);
 
         textView.setTextColor(Color.WHITE);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
         return textView;
     }
@@ -230,6 +227,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     0, LayoutParams.WRAP_CONTENT, 1f);
             tabView.setLayoutParams(lp);
+
 
             tabTitleView.setText(adapter.getPageTitle(i));
             tabView.setOnClickListener(tabClickListener);
