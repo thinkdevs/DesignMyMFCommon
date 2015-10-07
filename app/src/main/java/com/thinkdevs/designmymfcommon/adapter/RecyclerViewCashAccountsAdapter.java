@@ -92,12 +92,15 @@ public class RecyclerViewCashAccountsAdapter extends
         CashAccount cashAccount = mCashAccounts.get(i);
 
         //Сохранение id счета и его позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_cash_account_ID, cashAccount.getId());
+        viewHolder.cardView.setTag(R.string.tag_cash_account_id, cashAccount.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
+        viewHolder.rlTitleBar.setTag(R.string.tag_cash_account_id, cashAccount.getId());
+        viewHolder.rlTitleBar.setTag(R.string.tag_position_in_rv, i);
+
         //id счета для быстрого создания операций
-        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_ID,cashAccount.getId());
-        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_ID,cashAccount.getId());
+        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_id,cashAccount.getId());
+        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_id,cashAccount.getId());
 
         //Цвет бара кошелька
         viewHolder.rlTitleBar.   setBackgroundColor(
@@ -188,9 +191,9 @@ public class RecyclerViewCashAccountsAdapter extends
     @Override
     public boolean onLongClick(final View v) {
         //id операции
-        final long id = (long)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_cash_account_ID));
+        final long id = (long)(v.getTag(R.string.tag_cash_account_id));
         //позиция в rv
-        final int position = (int)(v.findViewById(R.id.cv_cash_account).getTag(R.string.tag_position_in_rv));
+        final int position = (int)(v.getTag(R.string.tag_position_in_rv));
         //меню
         final PopupMenu popupMenu = new PopupMenu(
                 mContext, v.findViewById(R.id.tv_cash_account_name));
@@ -227,7 +230,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
         @Override
         public void onClick(View v) {
-            cashAccountID = (long) v.getTag(R.string.tag_cash_account_ID);
+            cashAccountID = (long) v.getTag(R.string.tag_cash_account_id);
             switch (v.getId()){
                 case R.id.btn_add_expense:
                     typeOperation = Category.EXPENSE;

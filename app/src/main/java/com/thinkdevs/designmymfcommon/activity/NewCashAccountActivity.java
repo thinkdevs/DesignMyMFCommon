@@ -3,6 +3,7 @@ package com.thinkdevs.designmymfcommon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import com.thinkdevs.designmymfcommon.database.Currency;
 import com.thinkdevs.designmymfcommon.database.Logo;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,6 +47,8 @@ public class NewCashAccountActivity extends AppCompatActivity {
     Spinner  spLogo;
     Spinner  spCurrency;
     Spinner  spColor;
+
+    Spinner  spUnits;
 
     Intent intent;
     Bundle bundle;
@@ -73,6 +79,8 @@ public class NewCashAccountActivity extends AppCompatActivity {
         spLogo     = (Spinner)findViewById(R.id.sp_logos);
         spColor    = (Spinner)findViewById(R.id.sp_colors);
         spCurrency = (Spinner)findViewById(R.id.sp_currency);
+        spUnits    = (Spinner)findViewById(R.id.sp_units);
+
 
         List<Logo> logosCashAccountList = Logo.getAllCashAccountLogos();
         List<Color> colorList = new Select().from(Color.class).queryList();
@@ -84,6 +92,10 @@ public class NewCashAccountActivity extends AppCompatActivity {
                 new ListCurrencyAdapter(this, currencyList);
         ListColorAdapter colorAdapter =
                 new ListColorAdapter(this, colorList);
+
+        String [] unitsList = getResources().getStringArray(R.array.currency_units);
+
+        spUnits.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, unitsList));
 
         spLogo.    setAdapter(logosAdapter);
         spColor.   setAdapter(colorAdapter);
@@ -210,44 +222,17 @@ public class NewCashAccountActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    private void setupFloatingLabelError() {
-//        final TextInputLayout floatingUsernameLabel = (TextInputLayout) findViewById(R.id.tilName);
-//        floatingUsernameLabel.getEditText().addTextChangedListener(new TextWatcher() {
-//            // ...
-//            @Override
-//            public void onTextChanged(CharSequence text, int start, int count, int after) {
-//                if (text.length() > 10) {
-//                    floatingUsernameLabel.setError("Рекомендуемая длинна 10 символов");
-//                    floatingUsernameLabel.setErrorEnabled(true);
-//                } else {
-//                    floatingUsernameLabel.setErrorEnabled(false);
-//                }
-//            }
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count,
-//                                          int after) {
-//                // TODO Auto-generated method stub
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
-//    }
-
-
-        private void setupFloatingLabelError() {
-        final MaterialEditText floatingUsernameLabel = (MaterialEditText) findViewById(R.id.test);
-        floatingUsernameLabel.addTextChangedListener(new TextWatcher() {
+    private void setupFloatingLabelError() {
+        final TextInputLayout floatingUsernameLabel = (TextInputLayout) findViewById(R.id.tilName);
+        floatingUsernameLabel.getEditText().addTextChangedListener(new TextWatcher() {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
                 if (text.length() > 10) {
-                    floatingUsernameLabel.setFloatingLabelTextColor(android.graphics.Color.RED);
-
+                    floatingUsernameLabel.setError("Рекомендуемая длинна 10 символов");
+                    floatingUsernameLabel.setErrorEnabled(true);
                 } else {
-                    floatingUsernameLabel.setFloatingLabelTextColor(getResources().getColor(R.color.teal));
+                    floatingUsernameLabel.setErrorEnabled(false);
                 }
             }
 
@@ -263,6 +248,9 @@ public class NewCashAccountActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 
 
     private void requestFocus(View view) {

@@ -62,7 +62,6 @@ public class NewCategoryActivity extends Activity {
         mIntent = getIntent();
         mBundle = mIntent.getExtras();
 
-
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);

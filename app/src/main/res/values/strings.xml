@@ -55,7 +55,7 @@
     <string name="tag_currency_ID">currency_id</string>
     <string name="tag_category_id">category_id</string>
     <string name="tag_operation_ID">operation_id</string>
-    <string name="tag_cash_account_ID">cash_account_id</string>
+    <string name="tag_cash_account_id">cash_account_id</string>
     <string name="tag_operation_template_ID">operation_template_id</string>
     <string name="tag_position_in_rv">position_in_rv</string>
 
@@ -86,5 +86,12 @@
         <string name="msg_category_exist">
         "Категория с таким именем уже существует"
     </string>
+
+    <string-array name="currency_units">
+        <item> </item>
+        <item>тыс.</item>
+        <item>млн.</item>
+        <item>млрд.</item>
+    </string-array>
 
 </resources>

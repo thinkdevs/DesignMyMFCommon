@@ -29,32 +29,6 @@
         android:orientation="vertical">
 
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Название"
-            android:id="@+id/tv_title"
-            android:layout_marginTop="8dp"
-            android:visibility="gone" />
-
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/test"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:singleLine="true"
-            android:textColor="?android:textColor"
-            android:ems="10"
-            android:hint="Название"
-            app:met_floatingLabel="highlight"
-            app:met_minCharacters="0"
-            app:met_maxCharacters="10"
-            app:met_helperText="Integer"
-            app:met_errorColor="@color/red"/>
-
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilName"
             android:layout_width="match_parent"
@@ -71,30 +45,15 @@
                 android:singleLine="true"
                 android:textColor="?android:textColor"
                 android:ems="10"
-                android:hint="Название"/>
+                android:hint="Название"
+                android:textSize="34dp"
+                android:textIsSelectable="false" />
         </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/tvCounter"
-            android:layout_gravity="right"
-            android:layout_marginRight="4dp"
-            android:textColor="@color/grey"
-            android:textSize="12sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Комментарий"
-            android:id="@+id/tv_comment"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,65 +62,122 @@
             android:layout_marginRight="4dp"
             android:singleLine="true"
             android:textColor="?android:textColor"
-            android:hint="Комментарий"/>
+            android:hint="Описание" />
         </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Средства"
-            android:id="@+id/tv_amount"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"/>
+        <!--<android.support.design.widget.TextInputLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="16dp">-->
+            <!--<EditText-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:inputType="numberDecimal"-->
+                <!--android:ems="10"-->
+                <!--android:id="@+id/et_amount"-->
+                <!--android:layout_marginLeft="4dp"-->
+                <!--android:layout_marginRight="4dp"-->
+                <!--android:singleLine="true"-->
+                <!--android:textColor="?android:textColor"-->
+                <!--android:hint="Средства" />-->
+        <!--</android.support.design.widget.TextInputLayout>-->
 
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="bottom">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="10"
-                android:id="@+id/et_amount"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:singleLine="true"
-                android:textColor="?android:textColor"
-                android:hint="Средства" />
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Валюта"
-            android:id="@+id/tv_currency"
-            android:layout_marginTop="8dp"
-            android:textColor="?android:colorAccent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp" />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sp_currency"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:spinnerMode="dialog" />
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_marginTop="16dp"
+                android:layout_weight="0.5">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/et_amount"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:singleLine="true"
+                    android:textColor="?android:textColor"
+                    android:hint="Средства"
+                    android:maxLength="6" />
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_weight="0.6"
+                android:layout_marginBottom="2dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Еденица"
+                    android:id="@+id/textView2"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sp_units"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_weight="0.7"
+                android:layout_marginBottom="2dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Валюта"
+                    android:id="@+id/tv_currency"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sp_currency"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="0dp"
-                android:layout_alignParentStart="true"
+                android:layout_alignParentStart="false"
                 android:layout_marginLeft="0dp">
 
                 <TextView
@@ -170,13 +186,14 @@
                     android:text="Цвет"
                     android:id="@+id/tv_color"
                     android:layout_marginTop="8dp"
-                    android:layout_marginLeft="150dp"
-                    android:textColor="?android:colorAccent"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginRight="4dp"
+                    android:textSize="12sp" />
 
                 <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="match_parent"
                     android:id="@+id/sp_colors"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
@@ -202,12 +219,13 @@
                     android:id="@+id/tv_logo"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="4dp"
-                    android:textColor="?android:colorAccent"
-                    android:layout_marginLeft="4dp" />
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="12sp" />
 
                 <Spinner
-                    android:layout_width="125dp"
-                    android:layout_height="60dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:id="@+id/sp_logos"
                     android:layout_marginRight="4dp"
                     android:layout_marginLeft="4dp"
@@ -215,9 +233,10 @@
 
             </LinearLayout>
 
-        </RelativeLayout>
-
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
+
+
 </LinearLayout>

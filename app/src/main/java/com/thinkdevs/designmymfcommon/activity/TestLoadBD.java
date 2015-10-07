@@ -25,7 +25,7 @@ public class TestLoadBD {
         //Сохранение валют в базу данных ********************************
         Currency currency = new Currency();
         currency.setName("Рубль");
-        currency.setStrSymbol("РУБ");
+        currency.setStrSymbol("\u20BD");
         currency.save();
 
         Currency currency1 = new Currency();

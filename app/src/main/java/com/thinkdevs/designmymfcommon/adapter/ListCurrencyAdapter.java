@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.Currency;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ListCurrencyAdapter extends ArrayAdapter<Currency> {
 
     public ListCurrencyAdapter(Context context, List<Currency> currencies){
-        super(context, android.R.layout.simple_list_item_2, currencies);
+        super(context, android.R.layout.simple_list_item_1, currencies);
     }
 
     @Override
@@ -24,11 +25,11 @@ public class ListCurrencyAdapter extends ArrayAdapter<Currency> {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
-                    .inflate(android.R.layout.simple_list_item_2, null);
+                    .inflate(android.R.layout.simple_list_item_1, null);
         }
 
         ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getStrSymbol());
-        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getName());
+//        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getName());
 
         return convertView;
     }
@@ -39,11 +40,11 @@ public class ListCurrencyAdapter extends ArrayAdapter<Currency> {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
-                    .inflate(android.R.layout.simple_list_item_2, null);
+                    .inflate(R.layout.currency_drop_down_item, null);
         }
 
-        ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getStrSymbol());
-        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getName());
+        ((TextView)(convertView.findViewById(R.id.textView1))).setText(currency.getStrSymbol());
+        ((TextView)(convertView.findViewById(R.id.textView2))).setText(currency.getName());
 
         return convertView;
     }
