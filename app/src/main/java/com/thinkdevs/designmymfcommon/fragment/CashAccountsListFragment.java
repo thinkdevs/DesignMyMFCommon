@@ -1,6 +1,5 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewCashAccountsAdapter;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
@@ -24,11 +22,6 @@ import com.thinkdevs.designmymfcommon.database.CashAccount;
 import java.util.List;
 
 public class CashAccountsListFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -41,25 +34,12 @@ public class CashAccountsListFragment extends Fragment {
 
         // Включаем отображение меню
         setHasOptionsMenu(true);
-
     }
 
-    public static CashAccountsListFragment newInstance(int sectionNumber) {
-        Log.d("tag", "Cash Accounts List Fragment - 'newInstance'");
-        CashAccountsListFragment fragment = new CashAccountsListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
+    public static CashAccountsListFragment newInstance() {
+        return new CashAccountsListFragment();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        Log.d("tag", "Cash Accounts List Fragment - 'onAttach'");
-        super.onAttach(activity);
-        ((MainNavigationDrawerActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

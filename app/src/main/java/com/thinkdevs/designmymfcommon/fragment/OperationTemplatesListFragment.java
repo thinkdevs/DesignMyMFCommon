@@ -1,9 +1,8 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationTemplateActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationTemplatesAdapter;
@@ -45,21 +43,8 @@ public class OperationTemplatesListFragment extends Fragment {
 
     }
 
-    public static OperationTemplatesListFragment newInstance(int sectionNumber) {
-        Log.d("tag", "Operation Templates List Fragment - 'newInstance'");
-        OperationTemplatesListFragment fragment = new OperationTemplatesListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        Log.d("tag", "Operation Templates List Fragment - 'onAttach'");
-        super.onAttach(activity);
-        ((MainNavigationDrawerActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
+    public static OperationTemplatesListFragment newInstance() {
+        return new OperationTemplatesListFragment();
     }
 
     @Override

@@ -16,13 +16,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListCurrencyAdapter;
@@ -31,9 +27,9 @@ import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
 import com.thinkdevs.designmymfcommon.database.Logo;
+import com.thinkdevs.designmymfcommon.dialog.ChooseDecorColorDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -47,8 +43,9 @@ public class NewCashAccountActivity extends AppCompatActivity {
     Spinner  spLogo;
     Spinner  spCurrency;
     Spinner  spColor;
-
     Spinner  spUnits;
+
+    Spinner spNavigation;
 
     Intent intent;
     Bundle bundle;
@@ -81,6 +78,11 @@ public class NewCashAccountActivity extends AppCompatActivity {
         spCurrency = (Spinner)findViewById(R.id.sp_currency);
         spUnits    = (Spinner)findViewById(R.id.sp_units);
 
+        spNavigation = ((Spinner) findViewById(R.id.spinner_nav));
+
+        String [] spNaigatorItems = getResources().getStringArray(R.array.spinner_navigator);
+
+        spNavigation.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spNaigatorItems));
 
         List<Logo> logosCashAccountList = Logo.getAllCashAccountLogos();
         List<Color> colorList = new Select().from(Color.class).queryList();
@@ -155,70 +157,77 @@ public class NewCashAccountActivity extends AppCompatActivity {
             return true;
         }
 
-        //**************************** Сохранение счета *****************************//
-
         if(id == R.id.action_save){
-
-            // Получение LogoInterface
-            int logoId = (int) spLogo.getSelectedView().findViewById(R.id.imageView).getTag();
-            Logo cashAccountLogo = Logo.getLogoByResourceId(logoId);
-
-            // Получение Color
-            int colorId = (int) spColor.getSelectedView().findViewById(R.id.tv_color).getTag();
-            Color color = Color.getColorByResourceId(colorId);
-
-            // Получение Currency
-            String strSymbol = String.valueOf(((TextView) spCurrency.getSelectedView().findViewById(android.R.id.text1)).getText());
-            Currency currency = Currency.getCurrencyByStrSymbol(strSymbol);
-
-            // Получение Названия
-            String title = String.valueOf(etTitle.getText());
-
-            // Получение комментария
-            String comment = String.valueOf(etComment.getText());
-
-            // Получение Средств
-            String amountString = String.valueOf(etAmount.getText());
-            float amount;
-            if(amountString.length() == 0)
-                amount = 0;
-            else
-             amount = Float.parseFloat(String.valueOf(etAmount.getText()));
-
-            // Проверка условий и сохранение
-            if(title == null || title.length() == 0){
-                Toast.makeText(this, getResources().getString(R.string.msg_write_name), Toast.LENGTH_LONG).show();
-                requestFocus(etTitle);
-            }
-            else if(CashAccount.isExist(title) && !title.equals(oldCashAccountName)){
-                Toast.makeText(this, getResources().getString(R.string.msg_cash_account_exist), Toast.LENGTH_LONG).show();
-            }
-            else {
-                CashAccount cashAccount;
-                if(IS_NEW)
-                    cashAccount = new CashAccount();
-                else
-                    cashAccount = CashAccount.getByID(bundle.getLong(Constants.CASH_ACCOUNT_ID));
-                cashAccount.setLogo(cashAccountLogo);
-                cashAccount.setColor(color);
-                cashAccount.setCurrency(currency);
-                cashAccount.setName(title);
-                if(comment == null)
-                    cashAccount.setComment("");
-                else
-                    cashAccount.setComment(comment);
-                cashAccount.setAmount(amount);
-
-                if(IS_NEW)
-                    cashAccount.save();
-                else
-                    cashAccount.update();
-                NavUtils.navigateUpFromSameTask(this);
-            }
-
-            // Возвращаемся назад после сохранения
+            new ChooseDecorColorDialogFragment().show(getFragmentManager(), "chooseDecorColor");
             return true;
         }
+
+        //**************************** Сохранение счета *****************************//
+
+//        if(id == R.id.action_save){
+//
+//            // Получение LogoInterface
+//            int logoId = (int) spLogo.getSelectedView().findViewById(R.id.imageView).getTag();
+//            Logo cashAccountLogo = Logo.getLogoByResourceId(logoId);
+//
+//            // Получение Color
+//            int colorId = (int) spColor.getSelectedView().findViewById(R.id.tv_color).getTag();
+//            Color color = Color.getColorByResourceId(colorId);
+//
+//            // Получение Currency
+//            String strSymbol = String.valueOf(((TextView) spCurrency.getSelectedView().findViewById(android.R.id.text1)).getText());
+//            Currency currency = Currency.getCurrencyByStrSymbol(strSymbol);
+//
+//            // Получение Названия
+//            String title = String.valueOf(etTitle.getText());
+//
+//            // Получение комментария
+//            String comment = String.valueOf(etComment.getText());
+//
+//            // Получение Средств
+//            String amountString = String.valueOf(etAmount.getText());
+//            float amount;
+//            if(amountString.length() == 0)
+//                amount = 0;
+//            else
+//             amount = Float.parseFloat(String.valueOf(etAmount.getText()));
+//
+//            // Проверка условий и сохранение
+//            if(title == null || title.length() == 0){
+//                Toast.makeText(this, getResources().getString(R.string.msg_write_name), Toast.LENGTH_LONG).show();
+//                requestFocus(etTitle);
+//            }
+//            else if(CashAccount.isExist(title) && !title.equals(oldCashAccountName)){
+//                Toast.makeText(this, getResources().getString(R.string.msg_cash_account_exist), Toast.LENGTH_LONG).show();
+//            }
+//            else {
+//                CashAccount cashAccount;
+//                if(IS_NEW)
+//                    cashAccount = new CashAccount();
+//                else
+//                    cashAccount = CashAccount.getByID(bundle.getLong(Constants.CASH_ACCOUNT_ID));
+//                cashAccount.setLogo(cashAccountLogo);
+//                cashAccount.setColor(color);
+//                cashAccount.setCurrency(currency);
+//                cashAccount.setName(title);
+//                if(comment == null)
+//                    cashAccount.setComment("");
+//                else
+//                    cashAccount.setComment(comment);
+//                cashAccount.setAmount(amount);
+//
+//                if(IS_NEW)
+//                    cashAccount.save();
+//                else
+//                    cashAccount.update();
+//                NavUtils.navigateUpFromSameTask(this);
+//            }
+//
+//            // Возвращаемся назад после сохранения
+//            return true;
+//        }
+
+
         return super.onOptionsItemSelected(item);
     }
 

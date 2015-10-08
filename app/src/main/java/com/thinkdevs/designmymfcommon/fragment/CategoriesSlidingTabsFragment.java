@@ -77,7 +77,7 @@ public class CategoriesSlidingTabsFragment extends Fragment {
             mTitle = title;
             mIndicatorColor = indicatorColor;
             mDividerColor = dividerColor;
-            categoriesList = CategoriesListFragment.newInstance(type);
+            categoriesList = CategoriesListFragment.newInstance();
         }
 
         /**

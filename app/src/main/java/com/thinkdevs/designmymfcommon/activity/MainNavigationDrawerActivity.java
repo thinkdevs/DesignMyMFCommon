@@ -15,7 +15,6 @@ import com.thinkdevs.designmymfcommon.fragment.CashAccountsListFragment;
 import com.thinkdevs.designmymfcommon.fragment.NavigationDrawerFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationTemplatesListFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationsListFragment;
-import com.thinkdevs.designmymfcommon.fragment.CategoriesSlidingTabsFragment;
 
 
 public class MainNavigationDrawerActivity extends FragmentActivity
@@ -60,23 +59,23 @@ public class MainNavigationDrawerActivity extends FragmentActivity
 
         switch (position){
             case 0: fragmentManager.beginTransaction()
-                    .replace(R.id.container, CashAccountsListFragment.newInstance(position + 1))
+                    .replace(R.id.container, CashAccountsListFragment.newInstance())
                     .commit();
                 break;
             case 1: fragmentManager.beginTransaction()
-                    .replace(R.id.container, OperationsListFragment.newInstance(position + 1))
+                    .replace(R.id.container, OperationsListFragment.newInstance())
                     .commit();
                 break;
             case 2: fragmentManager.beginTransaction()
-                    .replace(R.id.container, OperationsListFragment.newInstance(position + 1))
+                    .replace(R.id.container, OperationsListFragment.newInstance())
                     .commit();
                 break;
             case 3: fragmentManager.beginTransaction()
-                    .replace(R.id.container, CategoriesSlidingTabsFragment.newInstance(position + 1))
+                    .replace(R.id.container, OperationsListFragment.newInstance())
                     .commit();
                 break;
             case 4: fragmentManager.beginTransaction()
-                    .replace(R.id.container, OperationTemplatesListFragment.newInstance(position + 1))
+                    .replace(R.id.container, OperationTemplatesListFragment.newInstance())
                     .commit();
                 break;
         }

@@ -1,6 +1,5 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.activity.MainNavigationDrawerActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewOperationActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewOperationsAdapter;
@@ -43,25 +41,10 @@ public class OperationsListFragment extends Fragment {
 
         // Включаем отображение меню
         setHasOptionsMenu(true);
-
     }
 
-    public static OperationsListFragment newInstance(int sectionNumber) {
-        Log.d("tag", "Operation Templates List Fragment - 'newInstance'");
-        OperationsListFragment fragment = new OperationsListFragment();
-        fragment.sectionNumber = sectionNumber;
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        Log.d("tag", "Operation Templates List Fragment - 'onAttach'");
-        super.onAttach(activity);
-        ((MainNavigationDrawerActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
+    public static OperationsListFragment newInstance() {
+        return new OperationsListFragment();
     }
 
     @Override

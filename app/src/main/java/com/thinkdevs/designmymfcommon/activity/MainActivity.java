@@ -13,7 +13,10 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.fragment.TestNewDesignListFragment;
+import com.thinkdevs.designmymfcommon.fragment.CashAccountsListFragment;
+import com.thinkdevs.designmymfcommon.fragment.CategoriesListFragment;
+import com.thinkdevs.designmymfcommon.fragment.OperationTemplatesListFragment;
+import com.thinkdevs.designmymfcommon.fragment.OperationsListFragment;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawer;
@@ -82,16 +85,21 @@ public class MainActivity extends AppCompatActivity {
 
         Class fragmentClass;
         switch(menuItem.getItemId()) {
-            case R.id.navigation_item_1:
-                fragmentClass = TestNewDesignListFragment.class;
+            case R.id.cash_accounts:
+                fragmentClass = CashAccountsListFragment.class;
                 break;
-            case R.id.navigation_item_2:
-                fragmentClass = TestNewDesignListFragment.class;
+            case R.id.operations:
+                fragmentClass = OperationsListFragment.class;
+                break;
+            case R.id.operation_templates:
+                fragmentClass = OperationTemplatesListFragment.class;
+                break;
+            case R.id.categories:
+                fragmentClass = CategoriesListFragment.class;
                 break;
             default:
-                fragmentClass = TestNewDesignListFragment.class;
+                fragmentClass = CashAccountsListFragment.class;
         }
-
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();

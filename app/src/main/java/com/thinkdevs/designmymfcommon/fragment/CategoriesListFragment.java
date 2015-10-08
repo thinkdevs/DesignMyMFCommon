@@ -28,7 +28,7 @@ public class CategoriesListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private int mType;
+    private int mType = Category.EXPENSE;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,14 +39,9 @@ public class CategoriesListFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public static CategoriesListFragment newInstance(int type) {
-        Log.d("tag", "Operation Templates List Fragment - 'newInstance'" );
-        Log.d("test", String.valueOf(type));
-        CategoriesListFragment fragment = new CategoriesListFragment();
-        Bundle args = new Bundle();
-        args.putInt(Constants.CATEGORY_TYPE, type);
-        fragment.setArguments(args);
-        return fragment;
+    public static CategoriesListFragment newInstance() {
+
+        return new CategoriesListFragment();
     }
 
     @Override

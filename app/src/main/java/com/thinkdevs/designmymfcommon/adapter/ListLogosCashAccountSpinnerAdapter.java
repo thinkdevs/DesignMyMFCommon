@@ -33,6 +33,7 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
 
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));
         imageView.setImageResource(logo.getResourceId());
+        imageView.setColorFilter(res.getColor(R.color.teal));
         imageView.setTag(logo.getResourceId());
 
         return convertView;
@@ -47,9 +48,10 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.icon_item, null);
         }
-        convertView.setBackgroundColor(res.getColor(R.color.blueGrey));
+
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));
         imageView.setImageResource(logo.getResourceId());
+        imageView.setColorFilter(res.getColor(R.color.teal));
         imageView.setTag(logo.getResourceId());
 
         return convertView;

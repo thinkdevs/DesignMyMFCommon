@@ -94,4 +94,10 @@
         <item>млрд.</item>
     </string-array>
 
+    <string-array name="spinner_navigator">
+        <item>Все</item>
+        <item>Расходы</item>
+        <item>Доходы</item>
+    </string-array>
+
 </resources>

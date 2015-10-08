@@ -2,14 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_1"
+            android:id="@+id/cash_accounts"
             android:checked="true"
-            android:icon="@drawable/ic_credit_card_white_36dp"
-            android:title="Карты"/>
+            android:icon="@drawable/ic_credit_card_multiple_grey600_24dp"
+            android:title="Счета"/>
         <item
-            android:id="@+id/navigation_item_2"
-            android:icon="@drawable/ic_account_balance_wallet_white_36dp"
-            android:title="Кошельки"/>
+            android:id="@+id/operations"
+            android:icon="@drawable/ic_cash_multiple_grey600_24dp"
+            android:title="Операции"/>
+        <item
+            android:id="@+id/operation_templates"
+            android:icon="@drawable/ic_content_paste_grey600_24dp"
+            android:title="Шаблоны операций" />
+        <item
+            android:id="@+id/categories"
+            android:icon="@drawable/ic_format_list_bulleted_grey600_24dp"
+            android:title="Категории"/>
     </group>
 
 </menu>
