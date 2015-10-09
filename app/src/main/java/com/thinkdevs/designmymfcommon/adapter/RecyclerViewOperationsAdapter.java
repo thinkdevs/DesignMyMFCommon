@@ -79,19 +79,19 @@ public class RecyclerViewOperationsAdapter extends
         Operation operation = mOperations.get(i);
 
         //Сохранение id операции и ее позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_operation_ID, operation.getId());
+        viewHolder.cardView.setTag(R.string.tag_operation_id, operation.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
         //Цвет фона под логотипом
         viewHolder.flLogo.setBackgroundColor(
                 (mResources.getColor(operation.getCategory().getColor().getResourceId())));
         viewHolder.flLogo.setTag(
-                R.string.tag_resource_ID, (operation.getCategory().getColor().getResourceId()));
+                R.string.tag_resource_id, (operation.getCategory().getColor().getResourceId()));
 
         //Логотип
         viewHolder.ivCategoryLogo.setImageResource(operation.getCategory().getLogo().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_ID, operation.getCategory().getLogo().getResourceId());
+                R.string.tag_resource_id, operation.getCategory().getLogo().getResourceId());
 
         //Имя категории
         viewHolder.tvCategoryName.setText(operation.getCategory().getName());

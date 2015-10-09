@@ -106,11 +106,11 @@ public class RecyclerViewCashAccountsAdapter extends
         viewHolder.rlTitleBar.   setBackgroundColor(
                 (mResources.getColor(cashAccount.getColor().getResourceId())));
         viewHolder.rlTitleBar.setTag(
-                R.string.tag_resource_ID, cashAccount.getColor().getResourceId());
+                R.string.tag_resource_id, cashAccount.getColor().getResourceId());
 
         //Логотип
         viewHolder.ivCashAccountLogo.setImageResource(cashAccount.getLogo().getResourceId());
-        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_ID, cashAccount.getLogo().getResourceId());
+        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_id, cashAccount.getLogo().getResourceId());
 
         //Имя
         viewHolder.tvCashAccountName.setText(cashAccount.getName());
@@ -123,7 +123,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
         //Валюта
         viewHolder.tvCurrency.setText(cashAccount.getCurrency().getStrSymbol());
-        viewHolder.tvCurrency.setTag(R.string.tag_currency_ID, cashAccount.getCurrency().getId());
+        viewHolder.tvCurrency.setTag(R.string.tag_currency_id, cashAccount.getCurrency().getId());
 
         //Последняя операция и дата последнего изменения
         Operation lastOperation = cashAccount.getLastOperation();

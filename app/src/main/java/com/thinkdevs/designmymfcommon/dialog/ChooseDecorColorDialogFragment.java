@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.GridColorAdapter;
@@ -20,22 +18,27 @@ import java.util.List;
 public class ChooseDecorColorDialogFragment extends DialogFragment
         implements AdapterView.OnItemClickListener {
 
-    public static ChooseDecorColorDialogFragment newInstance (){
+    private static ChooseColorDialogListener sListener;
+    private static long sCurrentColorId;
+
+    public static ChooseDecorColorDialogFragment newInstance (ChooseColorDialogListener listener, long currentColorId){
+
+        sListener = listener;
+        sCurrentColorId = currentColorId;
 
         return new ChooseDecorColorDialogFragment();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setTitle("Выберете цвет");
 
         View     view     = inflater.inflate(R.layout.fragment_dialog_choose_decor, null);
-        TextView tvTitle  = (TextView) view.findViewById(R.id.tvTitle);
-        tvTitle.setText("Выбирете цвет");
         GridView gridView = (GridView) view.findViewById(R.id.gvDecor);
 
-        List<Color> colors = Color.getColors();
-        ArrayAdapter<Color> adapter = new GridColorAdapter(getActivity(), colors);
+        List<Color> colors = Color.getColorsWithoutSystems();
+        ArrayAdapter<Color> adapter = new GridColorAdapter(getActivity(), colors, sCurrentColorId);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
 
@@ -44,6 +47,11 @@ public class ChooseDecorColorDialogFragment extends DialogFragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        sListener.onChooseColor((long)view.getTag(R.string.tag_color_id));
+        dismiss();
+    }
 
+    public interface ChooseColorDialogListener {
+        void onChooseColor(long colorId);
     }
 }

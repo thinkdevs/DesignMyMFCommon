@@ -17,10 +17,12 @@ import java.util.List;
 public class GridLogoAdapter extends ArrayAdapter<Logo> {
 
     Resources res;
+    private long mCurrentIconId;
 
-    public GridLogoAdapter(Context context, List<Logo> logos){
+    public GridLogoAdapter(Context context, List<Logo> logos, long currentIconId){
         super(context, R.layout.icon_grid_decor_logo, logos);
         res = context.getResources();
+        mCurrentIconId = currentIconId;
 }
 
     @Override
@@ -34,8 +36,12 @@ public class GridLogoAdapter extends ArrayAdapter<Logo> {
 
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));
         imageView.setImageResource(logo.getResourceId());
-        imageView.setColorFilter(res.getColor(R.color.teal));
-        imageView.setTag(logo.getResourceId());
+        if(mCurrentIconId == logo.getId())
+            imageView.setColorFilter(res.getColor(R.color.teal));
+        else
+            imageView.setColorFilter(res.getColor(R.color.grey));
+
+        convertView.setTag(R.string.tag_icon_id, logo.getId());
 
         return convertView;
     }

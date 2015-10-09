@@ -80,12 +80,12 @@ public class RecyclerViewParentCategoriesAdapter extends
         viewHolder.flLogo.setBackgroundColor(
                 (mResources.getColor(category.getColor().getResourceId())));
         viewHolder.flLogo.setTag(
-                R.string.tag_resource_ID, (category.getColor().getResourceId()));
+                R.string.tag_resource_id, (category.getColor().getResourceId()));
 
         //Логотип
         viewHolder.ivCategoryLogo.setImageResource(category.getLogo().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_ID, category.getLogo().getResourceId());
+                R.string.tag_resource_id, category.getLogo().getResourceId());
 
         //Имя категории
         viewHolder.tvCategoryName.setText(category.getName());

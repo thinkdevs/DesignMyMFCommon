@@ -51,11 +51,13 @@
     <!-- Keys for tags-->
     <string name="tag_id">id</string>
     <string name="tag_hierarchy">hierarchy</string>
-    <string name="tag_resource_ID">resource_id</string>
-    <string name="tag_currency_ID">currency_id</string>
+    <string name="tag_resource_id">resource_id</string>
+    <string name="tag_currency_id">currency_id</string>
     <string name="tag_category_id">category_id</string>
-    <string name="tag_operation_ID">operation_id</string>
+    <string name="tag_operation_id">operation_id</string>
     <string name="tag_cash_account_id">cash_account_id</string>
+    <string name="tag_color_id">color_id</string>
+    <string name="tag_icon_id">icon_id</string>
     <string name="tag_operation_template_ID">operation_template_id</string>
     <string name="tag_position_in_rv">position_in_rv</string>
 
@@ -88,7 +90,7 @@
     </string>
 
     <string-array name="currency_units">
-        <item> </item>
+        <item>-</item>
         <item>тыс.</item>
         <item>млн.</item>
         <item>млрд.</item>

@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.GridLogoAdapter;
@@ -20,22 +18,27 @@ import java.util.List;
 public class ChooseDecorIconDialogFragment extends DialogFragment
         implements AdapterView.OnItemClickListener {
 
-    public static ChooseDecorIconDialogFragment newInstance (){
+    private static ChooseIconDialogListener sListener;
+    private static long sCurrentIconId;
+
+    public static ChooseDecorIconDialogFragment newInstance (ChooseIconDialogListener listener, long currentIconId){
+
+        sListener = listener;
+        sCurrentIconId = currentIconId;
 
         return new ChooseDecorIconDialogFragment();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setTitle("Выберете иконку");
 
         View     view     = inflater.inflate(R.layout.fragment_dialog_choose_decor, null);
-        TextView tvTitle  = (TextView) view.findViewById(R.id.tvTitle);
-        tvTitle.setText("Выбирете логотип");
         GridView gridView = (GridView) view.findViewById(R.id.gvDecor);
 
-        List<Logo> logos = Logo.getAllCategoryLogos();
-        ArrayAdapter<Logo> adapter = new GridLogoAdapter(getActivity(), logos);
+        List<Logo> logos = Logo.getAllCashAccountLogos();
+        ArrayAdapter<Logo> adapter = new GridLogoAdapter(getActivity(), logos, sCurrentIconId);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
 
@@ -44,6 +47,11 @@ public class ChooseDecorIconDialogFragment extends DialogFragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        sListener.onChooseIcon((long)view.getTag(R.string.tag_icon_id));
+        dismiss();
+    }
 
+    public interface ChooseIconDialogListener {
+        void onChooseIcon(long iconId);
     }
 }

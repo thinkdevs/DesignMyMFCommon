@@ -68,4 +68,11 @@ public class Logo extends BaseModel {
                 .where(Condition.column(Logo$Table.RESOURCEID)
                         .eq(resourceId)).querySingle();
     }
+
+    public static Logo getById(long id){
+        return  new Select()
+                .from(Logo.class)
+                .where(Condition.column(Logo$Table.ID)
+                        .eq(id)).querySingle();
+    }
 }

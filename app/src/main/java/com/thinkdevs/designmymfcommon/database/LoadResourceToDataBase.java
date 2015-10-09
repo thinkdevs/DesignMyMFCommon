@@ -35,11 +35,10 @@ public class LoadResourceToDataBase {
         colorIds.add(R.color.amber);
         colorIds.add(R.color.orange);
 
-        colorIds.add(R.color.red);
         colorIds.add(R.color.deepOrange);
         colorIds.add(R.color.brown);
-
         colorIds.add(R.color.grey);
+
         colorIds.add(R.color.blueGrey);
 
         for(Integer id : colorIds){

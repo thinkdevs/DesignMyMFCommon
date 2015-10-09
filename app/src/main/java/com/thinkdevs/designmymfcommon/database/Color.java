@@ -38,10 +38,28 @@ public class Color extends BaseModel {
                 .from(Color.class)
                 .queryList();
     }
+
+
+    public static List<Color> getColorsWithoutSystems(){
+       List<Color> colors = getColors();
+        colors.remove(18);
+        colors.remove(17);
+        colors.remove(12);
+        colors.remove(8);
+        return colors;
+    }
+
     public static Color getColorByResourceId(long resourceId){
         return  new Select()
                 .from(Color.class)
                 .where(Condition.column(Color$Table.RESOURCEID)
-                .eq(resourceId)).querySingle();
+                        .eq(resourceId)).querySingle();
+    }
+
+    public static Color getById(long id){
+        return  new Select()
+                .from(Color.class)
+                .where(Condition.column(Color$Table.ID)
+                        .eq(id)).querySingle();
     }
 }

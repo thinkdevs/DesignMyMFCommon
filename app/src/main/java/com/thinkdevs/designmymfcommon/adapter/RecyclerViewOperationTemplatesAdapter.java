@@ -106,12 +106,12 @@ public class RecyclerViewOperationTemplatesAdapter extends
         viewHolder.flLogo.setBackgroundColor(
                 (mResources.getColor(template.getCategory().getColor().getResourceId())));
         viewHolder.flLogo.setTag(
-                R.string.tag_resource_ID, template.getCategory().getColor().getResourceId());
+                R.string.tag_resource_id, template.getCategory().getColor().getResourceId());
 
         //Логотип
         viewHolder.ivCategoryLogo.setImageResource(template.getCategory().getLogo().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_ID, template.getCategory().getLogo().getResourceId());
+                R.string.tag_resource_id, template.getCategory().getLogo().getResourceId());
 
         //Имя шаблона
         viewHolder.tvTemplateName.setText(template.getName());

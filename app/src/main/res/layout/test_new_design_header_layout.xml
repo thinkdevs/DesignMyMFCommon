@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:colorPrimaryDark"
+        android:background="?android:colorPrimary"
         android:scaleType="centerCrop" />
     <TextView
         style="@style/TextAppearance.AppCompat.Subhead"

@@ -43,7 +43,7 @@ public class TestLoadBD {
         CashAccount cash = new CashAccount();
         cash.setName("Кошелек");
         cash.setComment("Наличные");
-        cash.setColor(colors.get(17));
+        cash.setColor(colors.get(16));
         cash.setAmount(0);
         cash.setLogo(cashAccountLogos.get(0));
         cash.setCurrency(currency);
@@ -52,7 +52,7 @@ public class TestLoadBD {
         CashAccount cash1 = new CashAccount();
         cash1.setName("Тинькофф");
         cash1.setComment("MasterCard / Debit");
-        cash1.setColor(colors.get(12));
+        cash1.setColor(colors.get(14));
         cash1.setAmount(0);
         cash1.setLogo(cashAccountLogos.get(1));
         cash1.setCurrency(currency);
