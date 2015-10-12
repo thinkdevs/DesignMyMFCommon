@@ -199,7 +199,7 @@ public class NewCashAccountActivity extends AppCompatActivity
         mEtName. setText(cashAccount.getName());
         oldCashAccountName = cashAccount.getName();
         mEtDescription.  setText(cashAccount.getComment());
-        mEtAmount.setText(String.valueOf(cashAccount.getAmount()));
+        mEtAmount.setText(String.valueOf(cashAccount.getAmount()/100));
         mCurrentIconId  = cashAccount.getIcon().getId();
         mCurrentColorId = cashAccount.getColor().getId();
         long currencyId = cashAccount.getCurrency().getId();
