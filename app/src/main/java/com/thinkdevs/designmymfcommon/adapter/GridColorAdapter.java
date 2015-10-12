@@ -20,7 +20,7 @@ public class GridColorAdapter extends ArrayAdapter<Color> {
     private long mCurrentColorId;
 
     public GridColorAdapter(Context context, List<Color> colors, long currentColorId){
-        super(context, R.layout.item_grid_decor_color, colors);
+        super(context, R.layout.item_grid_decor, colors);
         res = context.getResources();
         mCurrentColorId = currentColorId;
 }
@@ -31,7 +31,7 @@ public class GridColorAdapter extends ArrayAdapter<Color> {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.icon_grid_decor_logo, null);
+                    .inflate(R.layout.item_grid_decor, null);
         }
 
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));

@@ -1,10 +1,11 @@
 package com.thinkdevs.designmymfcommon.activity;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewOperationActivity extends Activity {
+public class NewOperationActivity extends AppCompatActivity {
 
 
     private boolean IS_NEW = true;
@@ -60,7 +61,6 @@ public class NewOperationActivity extends Activity {
     Intent intent;
     Bundle bundle;
     long time;
-    String cashAccountName;
     float oldAmount;
     String oldCashAccountName;
     int oldTypeOperation;
@@ -75,8 +75,13 @@ public class NewOperationActivity extends Activity {
         if(bundle != null)
             setTitle(bundle.getString(Constants.ACTIVITY_TITLE));
 
-        ActionBar actionBar = getActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Новая операция");
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         rgTypeOperation = ((RadioGroup) findViewById(R.id.rg_type_operation));
         if(rgTypeOperation.getCheckedRadioButtonId() == R.id.rb_operation_expense)
@@ -241,7 +246,6 @@ public class NewOperationActivity extends Activity {
                             spCategory.setSelection(i);
                     }
                 }
-
 
             }
             else{

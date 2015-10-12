@@ -39,7 +39,7 @@ public class RecyclerViewSubCategoriesAdapter extends
 
         public SubCategoryViewHolder(View itemView) {
             super(itemView);
-            cardView          = (CardView) itemView.findViewById(R.id.cv_sub_category);
+            cardView          = (CardView) itemView.findViewById(R.id.cv_child_category);
             tvSubCategoryName = (TextView) itemView.findViewById(R.id.tv_sub_category_name);
         }
     }
@@ -54,7 +54,7 @@ public class RecyclerViewSubCategoriesAdapter extends
     public SubCategoryViewHolder onCreateViewHolder(ViewGroup parent,
                                                     int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_sub_category, parent, false);
+                .inflate(R.layout.card_child_category, parent, false);
 
         SubCategoryViewHolder vh = new SubCategoryViewHolder(view);
         return vh;
@@ -121,9 +121,9 @@ public class RecyclerViewSubCategoriesAdapter extends
     @Override
     public boolean onLongClick(final View v) {
         //id подкатегории
-        final long id = (long)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_category_id));
+        final long id = (long)(v.findViewById(R.id.cv_child_category).getTag(R.string.tag_category_id));
         //позиция в rv
-        final int position = (int)(v.findViewById(R.id.cv_sub_category).getTag(R.string.tag_position_in_rv));
+        final int position = (int)(v.findViewById(R.id.cv_child_category).getTag(R.string.tag_position_in_rv));
         //меню
         final PopupMenu popupMenu = new PopupMenu(
                 mContext, v.findViewById(R.id.tv_sub_category_name));

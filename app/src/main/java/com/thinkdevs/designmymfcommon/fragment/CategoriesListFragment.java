@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapter;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapterTestNew;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
@@ -67,7 +68,7 @@ public class CategoriesListFragment extends Fragment {
 
         List<Category> categoriesList = Category.getParentCategoriesWithoutEmpty(mType);
 
-        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), categoriesList);
+        mAdapter = new RecyclerViewParentCategoriesAdapterTestNew(CategoriesListFragment.this.getActivity(), categoriesList);
         mRecyclerView.setAdapter(mAdapter);
 
         return view;

@@ -107,7 +107,7 @@
             android:id="@+id/tv_currency"
             android:textSize="24dp"
             android:layout_gravity="left|top"
-            android:gravity="center|right"
+            android:gravity="center|center_horizontal"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="8dp" />
@@ -118,10 +118,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="тыс."
             android:id="@+id/tv_unit"
-            android:textSize="24dp"
-            android:layout_marginEnd="43dp"
+            android:textSize="20dp"
             android:layout_gravity="center|left"
-            android:layout_alignParentTop="true"
+            android:layout_alignTop="@+id/tv_currency"
             android:layout_toStartOf="@+id/tv_date" />
 
     </RelativeLayout>

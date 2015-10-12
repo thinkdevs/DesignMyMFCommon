@@ -1,11 +1,11 @@
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ru.tikhanovskiy.mymoneyflow.activity.NewCategoryActivity">
     <item
         android:id="@+id/action_save"
         android:title="@string/action_save"
         android:icon="@drawable/done"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom" />
 </menu>

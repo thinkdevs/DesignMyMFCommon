@@ -52,7 +52,7 @@ public class SubCategoriesDialogFragment extends DialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.fragment_dialog_sub_categories, null);
+        View view = inflater.inflate(R.layout.fragment_dialog_child_categories, null);
         rlTitleBar    = (RelativeLayout) view.findViewById(R.id.rl_title_bar);
         ivLogo        = (ImageView) view.findViewById(R.id.iv_logo);
         tvName        = (TextView) view.findViewById(R.id.tv_name);
