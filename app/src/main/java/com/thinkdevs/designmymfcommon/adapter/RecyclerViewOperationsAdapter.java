@@ -89,9 +89,9 @@ public class RecyclerViewOperationsAdapter extends
                 R.string.tag_resource_id, (operation.getCategory().getColor().getResourceId()));
 
         //Логотип
-        viewHolder.ivCategoryLogo.setImageResource(operation.getCategory().getLogo().getResourceId());
+        viewHolder.ivCategoryLogo.setImageResource(operation.getCategory().getIcon().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_id, operation.getCategory().getLogo().getResourceId());
+                R.string.tag_resource_id, operation.getCategory().getIcon().getResourceId());
 
         //Имя категории
         viewHolder.tvCategoryName.setText(operation.getCategory().getName());
@@ -139,7 +139,7 @@ public class RecyclerViewOperationsAdapter extends
     private void deleteOperation(){
         Operation operation = Operation.getByID(idToDelete);
         CashAccount cashAccount = operation.getCashAccount();
-        float cashAccountAmount = cashAccount.getAmount();
+        long cashAccountAmount = cashAccount.getAmount();
         cashAccount.setAmount(operation.isExpense()
                 ? cashAccountAmount + operation.getAmount()
                 : cashAccountAmount - operation.getAmount());

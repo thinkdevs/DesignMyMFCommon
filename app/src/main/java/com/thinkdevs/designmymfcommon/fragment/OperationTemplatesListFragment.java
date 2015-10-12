@@ -62,7 +62,7 @@ public class OperationTemplatesListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(OperationTemplatesListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<OperationTemplate> operationTemplateList = OperationTemplate.getOperationTemplates();
+        List<OperationTemplate> operationTemplateList = OperationTemplate.getTemplates();
 
         // specify an adapter (see also next example)
         mAdapter = new RecyclerViewOperationTemplatesAdapter(OperationTemplatesListFragment.this.getActivity(), operationTemplateList);

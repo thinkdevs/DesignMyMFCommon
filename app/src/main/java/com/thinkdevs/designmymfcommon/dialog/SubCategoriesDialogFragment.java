@@ -60,10 +60,10 @@ public class SubCategoriesDialogFragment extends DialogFragment
         btnNew        = (Button)view.findViewById(R.id.btn_new);
         btnNew.setOnClickListener(this);
         parentCategory = Category.getById(idCategory);
-        subCategories  = parentCategory.getSubCategories();
+        subCategories  = parentCategory.getChilds();
 
         rlTitleBar.setBackgroundColor(getResources().getColor(parentCategory.getColor().getResourceId()));
-        ivLogo.setImageResource(parentCategory.getLogo().getResourceId());
+        ivLogo.setImageResource(parentCategory.getIcon().getResourceId());
         tvName.setText(parentCategory.getName());
         StringBuilder sbCountSubCategories = new StringBuilder();
         sbCountSubCategories.append("( ").append(subCategories.size()).append(" )");
@@ -85,7 +85,7 @@ public class SubCategoriesDialogFragment extends DialogFragment
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), NewCategoryActivity.class);
-        intent.putExtra(Constants.OPEN_AS, Category.CREATE_SUB);
+        intent.putExtra(Constants.OPEN_AS, Category.CREATE_CHILD);
         intent.putExtra(Constants.CATEGORY_ID, parentCategory.getId());
         intent.putExtra(Constants.ACTIVITY_TITLE, getResources().getString(R.string.action_new_category));
         startActivity(intent);

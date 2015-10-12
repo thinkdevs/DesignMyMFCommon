@@ -28,8 +28,9 @@ public class ListCurrencyAdapter extends ArrayAdapter<Currency> {
                     .inflate(android.R.layout.simple_list_item_1, null);
         }
 
-        ((TextView)(convertView.findViewById(android.R.id.text1))).setText(currency.getStrSymbol());
-//        ((TextView)(convertView.findViewById(android.R.id.text2))).setText(currency.getName());
+        TextView strSymbol = ((TextView) (convertView.findViewById(android.R.id.text1)));
+        strSymbol.setText(currency.getStrSymbol());
+        strSymbol.setTag(R.string.tag_currency_id, currency.getId());
 
         return convertView;
     }

@@ -21,20 +21,22 @@ import java.util.List;
 public class Category extends BaseModel {
 
     public static final int PARENT = 0;
-    public static final int SUB    = 1;
+    public static final int CHILD  = 1;
 
     public static final int WITHOUT_TYPE = 0;
     public static final int EXPENSE      = 1;
     public static final int PROFIT       = 2;
+    public static final int TRANSFER     = 3;
 
-    public static final int EMPTY_SUB_ID = 1;
+    public static final int EMPTY_CHILD_ID = 1;
     public static final int EMPTY_PARENT_EXPENSE_ID = 2;
     public static final int EMPTY_PARENT_PROFIT_ID  = 3;
+    public static final int TRANSFER_CATEGORY_ID    = 4;
 
     public static final int CREATE_PARENT = 0;
-    public static final int CREATE_SUB    = 1;
+    public static final int CREATE_CHILD = 1;
     public static final int EDIT_PARENT   = 2;
-    public static final int EDIT_SUB      = 3;
+    public static final int EDIT_CHILD = 3;
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -56,11 +58,11 @@ public class Category extends BaseModel {
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "logo_id",
+            columnName = "icon_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    Logo logo;
+    Icon icon;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -74,7 +76,7 @@ public class Category extends BaseModel {
 
     List<OperationTemplate> templates;
 
-    List<Category> subCategories;
+    List<Category> childs;
 
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE},
             variableName = "operations")
@@ -90,7 +92,7 @@ public class Category extends BaseModel {
 
     public List<Operation> getOperationsFromAllHierarchy(){
         List<Operation> operations = getOperations();
-        for(Category subCategory : getSubCategories()){
+        for(Category subCategory : getChilds()){
             operations.addAll(subCategory.getOperations());
         }
         return operations;
@@ -110,22 +112,22 @@ public class Category extends BaseModel {
 
     public List<OperationTemplate> getTemplatesFromAllHierarchy(){
         List<OperationTemplate> templates = getTemplates();
-        for(Category subCategory : getSubCategories()){
+        for(Category subCategory : getChilds()){
             templates.addAll(subCategory.getTemplates());
         }
         return templates;
     }
 
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE},
-            variableName = "subCategories")
-    public List<Category> getSubCategories(){
-        if(subCategories == null){
-            subCategories = new Select()
+            variableName = "childs")
+    public List<Category> getChilds(){
+        if(childs == null){
+            childs = new Select()
                     .from(Category.class)
                     .where(Condition.column(Category$Table.PARENT_PARENT_ID).is(this.id))
                     .queryList();
         }
-        return subCategories;
+        return childs;
     }
 
     public long getId() {
@@ -152,7 +154,7 @@ public class Category extends BaseModel {
         if(parent == null)
             return PARENT;
         else
-            return SUB;
+            return CHILD;
     }
 
     public Category getParent() {
@@ -163,17 +165,17 @@ public class Category extends BaseModel {
         this.parent = parent;
         if(parent != null) {
             this.color = parent.getColor();
-            this.logo  = parent.getLogo();
+            this.icon = parent.getIcon();
             this.type  = parent.getType();
         }
     }
 
-    public Logo getLogo() {
-        return logo;
+    public Icon getIcon() {
+        return icon;
     }
 
-    public void setLogo(Logo logo) {
-        this.logo = logo;
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
 
     public Color getColor() {
@@ -289,7 +291,7 @@ public class Category extends BaseModel {
 
     public static List<Category> getSubCategories(Category parentId){
         List<Category> subCategories = new ArrayList<>();
-        subCategories.add(getById(EMPTY_SUB_ID));
+        subCategories.add(getById(EMPTY_CHILD_ID));
         subCategories.addAll(
                 new Select()
                         .from(Category.class)
@@ -326,7 +328,7 @@ public class Category extends BaseModel {
     }
 
     public static boolean isEmptySubCategory(long id){
-        return id == EMPTY_SUB_ID;
+        return id == EMPTY_CHILD_ID;
     }
 
     public static boolean isEmptyParentCategory(long id){
@@ -378,7 +380,7 @@ public class Category extends BaseModel {
 
     public List<String> getNamesSubCategories(){
         List<String> names = new ArrayList<>();
-        for(Category category : getSubCategories()){
+        for(Category category : getChilds()){
             names.add(category.getName());
         }
         return names;
@@ -408,7 +410,7 @@ public class Category extends BaseModel {
     }
 
     public  void updateSubs (){
-        List<Category> subs = this.getSubCategories();
+        List<Category> subs = this.getChilds();
         for(Category sub : subs){
             sub.setParent(this);
             sub.save();

@@ -64,12 +64,12 @@ public class OperationTemplatesDialogFragment extends DialogFragment
             tvTitle.setText(getActivity().getResources().getString(R.string.operation_expense).toUpperCase());
             tvTitle.setTextColor(getResources().getColor(R.color.red));
             btnNew.setTextColor(getResources().getColor(R.color.red));
-            templates = OperationTemplate.getExpenseOperationTemplates();
+            templates = OperationTemplate.getExpenseTemplates();
         }
         else {
             tvTitle.setText(getActivity().getResources().getString(R.string.operation_profit).toUpperCase());
             tvTitle.setTextColor(getResources().getColor(R.color.green));
-            templates = OperationTemplate.getProfitOperationTemplates();
+            templates = OperationTemplate.getProfitTemplates();
             btnNew.setTextColor(getResources().getColor(R.color.green));
         }
 

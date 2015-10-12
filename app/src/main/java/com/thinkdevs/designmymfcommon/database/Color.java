@@ -9,9 +9,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
-/**
- * Таблица с цветами
- */
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class Color extends BaseModel {
 
@@ -29,6 +26,7 @@ public class Color extends BaseModel {
     public int  getResourceId() {
         return resourceId;
     }
+
     public void setResourceId(int resourceId) {
         this.resourceId = resourceId;
     }
@@ -39,7 +37,6 @@ public class Color extends BaseModel {
                 .queryList();
     }
 
-
     public static List<Color> getColorsWithoutSystems(){
        List<Color> colors = getColors();
         colors.remove(18);
@@ -49,7 +46,7 @@ public class Color extends BaseModel {
         return colors;
     }
 
-    public static Color getColorByResourceId(long resourceId){
+    public static Color getByResourceId(long resourceId){
         return  new Select()
                 .from(Color.class)
                 .where(Condition.column(Color$Table.RESOURCEID)

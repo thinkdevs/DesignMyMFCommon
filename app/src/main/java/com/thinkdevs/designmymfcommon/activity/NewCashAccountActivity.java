@@ -9,16 +9,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -27,121 +27,90 @@ import com.thinkdevs.designmymfcommon.adapter.ListCurrencyAdapter;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
-import com.thinkdevs.designmymfcommon.database.Logo;
+import com.thinkdevs.designmymfcommon.database.Icon;
 import com.thinkdevs.designmymfcommon.dialog.ChooseDecorColorDialogFragment;
 import com.thinkdevs.designmymfcommon.dialog.ChooseDecorIconDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class NewCashAccountActivity extends AppCompatActivity
         implements View.OnClickListener, ChooseDecorColorDialogFragment.ChooseColorDialogListener,
                    ChooseDecorIconDialogFragment.ChooseIconDialogListener {
 
-    private boolean IS_NEW = true;
+    private EditText  mEtName;
+    private EditText  mEtDescription;
+    private EditText  mEtAmount;
+    private Spinner   mSpCurrency;
+    private ImageView mIvColor;
+    private ImageView mIvIcon;
+    
+    private Intent mIntent;
+    private Bundle mBundle;
+    private String oldCashAccountName;
+
+    private int  mOpenAs;
     private long mCurrentIconId;
     private long mCurrentColorId;
 
-    EditText etTitle;
-    EditText etComment;
-    EditText etAmount;
-    Spinner  spCurrency;
-    Spinner  spUnits;
+    private List<Color> mColors;
+    private List<Icon> mIcons;
+    private List<Currency> mCurrencies;
 
-    ImageView ivColor;
-    ImageView ivIcon;
-    
-    Intent intent;
-    Bundle bundle;
-    String oldCashAccountName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_cash_account_new);
+        setContentView(R.layout.activity_new_cash_account);
 
-        Bundle extras = getIntent().getExtras();
-        if(extras != null)
-            setTitle(extras.getString(Constants.ACTIVITY_TITLE));
+        mIntent = getIntent();
+        mBundle = mIntent.getExtras();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Новый счет");
+        if(mBundle != null) {
+            mOpenAs = mBundle.getInt(Constants.OPEN_AS);
+            toolbar.setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
+        }
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
+
+        mEtName = (EditText)findViewById(R.id.et_title);
+        mEtDescription = (EditText)findViewById(R.id.et_description);
+        mEtAmount = (EditText)findViewById(R.id.et_amount);
+        mSpCurrency = (Spinner)findViewById(R.id.sp_currency);
+        mIvColor = (ImageView)findViewById(R.id.ivColor);
+        mIvIcon = (ImageView)findViewById(R.id.ivIcon);
+        mIvIcon.setColorFilter(getResources().getColor(R.color.grey));
+
+        mIvColor.setOnClickListener(this);
+        mIvIcon.setOnClickListener(this);
+
+        mIcons = Icon.getCashAccountIcons();
+        Icon defaultIcon = mIcons.get(0);
+        mCurrentIconId   = defaultIcon.getId();
+        mIvIcon.setImageResource(defaultIcon.getResourceId());
+
+        mColors = Color.getColorsWithoutSystems();
+        Color defaultColor = mColors.get(0);
+        mCurrentColorId    = defaultColor.getId();
+        mIvColor.setColorFilter(getResources().getColor(defaultColor.getResourceId()));
+
+        mCurrencies = new Select().from(Currency.class).queryList();
+        ListCurrencyAdapter currencyAdapter = new ListCurrencyAdapter(this, mCurrencies);
+        mSpCurrency.setAdapter(currencyAdapter);
 
         setupFloatingLabelError();
 
-        etTitle    = (EditText)findViewById(R.id.et_title);
-        etComment  = (EditText)findViewById(R.id.et_type);
-        etAmount   = (EditText)findViewById(R.id.et_amount);
-        spCurrency = (Spinner)findViewById(R.id.sp_currency);
-        spUnits    = (Spinner)findViewById(R.id.sp_units);
-        ivColor    = (ImageView)findViewById(R.id.ivColor);
-        ivIcon     = (ImageView)findViewById(R.id.ivIcon);
-        ivIcon.setColorFilter(getResources().getColor(R.color.grey));
+        mEtAmount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(12, 2)});
 
-        ivColor.setOnClickListener(this);
-        ivIcon.setOnClickListener(this);
+        requestFocus(findViewById(R.id.ll_new_cash_account));
 
-        List<Logo> logosCashAccountList = Logo.getAllCashAccountLogos();
-        Logo logoDefault = logosCashAccountList.get(0);
-        ivIcon.setImageResource(logoDefault.getResourceId());
-        mCurrentIconId = logoDefault.getId();
-
-        List<Color> colorList = Color.getColorsWithoutSystems();
-        Color colorDefault = colorList.get(0);
-        ivColor.setColorFilter(getResources().getColor(colorDefault.getResourceId()));
-        mCurrentColorId = colorDefault.getId();
-
-        List<Currency> currencyList = new Select().from(Currency.class).queryList();
-        
-        ListCurrencyAdapter currencyAdapter =
-                new ListCurrencyAdapter(this, currencyList);
-        
-        String [] unitsList = getResources().getStringArray(R.array.currency_units);
-
-        spUnits.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, unitsList));
-        
-        spCurrency.setAdapter(currencyAdapter);
-
-        intent = getIntent();
-        bundle = intent.getExtras();
-        if(bundle != null){
-            IS_NEW = false;
-            CashAccount cashAccount = CashAccount.getByID(bundle.getLong(Constants.CASH_ACCOUNT_ID));
-            etTitle. setText(cashAccount.getName());
-            oldCashAccountName = cashAccount.getName();
-            etComment.  setText(cashAccount.getComment());
-            etAmount.setText(String.valueOf(cashAccount.getAmount()));
-            mCurrentIconId  = cashAccount.getLogo().getId();
-            mCurrentColorId = cashAccount.getColor().getId();
-            long currencyId = cashAccount.getCurrency().getId();
-
-            for(int i = 0; i < logosCashAccountList.size(); i++){
-                Logo logo = logosCashAccountList.get(i);
-                if(logo.getId() == mCurrentIconId){
-                    ivIcon.setImageResource(logo.getResourceId());
-                }
-            }
-
-            for(int i = 0; i < colorList.size(); i++){
-                Color color = colorList.get(i);
-                if(color.getId() == mCurrentColorId) {
-                    ivColor.setColorFilter(getResources().getColor(color.getResourceId()));
-                }
-            }
-
-            for(int i = 0; i < currencyList.size(); i++){
-                if(currencyList.get(i).getId() == (currencyId))
-                    spCurrency.setSelection(i);
-            }
-        }
-
-        requestFocus(etAmount);
+        mOpenAs();
     }
 
     @Override
@@ -168,73 +137,149 @@ public class NewCashAccountActivity extends AppCompatActivity
             return true;
         }
 
-
-
-        //**************************** Сохранение счета *****************************//
-
         if(id == R.id.action_save){
-
-            // Получение Logo
-            Logo cashAccountLogo = Logo.getById(mCurrentIconId);
-
-            // Получение Color
-            Color color = Color.getById(mCurrentColorId);
-
-            // Получение Currency
-            String strSymbol = String.valueOf(((TextView) spCurrency.getSelectedView().findViewById(android.R.id.text1)).getText());
-            Currency currency = Currency.getCurrencyByStrSymbol(strSymbol);
-
-            // Получение Названия
-            String title = String.valueOf(etTitle.getText());
-
-            // Получение комментария
-            String comment = String.valueOf(etComment.getText());
-
-            // Получение Средств
-            String amountString = String.valueOf(etAmount.getText());
-            float amount;
-            if(amountString.length() == 0)
-                amount = 0;
-            else
-             amount = Float.parseFloat(String.valueOf(etAmount.getText()));
-
-            // Проверка условий и сохранение
-            if(title == null || title.length() == 0){
-                Toast.makeText(this, getResources().getString(R.string.msg_write_name), Toast.LENGTH_LONG).show();
-                requestFocus(etTitle);
-            }
-            else if(CashAccount.isExist(title) && !title.equals(oldCashAccountName)){
-                Toast.makeText(this, getResources().getString(R.string.msg_cash_account_exist), Toast.LENGTH_LONG).show();
-            }
-            else {
-                CashAccount cashAccount;
-                if(IS_NEW)
-                    cashAccount = new CashAccount();
-                else
-                    cashAccount = CashAccount.getByID(bundle.getLong(Constants.CASH_ACCOUNT_ID));
-                cashAccount.setLogo(cashAccountLogo);
-                cashAccount.setColor(color);
-                cashAccount.setCurrency(currency);
-                cashAccount.setName(title);
-                if(comment == null)
-                    cashAccount.setComment("");
-                else
-                    cashAccount.setComment(comment);
-                cashAccount.setAmount(amount);
-
-                if(IS_NEW)
-                    cashAccount.save();
-                else
-                    cashAccount.update();
-                NavUtils.navigateUpFromSameTask(this);
-            }
-
-            // Возвращаемся назад после сохранения
+            mSave();
             return true;
         }
 
-
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onChooseColor(long colorId) {
+        Color color = Color.getById(colorId);
+        mIvColor.setColorFilter(getResources().getColor(color.getResourceId()));
+        mCurrentColorId = colorId;
+    }
+
+    @Override
+    public void onChooseIcon(long iconId) {
+        Icon icon = Icon.getById(iconId);
+        mIvIcon.setImageResource(icon.getResourceId());
+        mCurrentIconId = iconId;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ivColor:
+                ChooseDecorColorDialogFragment.newInstance(this, mCurrentColorId)
+                        .show(getFragmentManager(), "chooseDecorColor");
+                break;
+            case R.id.ivIcon:
+                ChooseDecorIconDialogFragment.newInstance(this, mCurrentIconId)
+                        .show(getFragmentManager(), "chooseDecorIcon");
+                break;
+        }
+    }
+
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    private void mOpenAs(){
+        switch (mOpenAs){
+            case CashAccount.CREATE:
+                mOpenCreator();
+                break;
+            case CashAccount.EDIT:
+                mOpenEditor();
+                break;
+        }
+    }
+
+    private void mOpenCreator(){
+    }
+
+    private void mOpenEditor(){
+        CashAccount cashAccount = CashAccount.getByID(mBundle.getLong(Constants.CASH_ACCOUNT_ID));
+        mEtName. setText(cashAccount.getName());
+        oldCashAccountName = cashAccount.getName();
+        mEtDescription.  setText(cashAccount.getComment());
+        mEtAmount.setText(String.valueOf(cashAccount.getAmount()));
+        mCurrentIconId  = cashAccount.getIcon().getId();
+        mCurrentColorId = cashAccount.getColor().getId();
+        long currencyId = cashAccount.getCurrency().getId();
+
+        for(int i = 0; i < mIcons.size(); i++){
+            Icon icon = mIcons.get(i);
+            if(icon.getId() == mCurrentIconId){
+                mIvIcon.setImageResource(icon.getResourceId());
+            }
+        }
+
+        for(int i = 0; i < mColors.size(); i++){
+            Color color = mColors.get(i);
+            if(color.getId() == mCurrentColorId) {
+                mIvColor.setColorFilter(getResources().getColor(color.getResourceId()));
+            }
+        }
+
+        for(int i = 0; i < mCurrencies.size(); i++){
+            if(mCurrencies.get(i).getId() == (currencyId))
+                mSpCurrency.setSelection(i);
+        }
+    }
+
+    private void mSave(){
+
+        String name = String.valueOf(mEtName.getText());
+        String description = String.valueOf(mEtDescription.getText());
+
+        long currencyId =
+                (long) mSpCurrency.getSelectedView().findViewById(android.R.id.text1)
+                        .getTag(R.string.tag_currency_id);
+        Currency currency = Currency.getById(currencyId);
+
+        Icon  icon = Icon.getById(mCurrentIconId);
+        Color color = Color.getById(mCurrentColorId);
+
+        String amountString = String.valueOf(mEtAmount.getText());
+        float amountFloat;
+        if(amountString.length() == 0)
+            amountFloat = 0;
+        else
+            amountFloat = Float.parseFloat(String.valueOf(mEtAmount.getText()));
+
+        long amount =(long)amountFloat * 100;
+
+        if(name == null || name.length() == 0){
+            Toast.makeText(this, getResources().getString(R.string.msg_write_name), Toast.LENGTH_LONG).show();
+            requestFocus(mEtName);
+        }
+        else if(CashAccount.isExist(name) && !name.equals(oldCashAccountName)){
+            Toast.makeText(this, getResources().getString(R.string.msg_cash_account_exist), Toast.LENGTH_LONG).show();
+        }
+        else {
+            CashAccount cashAccount;
+            if(mOpenAsCreator())
+                cashAccount = new CashAccount();
+            else
+                cashAccount = CashAccount.getByID(mBundle.getLong(Constants.CASH_ACCOUNT_ID));
+            cashAccount.setIcon(icon);
+            cashAccount.setColor(color);
+            cashAccount.setCurrency(currency);
+            cashAccount.setName(name);
+            if(description == null)
+                cashAccount.setDescription("");
+            else
+                cashAccount.setDescription(description);
+
+            cashAccount.setAmount(amount);
+
+            if(mOpenAsCreator())
+                cashAccount.save();
+            else
+                cashAccount.update();
+            NavUtils.navigateUpFromSameTask(this);
+        }
+    }
+
+    private boolean mOpenAsCreator(){
+        return mOpenAs == CashAccount.CREATE;
     }
 
     private void setupFloatingLabelError() {
@@ -265,35 +310,22 @@ public class NewCashAccountActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public void onChooseColor(long colorId) {
-        Color color = Color.getById(colorId);
-        ivColor.setColorFilter(getResources().getColor(color.getResourceId()));
-        mCurrentColorId = colorId;
-    }
+    public class DecimalDigitsInputFilter implements InputFilter {
 
-    @Override
-    public void onChooseIcon(long iconId) {
-        Logo logo = Logo.getById(iconId);
-        ivIcon.setImageResource(logo.getResourceId());
-        mCurrentIconId = iconId;
-    }
+        Pattern mPattern;
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.ivColor:
-                ChooseDecorColorDialogFragment.newInstance(this, mCurrentColorId).show(getFragmentManager(), "chooseDecorColor");
-                break;
-            case R.id.ivIcon:
-                ChooseDecorIconDialogFragment.newInstance(this, mCurrentIconId).show(getFragmentManager(), "chooseDecorIcon");
-                break;
+        public DecimalDigitsInputFilter(int digitsBeforeZero,int digitsAfterZero) {
+            mPattern= Pattern.compile("[0-9]{0," + (digitsBeforeZero - 1) + "}+((\\.[0-9]{0," + (digitsAfterZero - 1) + "})?)||(\\.)?");
         }
-    }
 
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+            Matcher matcher=mPattern.matcher(dest);
+            if(!matcher.matches())
+                return "";
+            return null;
         }
+
     }
 }

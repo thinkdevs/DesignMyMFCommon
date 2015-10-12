@@ -11,7 +11,7 @@ import android.widget.GridView;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.adapter.GridLogoAdapter;
-import com.thinkdevs.designmymfcommon.database.Logo;
+import com.thinkdevs.designmymfcommon.database.Icon;
 
 import java.util.List;
 
@@ -37,8 +37,8 @@ public class ChooseDecorIconDialogFragment extends DialogFragment
         View     view     = inflater.inflate(R.layout.fragment_dialog_choose_decor, null);
         GridView gridView = (GridView) view.findViewById(R.id.gvDecor);
 
-        List<Logo> logos = Logo.getAllCashAccountLogos();
-        ArrayAdapter<Logo> adapter = new GridLogoAdapter(getActivity(), logos, sCurrentIconId);
+        List<Icon> icons = Icon.getCashAccountIcons();
+        ArrayAdapter<Icon> adapter = new GridLogoAdapter(getActivity(), icons, sCurrentIconId);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
 

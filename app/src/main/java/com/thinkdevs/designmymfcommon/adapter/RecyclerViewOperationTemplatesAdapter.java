@@ -109,9 +109,9 @@ public class RecyclerViewOperationTemplatesAdapter extends
                 R.string.tag_resource_id, template.getCategory().getColor().getResourceId());
 
         //Логотип
-        viewHolder.ivCategoryLogo.setImageResource(template.getCategory().getLogo().getResourceId());
+        viewHolder.ivCategoryLogo.setImageResource(template.getCategory().getIcon().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_id, template.getCategory().getLogo().getResourceId());
+                R.string.tag_resource_id, template.getCategory().getIcon().getResourceId());
 
         //Имя шаблона
         viewHolder.tvTemplateName.setText(template.getName());

@@ -47,8 +47,8 @@ public class ListCategoriesSpinnerAdapter extends ArrayAdapter<Category> {
 
         //Логотип
         ImageView ivCategoryLogo = (ImageView) convertView.findViewById(R.id.iv_category_logo);
-        ivCategoryLogo.setImageResource(category.getLogo().getResourceId());
-        ivCategoryLogo.setTag(R.string.tag_resource_id, category.getLogo().getResourceId());
+        ivCategoryLogo.setImageResource(category.getIcon().getResourceId());
+        ivCategoryLogo.setTag(R.string.tag_resource_id, category.getIcon().getResourceId());
 
         //Имя категории
         TextView tvCategoryName = (TextView) convertView.findViewById(R.id.tv_category_name);

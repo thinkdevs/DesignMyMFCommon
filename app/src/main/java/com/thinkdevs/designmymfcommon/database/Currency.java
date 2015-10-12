@@ -7,9 +7,6 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-/**
- * Таблица с валютами
- */
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class Currency extends BaseModel {
 
@@ -18,10 +15,10 @@ public class Currency extends BaseModel {
     long id;
 
     @Column
-    String name; //название валюты
+    String name;
 
     @Column
-    String strSymbol; //короткая запись
+    String strSymbol;
 
     public long   getId() {
         return id;
@@ -30,6 +27,7 @@ public class Currency extends BaseModel {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -37,14 +35,22 @@ public class Currency extends BaseModel {
     public String getStrSymbol() {
         return strSymbol;
     }
+
     public void   setStrSymbol(String strSymbol) {
         this.strSymbol = strSymbol;
     }
 
-    public static Currency getCurrencyByStrSymbol(String strSymbol){
+    public static Currency getByStrSymbol(String strSymbol){
         return new Select()
                 .from(Currency.class)
                 .where(Condition.column(Currency$Table.STRSYMBOL).eq(strSymbol))
+                .querySingle();
+    }
+
+    public static Currency getById(long id){
+        return new Select()
+                .from(Currency.class)
+                .where(Condition.column(Currency$Table.ID).eq(id))
                 .querySingle();
     }
 }

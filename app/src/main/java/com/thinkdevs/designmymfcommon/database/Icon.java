@@ -9,11 +9,8 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
-/**
- * Таблица с логотипами
- */
 @Table(databaseName = MoneyFlowDataBase.NAME)
-public class Logo extends BaseModel {
+public class Icon extends BaseModel {
 
     public static final int TYPE_CASH_ACCOUNT = 1;
     public static final int TYPE_CATEGORY     = 2;
@@ -23,10 +20,10 @@ public class Logo extends BaseModel {
     long id;
 
     @Column
-    int type; //тип логотипа
+    int type;
 
     @Column
-    int resourceId; //id логотипа
+    int resourceId;
 
     public long getId() {
         return id;
@@ -48,31 +45,31 @@ public class Logo extends BaseModel {
         this.resourceId = resourceId;
     }
 
-    public static List<Logo> getAllCashAccountLogos(){
+    public static List<Icon> getCashAccountIcons(){
         return new Select()
-                .from(Logo.class)
-                .where(Condition.column(Logo$Table.TYPE).is(TYPE_CASH_ACCOUNT))
+                .from(Icon.class)
+                .where(Condition.column(Icon$Table.TYPE).is(TYPE_CASH_ACCOUNT))
                 .queryList();
     }
 
-    public static List<Logo> getAllCategoryLogos(){
+    public static List<Icon> getCategoryIcons(){
         return new Select()
-                .from(Logo.class)
-                .where(Condition.column(Logo$Table.TYPE).is(TYPE_CATEGORY))
+                .from(Icon.class)
+                .where(Condition.column(Icon$Table.TYPE).is(TYPE_CATEGORY))
                 .queryList();
     }
 
-    public static Logo getLogoByResourceId(long resourceId){
+    public static Icon getByResourceId(long resourceId){
         return  new Select()
-                .from(Logo.class)
-                .where(Condition.column(Logo$Table.RESOURCEID)
+                .from(Icon.class)
+                .where(Condition.column(Icon$Table.RESOURCEID)
                         .eq(resourceId)).querySingle();
     }
 
-    public static Logo getById(long id){
+    public static Icon getById(long id){
         return  new Select()
-                .from(Logo.class)
-                .where(Condition.column(Logo$Table.ID)
+                .from(Icon.class)
+                .where(Condition.column(Icon$Table.ID)
                         .eq(id)).querySingle();
     }
 }

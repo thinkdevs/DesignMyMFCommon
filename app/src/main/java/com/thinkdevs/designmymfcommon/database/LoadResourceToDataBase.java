@@ -58,10 +58,10 @@ public class LoadResourceToDataBase {
         logoIds.add(R.drawable.ic_credit_card_white_36dp);
 
         for(Integer id : logoIds){
-            Logo logo = new Logo();
-            logo.resourceId = id;
-            logo.setType(Logo.TYPE_CASH_ACCOUNT);
-            logo.save();
+            Icon icon = new Icon();
+            icon.resourceId = id;
+            icon.setType(Icon.TYPE_CASH_ACCOUNT);
+            icon.save();
         }
     }
 
@@ -94,10 +94,10 @@ public class LoadResourceToDataBase {
         logoIds.add(R.drawable.ic_remove_white_24dp);
 
         for(Integer id : logoIds){
-            Logo logo = new Logo();
-            logo.resourceId = id;
-            logo.setType(Logo.TYPE_CATEGORY);
-            logo.save();
+            Icon icon = new Icon();
+            icon.resourceId = id;
+            icon.setType(Icon.TYPE_CATEGORY);
+            icon.save();
         }
     }
 }

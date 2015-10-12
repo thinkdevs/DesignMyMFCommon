@@ -102,7 +102,7 @@ public class NewOperationTemplateActivity extends Activity {
         }
 
         if(listCategoriesExpense.size() != 0) {
-            listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
+            listSubCategoryExpense = listCategoriesExpense.get(0).getChilds();
             listNamesSubCategoriesExpense.add("");
             if (listSubCategoryExpense.size() != 0) {
                 for (Category subCategoryExpense : listSubCategoryExpense) {
@@ -111,7 +111,7 @@ public class NewOperationTemplateActivity extends Activity {
             }
         }
         if(listCategoriesProfit.size() != 0) {
-            listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
+            listSubCategoryProfits = listCategoriesProfit.get(0).getChilds();
             listNamesSubCategoriesProfit.add("");
             if (listSubCategoryProfits.size() != 0) {
                 for (Category subCategoryProfit : listSubCategoryProfits) {
@@ -306,11 +306,11 @@ public class NewOperationTemplateActivity extends Activity {
                 operationTemplate.setName(title);
                 operationTemplate.setType(typeOperation);
 
-                float amount;
+                long amount;
                 if(amountString.length() == 0)
                     amount = 0;
                 else
-                    amount = Float.parseFloat(String.valueOf(amountString));
+                    amount = (long)Float.parseFloat(String.valueOf(amountString));
                 operationTemplate.setAmount(amount);
 
                 if(subCategory != null)

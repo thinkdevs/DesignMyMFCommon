@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_new_cash_account">
 
     <include
         android:layout_width="match_parent"
@@ -47,7 +48,8 @@
                 android:ems="10"
                 android:hint="Название"
                 android:textSize="34dp"
-                android:textIsSelectable="false" />
+                android:textIsSelectable="false"
+                android:inputType="textCapWords|textAutoComplete|textAutoCorrect" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -57,12 +59,13 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/et_type"
+            android:id="@+id/et_description"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:singleLine="true"
             android:textColor="?android:textColor"
-            android:hint="Описание" />
+            android:hint="Описание"
+            android:inputType="textMultiLine|textCapSentences|textAutoComplete|textAutoCorrect" />
         </android.support.design.widget.TextInputLayout>
 
         <!--<android.support.design.widget.TextInputLayout-->
@@ -93,11 +96,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_weight="0.5">
+                android:layout_weight="0.1">
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
+                    android:inputType="number|numberDecimal"
                     android:ems="10"
                     android:id="@+id/et_amount"
                     android:layout_marginLeft="4dp"
@@ -105,41 +108,17 @@
                     android:singleLine="true"
                     android:textColor="?android:textColor"
                     android:hint="Средства"
-                    android:maxLength="6" />
+                    android:maxLength="15"
+                    android:text="012345678912.34"
+                    android:gravity="center"
+                    android:numeric="decimal" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:layout_weight="0.6"
-                android:layout_marginBottom="2dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Еденица"
-                    android:id="@+id/textView2"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sp_units"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_weight="0.7"
+                android:layout_weight="0.4"
                 android:layout_marginBottom="2dp">
 
                 <TextView
@@ -171,14 +150,47 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="0dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Иконка"
+                    android:id="@+id/tv_icon"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/ivIcon"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="0dp"
                 android:layout_alignParentStart="false"
-                android:layout_marginLeft="0dp">
+                android:layout_marginLeft="0dp"
+                android:layout_gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -191,45 +203,13 @@
                     android:layout_marginRight="4dp"
                     android:textSize="12sp" />
 
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/sp_colors"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:spinnerMode="dialog" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="0dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="0dp"
-                android:layout_alignParentStart="true">
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Логотип"
-                    android:id="@+id/tv_logo"
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/ivColor"
+                    android:layout_marginLeft="24dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginRight="4dp"
-                    android:textColor="@android:color/darker_gray"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="12sp" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/sp_logos"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:spinnerMode="dialog" />
+                    android:src="@drawable/ic_checkbox_blank_outline_white_36dp" />
 
             </LinearLayout>
 

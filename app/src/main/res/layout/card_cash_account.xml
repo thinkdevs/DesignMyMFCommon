@@ -112,6 +112,18 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="8dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="тыс."
+            android:id="@+id/tv_unit"
+            android:textSize="24dp"
+            android:layout_marginEnd="43dp"
+            android:layout_gravity="center|left"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/tv_date" />
+
     </RelativeLayout>
 
         <LinearLayout

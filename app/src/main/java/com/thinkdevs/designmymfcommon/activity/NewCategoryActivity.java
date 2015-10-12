@@ -21,7 +21,7 @@ import com.thinkdevs.designmymfcommon.adapter.ListColorAdapter;
 import com.thinkdevs.designmymfcommon.adapter.ListLogoCategorySpinnerAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Color;
-import com.thinkdevs.designmymfcommon.database.Logo;
+import com.thinkdevs.designmymfcommon.database.Icon;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class NewCategoryActivity extends Activity {
     private List<View> mSubCategoryEditViews; // Список view для подкатегорий
 
     private List<Color> mColors;
-    private List<Logo> mLogos;
+    private List<Icon> mIcons;
 
     private Intent mIntent;
     private Bundle mBundle;
@@ -71,7 +71,7 @@ public class NewCategoryActivity extends Activity {
         if (mRgHierarchy.getCheckedRadioButtonId() == R.id.rb_parent)
             mHierarchy = Category.PARENT;
         else
-            mHierarchy = Category.SUB;
+            mHierarchy = Category.CHILD;
 
         //Тип категории
         mTvRgType = ((TextView) findViewById(R.id.textView_type_category));
@@ -100,14 +100,14 @@ public class NewCategoryActivity extends Activity {
         mSubCategoryEditViews.add(mSpColor);
 
         mColors = Color.getColors();
-        mLogos = Logo.getAllCategoryLogos();
+        mIcons = Icon.getCategoryIcons();
 
         mSpCategory.setAdapter(new ListCategoriesSpinnerAdapter(
                 NewCategoryActivity.this,
                 Category.getParentCategoriesWithoutEmpty(mType)));
 
         mSpColor.setAdapter(new ListColorAdapter(this, mColors));
-        mSpLogo.setAdapter(new ListLogoCategorySpinnerAdapter(this, mLogos));
+        mSpLogo.setAdapter(new ListLogoCategorySpinnerAdapter(this, mIcons));
 
         mRgHierarchy.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -115,11 +115,13 @@ public class NewCategoryActivity extends Activity {
                 switch (checkedId) {
                     case R.id.rb_parent:
                         mHierarchy = Category.PARENT;
-                        mHideAndShowViews(mCategoryEditViews, mSubCategoryEditViews);
+                        mHideViews(mCategoryEditViews);
+                        mShowViews(mSubCategoryEditViews);
                         break;
                     case R.id.rb_sub:
-                        mHierarchy = Category.SUB;
-                        mHideAndShowViews(mSubCategoryEditViews, mCategoryEditViews);
+                        mHierarchy = Category.CHILD;
+                        mHideViews(mSubCategoryEditViews);
+                        mShowViews(mCategoryEditViews);
                         break;
                 }
             }
@@ -155,7 +157,7 @@ public class NewCategoryActivity extends Activity {
                 setTitle(getResources().getString(R.string.title_activity_new_category));
         }
 
-        mOpenEditor();
+        mOpenAs();
     }
 
     @Override
@@ -190,11 +192,14 @@ public class NewCategoryActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void mHideAndShowViews(List<View> hide, List<View> show){
-        for(View view : hide){
+    private void mHideViews(List<View> views){
+        for(View view : views){
             view.setVisibility(View.GONE);
         }
-        for(View view : show){
+    }
+
+    private void mShowViews(List<View> views){
+        for(View view : views){
             view.setVisibility(View.VISIBLE);
         }
     }
@@ -207,27 +212,27 @@ public class NewCategoryActivity extends Activity {
         }
     }
 
-    private void mOpenEditor(){
+    private void mOpenAs(){
         Category category = Category.getById(mBundle.getLong(Constants.CATEGORY_ID));
         switch (mOpenAs){
             case Category.EDIT_PARENT :
-                mOpenEditorParent(category);
+                mOpenParentEditor(category);
                 mHierarchyOld = Category.PARENT;
                 break;
-            case Category.EDIT_SUB :
-                mOpenEditorSub(category);
-                mHierarchyOld = Category.SUB;
+            case Category.EDIT_CHILD:
+                mOpenChildEditor(category);
+                mHierarchyOld = Category.CHILD;
                 break;
-            case Category.CREATE_SUB:
-                mOpenNewSub(category);
-                mHierarchyOld = Category.SUB;
+            case Category.CREATE_CHILD:
+                mOpenChildCreator(category);
+                mHierarchyOld = Category.CHILD;
                 break;
             default:
                 mHierarchyOld = Category.PARENT;
         }
     }
 
-    private void mOpenEditorParent(Category parent){
+    private void mOpenParentEditor(Category parent){
         //Тип иерархии
         mRgHierarchy.check(R.id.rb_parent);
         //Тип категории
@@ -242,34 +247,34 @@ public class NewCategoryActivity extends Activity {
             }
         }
         //Логотип
-        for (int i = 0; i < mLogos.size(); i++) {
-            if (mLogos.get(i).getId() == parent.getLogo().getId()) {
+        for (int i = 0; i < mIcons.size(); i++) {
+            if (mIcons.get(i).getId() == parent.getIcon().getId()) {
                 mSpLogo.setSelection(i);
                 break;
             }
         }
     }
 
-    private void mOpenEditorSub(Category sub){
-        int type = sub.getType();
+    private void mOpenChildEditor(Category child){
+        int type = child.getType();
         List<Category> parentCategories;
         //Тип иерархии
         mRgHierarchy.check(R.id.rb_sub);
         //Имя
-        mEtName.setText(sub.getName());
+        mEtName.setText(child.getName());
         //Тип категории.
         mCheckRgType(type);
         //Категория
         parentCategories = Category.getParentCategoriesWithoutEmpty(type);
         for (int i = 0; i < parentCategories.size(); i++) {
-            if (parentCategories.get(i).getId() == sub.getParent().getId()) {
+            if (parentCategories.get(i).getId() == child.getParent().getId()) {
                 mSpCategory.setSelection(i);
                 break;
             }
         }
     }
 
-    private void mOpenNewSub(Category parent){
+    private void mOpenChildCreator(Category parent){
         int type = parent.getType();
         List<Category> parentCategories;
         //Тип иерархии
@@ -288,13 +293,13 @@ public class NewCategoryActivity extends Activity {
 
     private int mGetSaveAs(){
         if(mIsHierarchyChanged() && mOpenAs == Category.EDIT_PARENT)
-            return Category.EDIT_SUB;
-        else if (mIsHierarchyChanged() && mOpenAs == Category.EDIT_SUB)
+            return Category.EDIT_CHILD;
+        else if (mIsHierarchyChanged() && mOpenAs == Category.EDIT_CHILD)
             return Category.EDIT_PARENT;
-        else if(mIsHierarchyChanged() && mOpenAs == Category.CREATE_SUB)
+        else if(mIsHierarchyChanged() && mOpenAs == Category.CREATE_CHILD)
             return Category.CREATE_PARENT;
         else if(mIsHierarchyChanged() && mOpenAs == Category.CREATE_PARENT)
-            return Category.CREATE_SUB;
+            return Category.CREATE_CHILD;
         else
             return mOpenAs;
     }
@@ -307,10 +312,10 @@ public class NewCategoryActivity extends Activity {
             case Category.EDIT_PARENT :
                 mEditParent();
                 break;
-            case Category.CREATE_SUB:
-                mCreateSub();
+            case Category.CREATE_CHILD:
+                mCreateChild();
                 break;
-            case Category.EDIT_SUB :
+            case Category.EDIT_CHILD:
                 mEditSub();
                 break;
         }
@@ -324,12 +329,12 @@ public class NewCategoryActivity extends Activity {
         mSaveUsParent(Category.getById((mBundle.getLong(Constants.CATEGORY_ID))));
     }
 
-    private void mCreateSub(){
-        mSaveUsSub(new Category());
+    private void mCreateChild(){
+        mSaveUsChild(new Category());
     }
 
     private void mEditSub(){
-        mSaveUsSub(Category.getById(mBundle.getLong(Constants.CATEGORY_ID)));
+        mSaveUsChild(Category.getById(mBundle.getLong(Constants.CATEGORY_ID)));
     }
 
     private void mSaveUsParent(Category parent){
@@ -337,10 +342,10 @@ public class NewCategoryActivity extends Activity {
         String name = String.valueOf(mEtName.getText());
         //Логотип
         int logoId = ((int)(((ImageView) mSpLogo.getSelectedView().findViewById(R.id.imageView))).getTag());
-        Logo logo  = Logo.getLogoByResourceId(logoId);
+        Icon icon = Icon.getByResourceId(logoId);
         //Цвет
         int colorId = ((int)(mSpColor.getSelectedView().findViewById(R.id.tv_color)).getTag());
-        Color color = Color.getColorByResourceId(colorId);
+        Color color = Color.getByResourceId(colorId);
         // Проверка условий и сохранение
         if (name == null || name.length() == 0) {
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
@@ -350,14 +355,14 @@ public class NewCategoryActivity extends Activity {
             parent.setName(name);
             parent.setType(mType);
             parent.setColor(color);
-            parent.setLogo(logo);
+            parent.setIcon(icon);
             parent.save();
             parent.updateSubs();
             NavUtils.navigateUpFromSameTask(this);
         }
     }
 
-    private void mSaveUsSub(Category sub){
+    private void mSaveUsChild(Category sub){
         //Имя
         String name = String.valueOf(mEtName.getText());
         //Родительская категория
@@ -381,7 +386,6 @@ public class NewCategoryActivity extends Activity {
     }
 
     private boolean mIsOpenAsEditor(){
-        return Category.EDIT_SUB == mOpenAs || mOpenAs == Category.EDIT_PARENT;
+        return Category.EDIT_CHILD == mOpenAs || mOpenAs == Category.EDIT_PARENT;
     }
-
 }

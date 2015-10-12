@@ -89,12 +89,9 @@
         "Категория с таким именем уже существует"
     </string>
 
-    <string-array name="currency_units">
-        <item>-</item>
-        <item>тыс.</item>
-        <item>млн.</item>
-        <item>млрд.</item>
-    </string-array>
+    <string name="unit_thousand">ТЫС.</string>
+    <string name="unit_million">МЛН.</string>
+    <string name="unit_billion">МЛРД.</string>
 
     <string-array name="spinner_navigator">
         <item>Все</item>

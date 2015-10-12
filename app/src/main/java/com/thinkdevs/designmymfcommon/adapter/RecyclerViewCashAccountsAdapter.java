@@ -39,7 +39,7 @@ public class RecyclerViewCashAccountsAdapter extends
     private Resources         mResources;
     private DialogFragment    dialogDelete;
     private int               positionToDelete;
-    private long               idToDelete;
+    private long              idToDelete;
 
     public static class CashAccountViewHolder extends RecyclerView.ViewHolder {
 
@@ -51,6 +51,7 @@ public class RecyclerViewCashAccountsAdapter extends
         public TextView       tvCashAccountAmount;
         public TextView       tvDate;
         public TextView       tvOperation;
+        public TextView       tvUnit;
         public TextView       tvCurrency;
         public Button         btnAddExpense;
         public Button         btnAddProfit;
@@ -65,6 +66,7 @@ public class RecyclerViewCashAccountsAdapter extends
             tvCashAccountAmount  = (TextView)itemView.findViewById(R.id.tv_amount);
             tvDate               = (TextView)itemView.findViewById(R.id.tv_date);
             tvOperation          = (TextView)itemView.findViewById(R.id.tv_operation);
+            tvUnit               = (TextView)itemView.findViewById(R.id.tv_unit);
             tvCurrency           = (TextView)itemView.findViewById(R.id.tv_currency);
             btnAddExpense        = (Button)itemView.findViewById(R.id.btn_add_expense);
             btnAddProfit         = (Button)itemView.findViewById(R.id.btn_add_profit);
@@ -99,8 +101,8 @@ public class RecyclerViewCashAccountsAdapter extends
         viewHolder.rlTitleBar.setTag(R.string.tag_position_in_rv, i);
 
         //id счета для быстрого создания операций
-        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_id,cashAccount.getId());
-        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_id,cashAccount.getId());
+        viewHolder.btnAddExpense.setTag(R.string.tag_cash_account_id, cashAccount.getId());
+        viewHolder.btnAddProfit.setTag(R.string.tag_cash_account_id, cashAccount.getId());
 
         //Цвет бара кошелька
         viewHolder.rlTitleBar.   setBackgroundColor(
@@ -109,8 +111,8 @@ public class RecyclerViewCashAccountsAdapter extends
                 R.string.tag_resource_id, cashAccount.getColor().getResourceId());
 
         //Логотип
-        viewHolder.ivCashAccountLogo.setImageResource(cashAccount.getLogo().getResourceId());
-        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_id, cashAccount.getLogo().getResourceId());
+        viewHolder.ivCashAccountLogo.setImageResource(cashAccount.getIcon().getResourceId());
+        viewHolder.ivCashAccountLogo.setTag(R.string.tag_resource_id, cashAccount.getIcon().getResourceId());
 
         //Имя
         viewHolder.tvCashAccountName.setText(cashAccount.getName());
@@ -118,8 +120,29 @@ public class RecyclerViewCashAccountsAdapter extends
         //Комментарий
         viewHolder.tvCashAccountComment.setText(cashAccount.getComment());
 
+        //Средства и еденицы
+        String strAmount;
+        String strUnit;
+        long amount = cashAccount.getAmount()/100;
+        if(amount > 1_000_000_000) {
+            strAmount = String.valueOf(amount / 1_000_000_000f);
+            strUnit   = mResources.getString(R.string.unit_billion);
+        }
+        else if(amount > 1_000_000){
+            strAmount = String.valueOf(amount / 1_000_000f);
+            strUnit   = mResources.getString(R.string.unit_billion);
+        }
+        else if(amount > 1_000){
+            strAmount = String.valueOf(amount / 1_000f);
+            strUnit   = mResources.getString(R.string.unit_thousand);
+        }
+        else {
+            strAmount = String.valueOf(amount);
+            strUnit   = "";
+        }
         //Средства
-        viewHolder.tvCashAccountAmount.setText(String.valueOf(cashAccount.getAmount()));
+        viewHolder.tvCashAccountAmount.setText(strAmount);
+        viewHolder.tvUnit.setText(strUnit);
 
         //Валюта
         viewHolder.tvCurrency.setText(cashAccount.getCurrency().getStrSymbol());
@@ -156,7 +179,7 @@ public class RecyclerViewCashAccountsAdapter extends
 
     private void openEditor(long id){
         Intent intent = new Intent(mContext, NewCashAccountActivity.class);
-        intent.putExtra(Constants.OPEN_AS, false);
+        intent.putExtra(Constants.OPEN_AS, CashAccount.EDIT);
         intent.putExtra(Constants.CASH_ACCOUNT_ID, id);
         intent.putExtra(Constants.ACTIVITY_TITLE, R.string.title_activity_cash_account_editing);
         mContext.startActivity(intent);
@@ -234,11 +257,11 @@ public class RecyclerViewCashAccountsAdapter extends
             switch (v.getId()){
                 case R.id.btn_add_expense:
                     typeOperation = Category.EXPENSE;
-                    templates = OperationTemplate.getExpenseOperationTemplates();
+                    templates = OperationTemplate.getExpenseTemplates();
                     break;
                 case R.id.btn_add_profit:
                     typeOperation = Category.PROFIT;
-                    templates = OperationTemplate.getProfitOperationTemplates();
+                    templates = OperationTemplate.getProfitTemplates();
             }
 
             if(templates != null && templates.isEmpty()){

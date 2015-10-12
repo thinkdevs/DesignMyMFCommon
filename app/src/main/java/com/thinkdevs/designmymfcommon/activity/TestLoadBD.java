@@ -5,8 +5,8 @@ import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Color;
 import com.thinkdevs.designmymfcommon.database.Currency;
+import com.thinkdevs.designmymfcommon.database.Icon;
 import com.thinkdevs.designmymfcommon.database.LoadResourceToDataBase;
-import com.thinkdevs.designmymfcommon.database.Logo;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class TestLoadBD {
         LoadResourceToDataBase.loadLogoCategory();
 
         List<Color> colors = new Select().from(Color.class).queryList();
-        List<Logo> cashAccountLogos = Logo.getAllCashAccountLogos();
-        List<Logo> categoryLogos    = Logo.getAllCategoryLogos();
+        List<Icon> cashAccountIcons = Icon.getCashAccountIcons();
+        List<Icon> categoryIcons = Icon.getCategoryIcons();
 
         //Сохранение валют в базу данных ********************************
         Currency currency = new Currency();
@@ -42,28 +42,28 @@ public class TestLoadBD {
         // Сохранение счетов в Базу данных********************************
         CashAccount cash = new CashAccount();
         cash.setName("Кошелек");
-        cash.setComment("Наличные");
+        cash.setDescription("Наличные");
         cash.setColor(colors.get(16));
         cash.setAmount(0);
-        cash.setLogo(cashAccountLogos.get(0));
+        cash.setIcon(cashAccountIcons.get(0));
         cash.setCurrency(currency);
         cash.save();
 
         CashAccount cash1 = new CashAccount();
         cash1.setName("Тинькофф");
-        cash1.setComment("MasterCard / Debit");
+        cash1.setDescription("MasterCard / Debit");
         cash1.setColor(colors.get(14));
         cash1.setAmount(0);
-        cash1.setLogo(cashAccountLogos.get(1));
+        cash1.setIcon(cashAccountIcons.get(1));
         cash1.setCurrency(currency);
         cash1.save();
 
         CashAccount cash2 = new CashAccount();
         cash2.setName("Сбербанк");
-        cash2.setComment("MasterCard / Debit");
+        cash2.setDescription("MasterCard / Debit");
         cash2.setColor(colors.get(9));
         cash2.setAmount(0);
-        cash2.setLogo(cashAccountLogos.get(1));
+        cash2.setIcon(cashAccountIcons.get(1));
         cash2.setCurrency(currency);
         cash2.save();
 
@@ -81,7 +81,7 @@ public class TestLoadBD {
         categoryEmptyParentExpense.setType(Category.EXPENSE);
         categoryEmptyParentExpense.setName("Без категории");
         categoryEmptyParentExpense.setColor(colors.get(18));
-        categoryEmptyParentExpense.setLogo(categoryLogos.get(15));
+        categoryEmptyParentExpense.setIcon(categoryIcons.get(15));
         categoryEmptyParentExpense.save();
 
         //Without Parent Category Profit
@@ -89,7 +89,7 @@ public class TestLoadBD {
         categoryEmptyParentProfit.setType(Category.PROFIT);
         categoryEmptyParentProfit.setName("Без категории");
         categoryEmptyParentProfit.setColor(colors.get(18));
-        categoryEmptyParentProfit.setLogo(categoryLogos.get(15));
+        categoryEmptyParentProfit.setIcon(categoryIcons.get(15));
         categoryEmptyParentProfit.save();
 
         //Expense categories
@@ -97,7 +97,7 @@ public class TestLoadBD {
         categoryExpense1.setType(Category.EXPENSE);
         categoryExpense1.setName("Продукты");
         categoryExpense1.setColor(colors.get(0));
-        categoryExpense1.setLogo(categoryLogos.get(12));
+        categoryExpense1.setIcon(categoryIcons.get(12));
         categoryExpense1.save();
 
             Category subCategoryExpense11 = new Category();
@@ -124,7 +124,7 @@ public class TestLoadBD {
         categoryExpense2.setName("Товары для дома");
         categoryExpense2.setType(Category.EXPENSE);
         categoryExpense2.setColor(colors.get(1));
-        categoryExpense2.setLogo(categoryLogos.get(0));
+        categoryExpense2.setIcon(categoryIcons.get(0));
         categoryExpense2.save();
 
             Category subCategoryExpense21 = new Category();
@@ -146,7 +146,7 @@ public class TestLoadBD {
         categoryExpense3.setName("Авто");
         categoryExpense3.setType(Category.EXPENSE);
         categoryExpense3.setColor(colors.get(2));
-        categoryExpense3.setLogo(categoryLogos.get(1));
+        categoryExpense3.setIcon(categoryIcons.get(1));
         categoryExpense3.save();
 
             Category subCategoryExpense31 = new Category();
@@ -163,21 +163,21 @@ public class TestLoadBD {
         categoryExpense4.setName("Животные");
         categoryExpense4.setType(Category.EXPENSE);
         categoryExpense4.setColor(colors.get(3));
-        categoryExpense4.setLogo(categoryLogos.get(7));
+        categoryExpense4.setIcon(categoryIcons.get(7));
         categoryExpense4.save();
 
         Category categoryExpense5 = new Category();
         categoryExpense5.setName("Спорт");
         categoryExpense5.setType(Category.EXPENSE);
         categoryExpense5.setColor(colors.get(4));
-        categoryExpense5.setLogo(categoryLogos.get(5));
+        categoryExpense5.setIcon(categoryIcons.get(5));
         categoryExpense5.save();
 
     // Profit Categories
         Category categoryProfit1 = new Category();
         categoryProfit1.setName("Работа");
         categoryProfit1.setType(Category.PROFIT);
-        categoryProfit1.setLogo(categoryLogos.get(14));
+        categoryProfit1.setIcon(categoryIcons.get(14));
         categoryProfit1.setColor(colors.get(5));
         categoryProfit1.save();
 
@@ -194,7 +194,7 @@ public class TestLoadBD {
         Category categoryProfit2 = new Category();
         categoryProfit2.setName("Халтура");
         categoryProfit2.setType(Category.PROFIT);
-        categoryProfit2.setLogo(categoryLogos.get(13));
+        categoryProfit2.setIcon(categoryIcons.get(13));
         categoryProfit2.setColor(colors.get(6));
         categoryProfit2.save();
 //         --------------------------------********************************

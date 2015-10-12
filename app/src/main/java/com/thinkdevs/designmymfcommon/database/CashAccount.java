@@ -12,24 +12,24 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
-/**
- * Таблица со счетами
- */
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class CashAccount extends BaseModel {
+
+    public static final int CREATE = 0;
+    public static final int EDIT   = 1;
 
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
-    String name;   //название счета
+    String name;
 
     @Column
-    String comment; //комментарий к счету
+    String comment;
 
     @Column
-    float  amount;  //колличество средств
+    long  amount;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -37,15 +37,15 @@ public class CashAccount extends BaseModel {
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    Currency currency; //валюта
+    Currency currency;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
-            columnName = "logo_id",
+            columnName = "icon_id",
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    Logo logo; //логотип
+    Icon icon;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -53,9 +53,9 @@ public class CashAccount extends BaseModel {
             columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false)
-    Color color; //цвет
+    Color color;
 
-    List<Operation> operations; //список операций
+    List<Operation> operations;
 
     public long getId() {
         return id;
@@ -73,15 +73,15 @@ public class CashAccount extends BaseModel {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setDescription(String comment) {
         this.comment = comment;
     }
 
-    public float getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
@@ -93,12 +93,12 @@ public class CashAccount extends BaseModel {
         this.currency = currency;
     }
 
-    public Logo getLogo() {
-        return logo;
+    public Icon getIcon() {
+        return icon;
     }
 
-    public void setLogo(Logo logo) {
-        this.logo = logo;
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
 
     public Color getColor() {

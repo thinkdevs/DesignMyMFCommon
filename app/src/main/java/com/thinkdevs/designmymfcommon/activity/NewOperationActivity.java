@@ -113,7 +113,7 @@ public class NewOperationActivity extends Activity {
         }
 
         if(listCategoriesExpense.size() != 0) {
-            listSubCategoryExpense = listCategoriesExpense.get(0).getSubCategories();
+            listSubCategoryExpense = listCategoriesExpense.get(0).getChilds();
             if (listSubCategoryExpense.size() != 0) {
                 for (Category subCategoryExpense : listSubCategoryExpense) {
                     listNamesSubCategoriesExpense.add(subCategoryExpense.getName());
@@ -121,7 +121,7 @@ public class NewOperationActivity extends Activity {
             }
         }
         if(listCategoriesProfit.size() != 0) {
-            listSubCategoryProfits = listCategoriesProfit.get(0).getSubCategories();
+            listSubCategoryProfits = listCategoriesProfit.get(0).getChilds();
             if (listSubCategoryProfits.size() != 0) {
                 for (Category subCategoryProfit : listSubCategoryProfits) {
                     listNamesSubCategoriesProfit.add(subCategoryProfit.getName());
@@ -339,7 +339,7 @@ public class NewOperationActivity extends Activity {
 //            operation.setDate(new Date(System.currentTimeMillis()));
 //            operation.setCategory(subCategory);
 //            operation.setAmount(amount);
-//            operation.setComment(comment);
+//            operation.setDescription(comment);
 //
 //            if(OPEN_AS){
 //                operation.save();

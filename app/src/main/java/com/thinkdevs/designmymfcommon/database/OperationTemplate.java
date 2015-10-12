@@ -28,10 +28,10 @@ public class OperationTemplate extends BaseModel {
     int type;
 
     @Column
-    float amount;
+    long amount;
 
     @Column
-    String comment;
+    String description;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -61,20 +61,20 @@ public class OperationTemplate extends BaseModel {
         this.type = type;
     }
 
-    public float getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void  setAmount(float amount) {
+    public void  setAmount(long amount) {
         this.amount = amount;
     }
 
-    public String getComment() {
-        return comment;
+    public String getDescription() {
+        return description;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Category getCategory() {
@@ -94,20 +94,20 @@ public class OperationTemplate extends BaseModel {
                 .querySingle() != null;
     }
 
-    public static List<OperationTemplate> getOperationTemplates(){
+    public static List<OperationTemplate> getTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
                 .queryList();
     }
 
-    public static List<OperationTemplate> getExpenseOperationTemplates(){
+    public static List<OperationTemplate> getExpenseTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
                 .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.EXPENSE))
                 .queryList();
     }
 
-    public static List<OperationTemplate> getProfitOperationTemplates(){
+    public static List<OperationTemplate> getProfitTemplates(){
         return new Select()
                 .from(OperationTemplate.class)
                 .where(Condition.column(OperationTemplate$Table.TYPE).is(Category.PROFIT))

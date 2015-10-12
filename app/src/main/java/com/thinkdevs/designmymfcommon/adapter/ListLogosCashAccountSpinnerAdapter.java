@@ -9,22 +9,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.Logo;
+import com.thinkdevs.designmymfcommon.database.Icon;
 
 import java.util.List;
 
-public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
+public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Icon> {
 
     Resources res;
 
-    public ListLogosCashAccountSpinnerAdapter(Context context, List<Logo> logos){
-        super(context, R.layout.icon_item, logos);
+    public ListLogosCashAccountSpinnerAdapter(Context context, List<Icon> icons){
+        super(context, R.layout.icon_item, icons);
         res = context.getResources();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Logo logo = getItem(position);
+        Icon icon = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
@@ -32,9 +32,9 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
         }
 
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));
-        imageView.setImageResource(logo.getResourceId());
+        imageView.setImageResource(icon.getResourceId());
         imageView.setColorFilter(res.getColor(R.color.teal));
-        imageView.setTag(logo.getResourceId());
+        imageView.setTag(icon.getResourceId());
 
         return convertView;
     }
@@ -42,7 +42,7 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-        Logo logo = getItem(position);
+        Icon icon = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
@@ -50,9 +50,9 @@ public class ListLogosCashAccountSpinnerAdapter extends ArrayAdapter<Logo> {
         }
 
         ImageView imageView = (ImageView)(convertView.findViewById(R.id.imageView));
-        imageView.setImageResource(logo.getResourceId());
+        imageView.setImageResource(icon.getResourceId());
         imageView.setColorFilter(res.getColor(R.color.teal));
-        imageView.setTag(logo.getResourceId());
+        imageView.setTag(icon.getResourceId());
 
         return convertView;
     }

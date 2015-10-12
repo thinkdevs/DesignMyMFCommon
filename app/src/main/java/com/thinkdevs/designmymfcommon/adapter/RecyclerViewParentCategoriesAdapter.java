@@ -83,16 +83,16 @@ public class RecyclerViewParentCategoriesAdapter extends
                 R.string.tag_resource_id, (category.getColor().getResourceId()));
 
         //Логотип
-        viewHolder.ivCategoryLogo.setImageResource(category.getLogo().getResourceId());
+        viewHolder.ivCategoryLogo.setImageResource(category.getIcon().getResourceId());
         viewHolder.ivCategoryLogo.setTag(
-                R.string.tag_resource_id, category.getLogo().getResourceId());
+                R.string.tag_resource_id, category.getIcon().getResourceId());
 
         //Имя категории
         viewHolder.tvCategoryName.setText(category.getName());
 
         //Счетчик подкатегорий
         StringBuilder sbCountSubCategories = new StringBuilder();
-        sbCountSubCategories.append("( ").append(category.getSubCategories().size()).append(" )");
+        sbCountSubCategories.append("( ").append(category.getChilds().size()).append(" )");
         viewHolder.tvAmount.setText(sbCountSubCategories);
 
         //Установка слушателей

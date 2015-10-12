@@ -12,9 +12,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import java.sql.Date;
 import java.util.List;
 
-/**
- * Таблица с операциями
- */
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class Operation extends BaseModel {
 
@@ -29,10 +26,10 @@ public class Operation extends BaseModel {
     Date date;
 
     @Column
-    float amount;
+    long amount;
 
     @Column
-    String comment;
+    String description;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(
@@ -78,19 +75,19 @@ public class Operation extends BaseModel {
         this.cashAccount = cashAccount;
     }
 
-    public String getComment() {
-        return comment;
+    public String getDescription() {
+        return description;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public float getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
@@ -102,7 +99,7 @@ public class Operation extends BaseModel {
         this.date = date;
     }
 
-    public static List<Operation> getAllOperations(){
+    public static List<Operation> getOperations(){
         return new Select()
                 .from(Operation.class)
                 .queryList();
@@ -133,9 +130,9 @@ public class Operation extends BaseModel {
         // Счет
         CashAccount cashAccount = CashAccount.getByID(cashAccountID);
         // Получаем стоимость
-        float amount = template.getAmount();
+        long amount = template.getAmount();
         // Получаем комментарий
-        String comment = template.getComment();
+        String comment = template.getDescription();
 
         // Сохраняем операцию
         Operation operation = new Operation();
@@ -145,7 +142,7 @@ public class Operation extends BaseModel {
         operation.setCategory(template.getCategory());
 
         operation.setAmount(amount);
-        operation.setComment(comment);
+        operation.setDescription(comment);
         operation.save();
 
         amount = template.isExpense() ? amount * -1 : amount;
