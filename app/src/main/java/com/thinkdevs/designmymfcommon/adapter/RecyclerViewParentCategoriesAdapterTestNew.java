@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -21,7 +20,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
-import com.thinkdevs.designmymfcommon.dialog.SubCategoriesDialogFragment;
+import com.thinkdevs.designmymfcommon.dialog.ChildCategoriesDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
@@ -61,7 +60,7 @@ public class RecyclerViewParentCategoriesAdapterTestNew extends
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.card_category_new_test, parent, false);
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.card_category, parent, false);
         CategoryViewHolder vh = new CategoryViewHolder(view);
         return vh;
     }
@@ -175,8 +174,8 @@ public class RecyclerViewParentCategoriesAdapterTestNew extends
         //id категории
         long idParentCategory = (long)v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_id);
         //диалог подкатегорий
-        SubCategoriesDialogFragment subCategoriesDialogFragment =
-                SubCategoriesDialogFragment.newInstance(idParentCategory);
-        subCategoriesDialogFragment.show(mContext.getFragmentManager(), "dialog_sub_categories");
+        ChildCategoriesDialogFragment childCategoriesDialogFragment =
+                ChildCategoriesDialogFragment.newInstance(idParentCategory);
+        childCategoriesDialogFragment.show(mContext.getFragmentManager(), "dialog_sub_categories");
     }
 }

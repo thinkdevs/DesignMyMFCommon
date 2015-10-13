@@ -20,7 +20,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
-import com.thinkdevs.designmymfcommon.dialog.SubCategoriesDialogFragment;
+import com.thinkdevs.designmymfcommon.dialog.ChildCategoriesDialogFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
@@ -179,8 +179,8 @@ public class RecyclerViewParentCategoriesAdapter extends
         //id категории
         long idParentCategory = (long)v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_id);
         //диалог подкатегорий
-        SubCategoriesDialogFragment subCategoriesDialogFragment =
-                SubCategoriesDialogFragment.newInstance(idParentCategory);
-        subCategoriesDialogFragment.show(mContext.getFragmentManager(), "dialog_sub_categories");
+        ChildCategoriesDialogFragment childCategoriesDialogFragment =
+                ChildCategoriesDialogFragment.newInstance(idParentCategory);
+        childCategoriesDialogFragment.show(mContext.getFragmentManager(), "dialog_sub_categories");
     }
 }

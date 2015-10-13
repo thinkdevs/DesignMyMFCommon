@@ -2,6 +2,7 @@ package com.thinkdevs.designmymfcommon.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -11,16 +12,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.fragment.CashAccountsListFragment;
-import com.thinkdevs.designmymfcommon.fragment.CategoriesListFragment;
+import com.thinkdevs.designmymfcommon.fragment.CategoriesTabFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationTemplatesListFragment;
 import com.thinkdevs.designmymfcommon.fragment.OperationsListFragment;
 
 public class MainActivity extends AppCompatActivity {
+
     private DrawerLayout mDrawer;
-    private Toolbar toolbar;
+    private Toolbar mToolbar;
+    private AppBarLayout appBarLayout;
 
     SharedPreferences preferences = null;
     public static final String FIRST_RUN = "firstRun";
@@ -33,8 +37,12 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences("com.thinkdevs.designmymfcommon", MODE_PRIVATE);
 
         // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        findViewById(R.id.tabs).setVisibility(View.GONE);
+
+        appBarLayout = (AppBarLayout)findViewById(R.id.appbar);
 
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = OperationTemplatesListFragment.class;
                 break;
             case R.id.categories:
-                fragmentClass = CategoriesListFragment.class;
+                fragmentClass = CategoriesTabFragment.class;
                 break;
             default:
                 fragmentClass = CashAccountsListFragment.class;
@@ -133,4 +141,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
     }
+
+    public AppBarLayout getAppBarLayout() {
+        return appBarLayout;
+    }
+
 }

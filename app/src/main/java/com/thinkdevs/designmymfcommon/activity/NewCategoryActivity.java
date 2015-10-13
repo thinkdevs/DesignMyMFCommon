@@ -1,10 +1,11 @@
 package com.thinkdevs.designmymfcommon.activity;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,7 @@ import com.thinkdevs.designmymfcommon.utills.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewCategoryActivity extends Activity {
+public class NewCategoryActivity extends AppCompatActivity {
 
     private RadioGroup mRgHierarchy;
     private TextView   mTvRgType;
@@ -62,9 +63,16 @@ public class NewCategoryActivity extends Activity {
         mIntent = getIntent();
         mBundle = mIntent.getExtras();
 
-        ActionBar actionBar = getActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(mBundle != null) {
+            mOpenAs = mBundle.getInt(Constants.OPEN_AS);
+            toolbar.setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
+        }
+
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
 
         //Тип иерархии
         mRgHierarchy = ((RadioGroup) findViewById(R.id.rg_hierarchy));
@@ -184,7 +192,6 @@ public class NewCategoryActivity extends Activity {
             return true;
         }
 
-        //*****************************Сохранение Категории/Подкатегории***********************
         if (id == R.id.action_save) {
             mSave();
             return true;
@@ -213,7 +220,13 @@ public class NewCategoryActivity extends Activity {
     }
 
     private void mOpenAs(){
-        Category category = Category.getById(mBundle.getLong(Constants.CATEGORY_ID));
+        Category category;
+        if(mBundle.containsKey(Constants.CATEGORY_ID)) {
+           category = Category.getById(mBundle.getLong(Constants.CATEGORY_ID));
+        }
+        else
+           category = new Category();
+
         switch (mOpenAs){
             case Category.EDIT_PARENT :
                 mOpenParentEditor(category);

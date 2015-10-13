@@ -35,14 +35,14 @@
             android:label="@string/title_activity_new_category" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainNavigationDrawerActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.NewOperationActivity"
             android:label="@string/title_activity_new_operation" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainNavigationDrawerActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
         <activity
@@ -51,7 +51,7 @@
             android:label="@string/title_activity_new_operation_template" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainNavigationDrawerActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
     </application>

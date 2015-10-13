@@ -2,12 +2,12 @@ package com.thinkdevs.designmymfcommon.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,11 +39,14 @@ public class ListCategoriesSpinnerAdapter extends ArrayAdapter<Category> {
         cardView.setTag(R.string.tag_category_id, category.getId());
 
         //Цвет фона логотипа
-        FrameLayout flLogo = (FrameLayout)convertView.findViewById(R.id.fl_logo);
-        flLogo.setBackgroundColor(
-                (mResources.getColor(category.getColor().getResourceId())));
-        flLogo.setTag(
-                R.string.tag_resource_id, (category.getColor().getResourceId()));
+//        FrameLayout flLogo = (FrameLayout)convertView.findViewById(R.id.fl_logo);
+//        flLogo.setBackgroundColor(
+//                (mResources.getColor(category.getColor().getResourceId())));
+//        flLogo.setTag(
+//                R.string.tag_resource_id, (category.getColor().getResourceId()));
+
+        GradientDrawable drawable = (GradientDrawable)convertView.findViewById(R.id.iv_category_logo).getBackground();
+        drawable.setColor(mResources.getColor(category.getColor().getResourceId()));
 
         //Логотип
         ImageView ivCategoryLogo = (ImageView) convertView.findViewById(R.id.iv_category_logo);

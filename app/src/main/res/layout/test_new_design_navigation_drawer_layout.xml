@@ -13,7 +13,7 @@
 
         <!-- The ActionBar -->
         <include
-            layout="@layout/test_new_design_toolbar"
+            layout="@layout/tool_bar_with_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

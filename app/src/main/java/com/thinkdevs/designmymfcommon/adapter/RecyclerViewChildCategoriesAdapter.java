@@ -22,8 +22,8 @@ import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
-public class RecyclerViewSubCategoriesAdapter extends
-        RecyclerView.Adapter<RecyclerViewSubCategoriesAdapter.SubCategoryViewHolder>
+public class RecyclerViewChildCategoriesAdapter extends
+        RecyclerView.Adapter<RecyclerViewChildCategoriesAdapter.SubCategoryViewHolder>
         implements View.OnLongClickListener, DeleteDialogFragment.NoticeDialogListener{
 
     private List<Category> mCategories;
@@ -35,16 +35,15 @@ public class RecyclerViewSubCategoriesAdapter extends
 
     public static class SubCategoryViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
-        public TextView tvSubCategoryName;
+        public TextView tvChildCategoryName;
 
         public SubCategoryViewHolder(View itemView) {
             super(itemView);
-            cardView          = (CardView) itemView.findViewById(R.id.cv_child_category);
-            tvSubCategoryName = (TextView) itemView.findViewById(R.id.tv_sub_category_name);
+            tvChildCategoryName = (TextView) itemView.findViewById(R.id.tv_sub_category_name);
         }
     }
 
-    public RecyclerViewSubCategoriesAdapter(Activity context, List<Category> subCategories) {
+    public RecyclerViewChildCategoriesAdapter(Activity context, List<Category> subCategories) {
         this.mCategories = subCategories;
         this.mContext    = context;
         this.mResources  = context.getResources();
@@ -54,7 +53,7 @@ public class RecyclerViewSubCategoriesAdapter extends
     public SubCategoryViewHolder onCreateViewHolder(ViewGroup parent,
                                                     int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_child_category, parent, false);
+                .inflate(R.layout.text_view_child_category, parent, false);
 
         SubCategoryViewHolder vh = new SubCategoryViewHolder(view);
         return vh;
@@ -66,18 +65,14 @@ public class RecyclerViewSubCategoriesAdapter extends
         Category category = mCategories.get(i);
 
         //Сохранение id категории и ее позииции в списке
-        viewHolder.cardView.setTag(R.string.tag_category_id, category.getId());
-        viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
+        viewHolder.tvChildCategoryName.setTag(R.string.tag_category_id, category.getId());
+        viewHolder.tvChildCategoryName.setTag(R.string.tag_position_in_rv, i);
 
         //Имя категории
-        viewHolder.tvSubCategoryName.setText(category.getName());
-
-        //Цвет текста имени
-        viewHolder.tvSubCategoryName.setTextColor(
-                (mResources.getColor(category.getColor().getResourceId())));
+        viewHolder.tvChildCategoryName.setText(category.getName());
 
         //Установка слушателей
-        viewHolder.cardView.setOnLongClickListener(this);
+        viewHolder.tvChildCategoryName.setOnLongClickListener(this);
     }
 
     @Override
@@ -93,7 +88,7 @@ public class RecyclerViewSubCategoriesAdapter extends
         mContext.startActivity(intent);
     }
 
-    private void deleteSubCategory(){
+    private void deleteChildCategory(){
         Category categoryToDelete = Category.getById(idToDelete);
         if(!categoryToDelete.deleteCategory()){
             Toast.makeText(
@@ -109,7 +104,7 @@ public class RecyclerViewSubCategoriesAdapter extends
 
     @Override
     public void onDialogPositiveClick() {
-        deleteSubCategory();
+        deleteChildCategory();
         updateAfterDelete();
     }
 
@@ -121,9 +116,9 @@ public class RecyclerViewSubCategoriesAdapter extends
     @Override
     public boolean onLongClick(final View v) {
         //id подкатегории
-        final long id = (long)(v.findViewById(R.id.cv_child_category).getTag(R.string.tag_category_id));
+        final long id = (long)(v.findViewById(R.id.tv_sub_category_name).getTag(R.string.tag_category_id));
         //позиция в rv
-        final int position = (int)(v.findViewById(R.id.cv_child_category).getTag(R.string.tag_position_in_rv));
+        final int position = (int)(v.findViewById(R.id.tv_sub_category_name).getTag(R.string.tag_position_in_rv));
         //меню
         final PopupMenu popupMenu = new PopupMenu(
                 mContext, v.findViewById(R.id.tv_sub_category_name));
@@ -139,7 +134,7 @@ public class RecyclerViewSubCategoriesAdapter extends
                         idToDelete = id;
                         positionToDelete = position;
                         dialogDelete = DeleteDialogFragment.newInstance(
-                                RecyclerViewSubCategoriesAdapter.this,
+                                RecyclerViewChildCategoriesAdapter.this,
                                 mContext.getString(R.string.msg_delete_sub_category));
                         dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;

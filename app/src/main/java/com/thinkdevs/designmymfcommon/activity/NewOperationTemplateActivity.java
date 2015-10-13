@@ -1,10 +1,10 @@
 package com.thinkdevs.designmymfcommon.activity;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewOperationTemplateActivity extends Activity {
+public class NewOperationTemplateActivity extends AppCompatActivity {
 
     private boolean IS_NEW = true;
 
@@ -61,12 +61,17 @@ public class NewOperationTemplateActivity extends Activity {
         setContentView(R.layout.activity_new_operation_template);
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null)
-            setTitle(extras.getString(Constants.ACTIVITY_TITLE));
 
-        ActionBar actionBar = getActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(extras != null)
+            toolbar.setTitle(extras.getString(Constants.ACTIVITY_TITLE));
+        else
+            toolbar.setTitle(getResources().getString(R.string.title_activity_new_operation_template));
+
+        setSupportActionBar(toolbar);
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_close_clear_cancel);
 
         etTitle        = (EditText)findViewById(R.id.et_title);
         radioGroupType = ((RadioGroup) findViewById(R.id.rg_type_operation));

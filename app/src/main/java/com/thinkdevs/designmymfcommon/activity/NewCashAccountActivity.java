@@ -74,6 +74,7 @@ public class NewCashAccountActivity extends AppCompatActivity
             mOpenAs = mBundle.getInt(Constants.OPEN_AS);
             toolbar.setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
         }
+
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
