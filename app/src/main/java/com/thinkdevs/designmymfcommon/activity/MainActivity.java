@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawer;
     private Toolbar mToolbar;
     private AppBarLayout appBarLayout;
+    private NavigationView mNvDrawer;
 
     SharedPreferences preferences = null;
     public static final String FIRST_RUN = "firstRun";
@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        mNvDrawer = (NavigationView) findViewById(R.id.nvView);
+        setupDrawerContent(mNvDrawer);
 
-        NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        setupDrawerContent(nvDrawer);
+        selectDrawerItem(mNvDrawer.getMenu().getItem(0));
 
         // Set the menu icon instead of the launcher icon.
         final ActionBar ab = getSupportActionBar();
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
             preferences.edit().putBoolean(FIRST_RUN, false).apply();
         }
-        Log.d("tag", "Main Navigation Drawer Activity - 'onResume'");
     }
 
 
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
     }
 
     public AppBarLayout getAppBarLayout() {

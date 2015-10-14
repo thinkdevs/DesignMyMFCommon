@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -38,7 +38,6 @@ public class RecyclerViewParentCategoriesAdapter extends
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
         public CardView    cardView;
-        public FrameLayout flLogo;
         public ImageView   ivCategoryLogo;
         public TextView    tvCategoryName;
         public TextView    tvAmount;
@@ -46,7 +45,6 @@ public class RecyclerViewParentCategoriesAdapter extends
         public CategoryViewHolder(View itemView) {
             super(itemView);
             cardView       = (CardView)    itemView.findViewById(R.id.cv_parent_category);
-            flLogo         = (FrameLayout) itemView.findViewById(R.id.fl_logo);
             ivCategoryLogo = (ImageView)   itemView.findViewById(R.id.iv_category_logo);
             tvCategoryName = (TextView)    itemView.findViewById(R.id.tv_category_name);
             tvAmount       = (TextView)    itemView.findViewById(R.id.tv_amount);
@@ -76,11 +74,8 @@ public class RecyclerViewParentCategoriesAdapter extends
         viewHolder.cardView.setTag(R.string.tag_category_id, category.getId());
         viewHolder.cardView.setTag(R.string.tag_position_in_rv, i);
 
-        //Цвет фона логотипа
-        viewHolder.flLogo.setBackgroundColor(
-                (mResources.getColor(category.getColor().getResourceId())));
-        viewHolder.flLogo.setTag(
-                R.string.tag_resource_id, (category.getColor().getResourceId()));
+        GradientDrawable drawable = (GradientDrawable)viewHolder.ivCategoryLogo.getBackground();
+        drawable.setColor(mResources.getColor(category.getColor().getResourceId()));
 
         //Логотип
         viewHolder.ivCategoryLogo.setImageResource(category.getIcon().getResourceId());

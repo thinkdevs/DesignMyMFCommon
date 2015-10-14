@@ -1,18 +1,25 @@
 package com.thinkdevs.designmymfcommon.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.MainActivity;
 import com.thinkdevs.designmymfcommon.adapter.SampleFragmentPagerAdapter;
+
+import java.util.List;
 
 public class CategoriesTabFragment extends Fragment {
 
@@ -27,6 +34,7 @@ public class CategoriesTabFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -68,5 +76,50 @@ public class CategoriesTabFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mTabLayout.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callOnActivityResultOnChildFragments(this, requestCode, resultCode, data);
+    }
+
+    public static void callOnActivityResultOnChildFragments(Fragment parent, int requestCode, int resultCode, Intent data) {
+        FragmentManager childFragmentManager = parent.getChildFragmentManager();
+        if (childFragmentManager != null) {
+            List<Fragment> childFragments = childFragmentManager.getFragments();
+            if (childFragments == null) {
+                return;
+            }
+            for (Fragment child : childFragments) {
+                if (child != null && !child.isDetached() && !child.isRemoving()) {
+                    child.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_categories_list, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in d.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_new_category) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -371,7 +371,8 @@ public class NewCategoryActivity extends AppCompatActivity {
             parent.setIcon(icon);
             parent.save();
             parent.updateSubs();
-            NavUtils.navigateUpFromSameTask(this);
+//            NavUtils.navigateUpFromSameTask(this);
+            returnResult(parent.getId(), 0);
         }
     }
 
@@ -401,4 +402,12 @@ public class NewCategoryActivity extends AppCompatActivity {
     private boolean mIsOpenAsEditor(){
         return Category.EDIT_CHILD == mOpenAs || mOpenAs == Category.EDIT_PARENT;
     }
+
+    private void returnResult (long id, int position){
+        Intent result = new Intent();
+        result.putExtra(Constants.CATEGORY_ID, id);
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
 }

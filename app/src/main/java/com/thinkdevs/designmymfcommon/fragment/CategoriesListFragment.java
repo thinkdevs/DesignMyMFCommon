@@ -18,7 +18,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCashAccountActivity;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
-import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapterTestNew;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
@@ -29,6 +29,10 @@ public class CategoriesListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private List<Category> mCategories;
+
+    private long mIdCategoryToUpdate;
 
     private int mType = Category.EXPENSE;
 
@@ -65,9 +69,9 @@ public class CategoriesListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(CategoriesListFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<Category> categoriesList = Category.getParentCategoriesWithoutEmpty(mType);
+        mCategories = Category.getParentCategoriesWithoutEmpty(mType);
 
-        mAdapter = new RecyclerViewParentCategoriesAdapterTestNew(CategoriesListFragment.this.getActivity(), categoriesList);
+        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), mCategories);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
@@ -79,7 +83,7 @@ public class CategoriesListFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Constants.OPEN_AS, Category.CREATE_PARENT);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                getParentFragment().startActivityForResult(intent, 1); //TODO
             }
         });
 
@@ -109,8 +113,28 @@ public class CategoriesListFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("test_tutu", "result");
+//        super.onActivityResult(requestCode, resultCode, data);
+        if(data == null)
+            return;
+
+        Log.d("test_tutu", String.valueOf(data.getLongExtra(Constants.CATEGORY_ID, 0)));
+
+        mCategories = Category.getParentCategoriesWithoutEmpty(mType);
+        mAdapter = new RecyclerViewParentCategoriesAdapter(getActivity(), mCategories);
+        mRecyclerView.setAdapter(mAdapter);
+    }
 
 
+    //TODO
+    private Fragment getActivityStarterFragment() {
+        if (getParentFragment() != null) {
+            return getParentFragment();
+        }
+        return this;
+    }
 
 
 }

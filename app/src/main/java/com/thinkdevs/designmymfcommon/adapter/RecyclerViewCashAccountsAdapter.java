@@ -121,27 +121,28 @@ public class RecyclerViewCashAccountsAdapter extends
         viewHolder.tvCashAccountComment.setText(cashAccount.getComment());
 
         //Средства и еденицы
-        String strAmount;
+        float floatAmount;
         String strUnit;
-        long amount = cashAccount.getAmount()/100;
-        if(amount > 1_000_000_000) {
-            strAmount = String.valueOf(amount / 1_000_000_000f);
+        float amount = cashAccount.getAmount()/100;
+        if(amount > 999_999_999) {
+            floatAmount = amount / 1_000_000_000f;
             strUnit   = mResources.getString(R.string.unit_billion);
         }
-        else if(amount > 1_000_000){
-            strAmount = String.valueOf(amount / 1_000_000f);
-            strUnit   = mResources.getString(R.string.unit_billion);
+        else if(amount > 999_999){
+            floatAmount = amount / 1_000_000f;
+            strUnit   = mResources.getString(R.string.unit_million);
         }
-        else if(amount > 1_000){
-            strAmount = String.valueOf(amount / 1_000f);
+        else if(amount > 99_999){
+            floatAmount = amount / 1_000f;
             strUnit   = mResources.getString(R.string.unit_thousand);
         }
         else {
-            strAmount = String.valueOf(amount);
+            floatAmount = amount;
             strUnit   = "";
         }
         //Средства
-        viewHolder.tvCashAccountAmount.setText(strAmount);
+        String strAmountFormat = String.format("%.2f", floatAmount);
+        viewHolder.tvCashAccountAmount.setText(strAmountFormat);
         viewHolder.tvUnit.setText(strUnit);
 
         //Валюта

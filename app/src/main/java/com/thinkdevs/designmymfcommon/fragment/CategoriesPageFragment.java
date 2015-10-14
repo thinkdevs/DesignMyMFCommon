@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
-import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapterTestNew;
+import com.thinkdevs.designmymfcommon.adapter.RecyclerViewParentCategoriesAdapter;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
@@ -25,6 +25,10 @@ public class CategoriesPageFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private List<Category> mCategories;
+
+    private long mIdCategoryToUpdate;
 
     private int mPage;
     private int mType;
@@ -59,9 +63,9 @@ public class CategoriesPageFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(CategoriesPageFragment.this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<Category> categoriesList = Category.getParentCategoriesWithoutEmpty(mType);
+        mCategories = Category.getParentCategoriesWithoutEmpty(mType);
 
-        mAdapter = new RecyclerViewParentCategoriesAdapterTestNew(CategoriesPageFragment.this.getActivity(), categoriesList);
+        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesPageFragment.this.getActivity(), mCategories);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
@@ -73,11 +77,30 @@ public class CategoriesPageFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Constants.OPEN_AS, Category.CREATE_PARENT);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                getActivityStarterFragment().startActivityForResult(intent, 0);
             }
         });
 
         return view;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null)
+            return;
+        mCategories.add(Category.getById(data.getLongExtra(Constants.CATEGORY_ID, 0)));
+        mAdapter.notifyItemInserted(mAdapter.getItemCount());
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    //TODO
+    private Fragment getActivityStarterFragment() {
+        if (getParentFragment() != null) {
+            return getParentFragment();
+        }
+        return this;
     }
 
 }
