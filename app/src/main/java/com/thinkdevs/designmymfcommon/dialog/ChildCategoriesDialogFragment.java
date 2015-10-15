@@ -26,27 +26,35 @@ import java.util.List;
 public class ChildCategoriesDialogFragment extends DialogFragment
         implements View.OnClickListener {
 
-    private RecyclerView rvSubCategories;
+    public static final int REQUEST_CODE_ADD_CHILD    = 3;
+    public static final int REQUEST_CODE_CHANGE_CHILD = 4;
+
+    private RecyclerView rvChilds;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private static long idCategory;
-    private Category parentCategory;
-    private List<Category> subCategories;
+    private long mParentId;
+    private Category parent;
+    private List<Category> childs;
 
     RelativeLayout rlTitleBar;
     ImageView ivLogo;
     TextView  tvName;
-    TextView  tvCount;
     Button    btnNew;
 
+    public static ChildCategoriesDialogFragment newInstance (long idCategory){
 
+        ChildCategoriesDialogFragment dialogFragment = new ChildCategoriesDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(Constants.CATEGORY_ID ,idCategory);
+        dialogFragment.setArguments(bundle);
+        return dialogFragment;
+    }
 
-    public static ChildCategoriesDialogFragment newInstance (
-            Long idCategory){
-        ChildCategoriesDialogFragment.idCategory
-                = idCategory;
-        return new ChildCategoriesDialogFragment();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mParentId = getArguments().getLong(Constants.CATEGORY_ID);
     }
 
     @Override
@@ -59,25 +67,24 @@ public class ChildCategoriesDialogFragment extends DialogFragment
         tvName        = (TextView) view.findViewById(R.id.tv_name);
         btnNew        = (Button)view.findViewById(R.id.btn_new);
         btnNew.setOnClickListener(this);
-        parentCategory = Category.getById(idCategory);
-        subCategories  = parentCategory.getChilds();
+        parent = Category.getById(mParentId);
+        childs = parent.getChilds();
 
-        rlTitleBar.setBackgroundColor(getResources().getColor(parentCategory.getColor().getResourceId()));
-        ivLogo.setImageResource(parentCategory.getIcon().getResourceId());
-        tvName.setText(parentCategory.getName());
+        rlTitleBar.setBackgroundColor(getResources().getColor(parent.getColor().getResourceId()));
+        ivLogo.setImageResource(parent.getIcon().getResourceId());
+        tvName.setText(parent.getName());
 
-        rvSubCategories = (RecyclerView) view.findViewById(R.id.rv_sub_categories);
+        rvChilds = (RecyclerView) view.findViewById(R.id.rv_sub_categories);
 
-        rvSubCategories.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        rvChilds.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
-        rvSubCategories.setHasFixedSize(true);
+        rvChilds.setHasFixedSize(true);
         mLayoutManager  = new LinearLayoutManager(getActivity());
-        rvSubCategories.setLayoutManager(mLayoutManager);
+        rvChilds.setLayoutManager(mLayoutManager);
 
         mAdapter = new RecyclerViewChildCategoriesAdapter(
-                getActivity(),
-                subCategories);
-        rvSubCategories.setAdapter(mAdapter);
+                this, childs);
+        rvChilds.setAdapter(mAdapter);
 
         return view;
     }
@@ -86,14 +93,28 @@ public class ChildCategoriesDialogFragment extends DialogFragment
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), NewCategoryActivity.class);
         intent.putExtra(Constants.OPEN_AS, Category.CREATE_CHILD);
-        intent.putExtra(Constants.CATEGORY_ID, parentCategory.getId());
+        intent.putExtra(Constants.CATEGORY_ID, parent.getId());
         intent.putExtra(Constants.ACTIVITY_TITLE, getResources().getString(R.string.title_activity_new_category));
-        startActivity(intent);
-        dismiss();
+        this.startActivityForResult(intent, REQUEST_CODE_ADD_CHILD);
     }
 
-    public interface NoticeDialogListener {
-        void onDialogOperationFromTempalateClick();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null) {
+            return;
+        }
+        long id;
+        int position;
+        switch (requestCode){
+            case REQUEST_CODE_ADD_CHILD:
+                id = data.getLongExtra(Constants.CATEGORY_ID, 0);
+                ((RecyclerViewChildCategoriesAdapter)mAdapter).updateAfterAdd(id);
+                break;
+            case REQUEST_CODE_CHANGE_CHILD:
+                id = data.getLongExtra(Constants.CATEGORY_ID, 0);
+                position = data.getIntExtra(Constants.CATEGORY_POSITION, 0);
+                ((RecyclerViewChildCategoriesAdapter)mAdapter).updateAfterChange(id, position);
+                break;
+        }
     }
-
 }

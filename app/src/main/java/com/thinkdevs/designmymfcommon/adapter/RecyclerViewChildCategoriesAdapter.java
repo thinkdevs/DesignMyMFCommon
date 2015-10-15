@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,6 +17,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.activity.NewCategoryActivity;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.dialog.DeleteDialogFragment;
+import com.thinkdevs.designmymfcommon.fragment.CategoriesPageFragment;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
@@ -28,13 +28,14 @@ public class RecyclerViewChildCategoriesAdapter extends
 
     private List<Category> mCategories;
     private Activity       mContext;
+    private DialogFragment mFragment;
     private Resources      mResources;
-    private DialogFragment dialogDelete;
-    private int            positionToDelete;
-    private long           idToDelete;
+    private DialogFragment mDialogDelete;
+    private int            mSelectedPosition;
+    private long           mSelectedCategory;
 
     public static class SubCategoryViewHolder extends RecyclerView.ViewHolder {
-        public CardView cardView;
+
         public TextView tvChildCategoryName;
 
         public SubCategoryViewHolder(View itemView) {
@@ -43,10 +44,11 @@ public class RecyclerViewChildCategoriesAdapter extends
         }
     }
 
-    public RecyclerViewChildCategoriesAdapter(Activity context, List<Category> subCategories) {
+    public RecyclerViewChildCategoriesAdapter(DialogFragment fragment, List<Category> subCategories) {
         this.mCategories = subCategories;
-        this.mContext    = context;
-        this.mResources  = context.getResources();
+        this.mFragment   = fragment;
+        this.mContext    = fragment.getActivity();
+        this.mResources  = mContext.getResources();
     }
 
     @Override
@@ -80,16 +82,17 @@ public class RecyclerViewChildCategoriesAdapter extends
         return mCategories.size();
     }
 
-    private void openEditor(long id){
+    private void openEditor(long id, int position){
         Intent intent = new Intent(mContext, NewCategoryActivity.class);
         intent.putExtra(Constants.OPEN_AS, Category.EDIT_CHILD);
         intent.putExtra(Constants.CATEGORY_ID, id);
         intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.CHILD);
-        mContext.startActivity(intent);
+        intent.putExtra(Constants.CATEGORY_POSITION, position);
+        mFragment.startActivityForResult(intent, CategoriesPageFragment.REQUEST_CODE_CHANGE_CHILD);
     }
 
     private void deleteChildCategory(){
-        Category categoryToDelete = Category.getById(idToDelete);
+        Category categoryToDelete = Category.getById(mSelectedCategory);
         if(!categoryToDelete.deleteCategory()){
             Toast.makeText(
                     mContext, mResources.getString(R.string.msg_can_not_be_removed), Toast.LENGTH_LONG).show();
@@ -97,9 +100,21 @@ public class RecyclerViewChildCategoriesAdapter extends
     }
 
     private void updateAfterDelete(){
-        mCategories.remove(positionToDelete);
-        notifyItemRemoved(positionToDelete);
-        notifyItemRangeChanged(positionToDelete, getItemCount());
+        mCategories.remove(mSelectedPosition);
+        notifyItemRemoved(mSelectedPosition);
+        notifyItemRangeChanged(mSelectedPosition, getItemCount());
+    }
+
+    public void updateAfterAdd(long id){
+        mCategories.add(Category.getById(id));
+        notifyItemInserted(getItemCount());
+    }
+
+    public void updateAfterChange(long id, int position){
+        Category category = Category.getById(id);
+        mCategories.remove(position);
+        mCategories.add(position, category);
+        notifyItemChanged(position);
     }
 
     @Override
@@ -128,15 +143,15 @@ public class RecyclerViewChildCategoriesAdapter extends
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        openEditor(id);
+                        openEditor(id, position);
                         return true;
                     case R.id.remove:
-                        idToDelete = id;
-                        positionToDelete = position;
-                        dialogDelete = DeleteDialogFragment.newInstance(
+                        mSelectedCategory = id;
+                        mSelectedPosition = position;
+                        mDialogDelete = DeleteDialogFragment.newInstance(
                                 RecyclerViewChildCategoriesAdapter.this,
                                 mContext.getString(R.string.msg_delete_sub_category));
-                        dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
+                        mDialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;
                     default:
                         return false;

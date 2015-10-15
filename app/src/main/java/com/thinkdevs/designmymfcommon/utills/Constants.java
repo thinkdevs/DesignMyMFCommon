@@ -42,6 +42,7 @@ public class Constants {
     public static final String CATEGORY_NAME      = "31";
     public static final String CATEGORY_TYPE      = "32";
     public static final String CATEGORY_HIERARCHY = "33";
+    public static final String CATEGORY_POSITION  = "34";
 
     // Currency
     public static final String CURRENCY_ID        = "40";

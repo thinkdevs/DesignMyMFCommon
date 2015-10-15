@@ -71,7 +71,7 @@ public class CategoriesListFragment extends Fragment {
 
         mCategories = Category.getParentCategoriesWithoutEmpty(mType);
 
-        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this.getActivity(), mCategories);
+        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesListFragment.this, mCategories);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
@@ -123,7 +123,7 @@ public class CategoriesListFragment extends Fragment {
         Log.d("test_tutu", String.valueOf(data.getLongExtra(Constants.CATEGORY_ID, 0)));
 
         mCategories = Category.getParentCategoriesWithoutEmpty(mType);
-        mAdapter = new RecyclerViewParentCategoriesAdapter(getActivity(), mCategories);
+        mAdapter = new RecyclerViewParentCategoriesAdapter(this, mCategories);
         mRecyclerView.setAdapter(mAdapter);
     }
 

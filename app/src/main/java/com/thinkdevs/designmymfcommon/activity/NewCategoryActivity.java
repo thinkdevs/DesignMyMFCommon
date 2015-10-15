@@ -372,7 +372,7 @@ public class NewCategoryActivity extends AppCompatActivity {
             parent.save();
             parent.updateSubs();
 //            NavUtils.navigateUpFromSameTask(this);
-            returnResult(parent.getId(), 0);
+            returnResult(parent.getId());
         }
     }
 
@@ -391,7 +391,8 @@ public class NewCategoryActivity extends AppCompatActivity {
             sub.setName(name);
             sub.setParent(parent);
             sub.save();
-            NavUtils.navigateUpFromSameTask(this);
+
+            returnResult(sub.getId());
         }
     }
 
@@ -403,9 +404,10 @@ public class NewCategoryActivity extends AppCompatActivity {
         return Category.EDIT_CHILD == mOpenAs || mOpenAs == Category.EDIT_PARENT;
     }
 
-    private void returnResult (long id, int position){
+    private void returnResult (long id){
         Intent result = new Intent();
         result.putExtra(Constants.CATEGORY_ID, id);
+        result.putExtra(Constants.CATEGORY_POSITION, mBundle.getInt(Constants.CATEGORY_POSITION));
         setResult(RESULT_OK, result);
         finish();
     }

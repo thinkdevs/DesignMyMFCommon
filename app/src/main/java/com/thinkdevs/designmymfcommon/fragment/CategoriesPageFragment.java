@@ -3,6 +3,7 @@ package com.thinkdevs.designmymfcommon.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +22,12 @@ import java.util.List;
 public class CategoriesPageFragment extends Fragment {
 
     public static final String ARG_PAGE = "ARG_PAGE";
+
+    public static final int REQUEST_CODE_ADD          = 0;
+    public static final int REQUEST_CODE_CHANGE       = 1;
+    public static final int REQUEST_CODE_ADD_CHILD    = 3;
+    public static final int REQUEST_CODE_CHANGE_CHILD = 4;
+
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -46,6 +53,8 @@ public class CategoriesPageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
         mType = mPage == 1 ? Category.EXPENSE : Category.PROFIT;
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -65,7 +74,7 @@ public class CategoriesPageFragment extends Fragment {
 
         mCategories = Category.getParentCategoriesWithoutEmpty(mType);
 
-        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesPageFragment.this.getActivity(), mCategories);
+        mAdapter = new RecyclerViewParentCategoriesAdapter(CategoriesPageFragment.this, mCategories);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab);
@@ -77,7 +86,7 @@ public class CategoriesPageFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Constants.OPEN_AS, Category.CREATE_PARENT);
                 intent.putExtras(bundle);
-                getActivityStarterFragment().startActivityForResult(intent, 0);
+                getActivityStarterFragment().startActivityForResult(intent, REQUEST_CODE_ADD);
             }
         });
 
@@ -89,13 +98,24 @@ public class CategoriesPageFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(data == null)
             return;
-        mCategories.add(Category.getById(data.getLongExtra(Constants.CATEGORY_ID, 0)));
-        mAdapter.notifyItemInserted(mAdapter.getItemCount());
-        mAdapter.notifyDataSetChanged();
+        long id;
+        int position;
+        switch (REQUEST_CODE_ADD){
+            case 0:
+                id = data.getLongExtra(Constants.CATEGORY_ID, 0);
+                ((RecyclerViewParentCategoriesAdapter)mAdapter).updateAfterAdd(id);
+                break;
+            case REQUEST_CODE_CHANGE:
+                id = data.getLongExtra(Constants.CATEGORY_ID, 0);
+                position = data.getIntExtra(Constants.CATEGORY_POSITION, 0);
+                ((RecyclerViewParentCategoriesAdapter)mAdapter).updateAfterChange(id, position);
+                break;
+        }
+
+        callOnActivityResultOnChildFragments(this, requestCode, resultCode, data);
     }
 
 
-    //TODO
     private Fragment getActivityStarterFragment() {
         if (getParentFragment() != null) {
             return getParentFragment();
@@ -103,4 +123,22 @@ public class CategoriesPageFragment extends Fragment {
         return this;
     }
 
+    public static void callOnActivityResultOnChildFragments(Fragment parent, int requestCode, int resultCode, Intent data) {
+        FragmentManager childFragmentManager = parent.getChildFragmentManager();
+        if (childFragmentManager != null) {
+            List<Fragment> childFragments = childFragmentManager.getFragments();
+            if (childFragments == null) {
+                return;
+            }
+            for (Fragment child : childFragments) {
+                if (child != null && !child.isDetached() && !child.isRemoving()) {
+                    child.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
+    }
+
+    public RecyclerView.Adapter getAdapter() {
+        return mAdapter;
+    }
 }
