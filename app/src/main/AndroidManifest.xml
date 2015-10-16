@@ -12,7 +12,7 @@
         android:screenOrientation="portrait">
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".main.AcMain"
             android:label="@string/app_name_short"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
@@ -25,43 +25,43 @@
         </activity>`
 
         <activity
-            android:name=".activity.NewCashAccountActivity"
+            android:name=".cashaccounts.AcCreateCashAccount"
             android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_cash"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".main.AcMain" />
         </activity>
         <activity
-            android:name=".activity.NewCategoryActivity"
+            android:name=".categories.AcCreateCategory"
             android:label="@string/title_activity_new_category"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".main.AcMain" />
         </activity>
         <activity
-            android:name=".activity.NewOperationActivity"
+            android:name=".operations.AcCreateOperation"
             android:label="@string/title_activity_new_operation"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".main.AcMain" />
         </activity>
 
         <activity
-            android:name=".activity.NewOperationTemplateActivity"
+            android:name=".operationtemplates.AcCreateOperationTemplate"
             android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_operation_template"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".main.AcMain" />
         </activity>
 
     </application>

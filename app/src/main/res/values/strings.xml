@@ -99,4 +99,21 @@
         <item>Доходы</item>
     </string-array>
 
+
+    <!-- Activity Create Category-->
+    <!-- Операции-->
+    <string-array name="operations">
+        <item>Расходы</item>
+        <item>Доходы</item>
+    </string-array>
+    <!-- Иерархия-->
+    <string-array name="hierarchy">
+        <item>Корневая</item>
+        <item>Вложенная</item>
+    </string-array>
+
+    
+    
+    
+
 </resources>
