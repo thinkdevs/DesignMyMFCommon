@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -133,9 +134,10 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         mEditChildViews.add(findViewById(R.id.llHierarchy));
         mEditChildViews.add(findViewById(R.id.llDecoration));
 
-        mSpOperations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mSpOperations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("test_test", String.valueOf(position));
                 switch (position) {
                     case INDEX_EXPENSES:
                         mOperations = Category.EXPENSE;
@@ -146,12 +148,17 @@ public class AcCreateCategoryTemp extends AppCompatActivity
                 }
                 setSpParentAdapter();
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
-
-        mSpOperations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mSpHierarchy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("test_test", String.valueOf(position));
                 switch (position) {
                     case INDEX_ROOT:
                         mHierarchy = Category.PARENT;
@@ -160,10 +167,15 @@ public class AcCreateCategoryTemp extends AppCompatActivity
                         break;
                     case INDEX_INSERTED:
                         mHierarchy = Category.CHILD;
-                        mHideViews(mCreateChildViews);
-                        mShowViews(mCreateParentViews);
+                        mHideViews(mCreateParentViews);
+                        mShowViews(mCreateChildViews);
                         break;
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 

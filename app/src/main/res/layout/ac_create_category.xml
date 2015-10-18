@@ -88,7 +88,7 @@
                 android:textColor="@android:color/darker_gray" />
 
             <Spinner
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/spOperations"
                 android:layout_marginLeft="4dp"
@@ -113,7 +113,7 @@
                 android:textColor="@android:color/darker_gray" />
 
             <Spinner
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/spHierarchy"
                 android:layout_marginLeft="4dp"
@@ -126,7 +126,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:id="@+id/llDecoration">
+            android:id="@+id/llDecoration"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -191,7 +192,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/llParent"
-            android:layout_marginTop="16dp" >
+            android:layout_marginTop="16dp"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
