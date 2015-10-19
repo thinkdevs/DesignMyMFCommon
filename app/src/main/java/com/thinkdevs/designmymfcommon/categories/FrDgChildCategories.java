@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.thinkdevs.designmymfcommon.DividerItemDecoration;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.samples.AcCreateCategoryTemp;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
@@ -89,7 +90,7 @@ public class FrDgChildCategories extends DialogFragment
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(getActivity(), AcCreateCategory.class);
+        Intent intent = new Intent(getActivity(), AcCreateCategoryTemp.class);
         intent.putExtra(Constants.OPEN_AS, Category.CREATE_CHILD);
         intent.putExtra(Constants.CATEGORY_ID, parent.getId());
         intent.putExtra(Constants.ACTIVITY_TITLE, getResources().getString(R.string.title_activity_new_category));

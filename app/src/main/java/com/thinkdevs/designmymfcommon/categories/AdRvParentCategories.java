@@ -18,8 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.common.FrDgDelete;
+import com.thinkdevs.designmymfcommon.database.Category;
+import com.thinkdevs.designmymfcommon.samples.AcCreateCategoryTemp;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
@@ -102,7 +103,7 @@ public class AdRvParentCategories extends
     }
 
     private void openEditor(long id, int position){
-        Intent intent = new Intent(mContext, AcCreateCategory.class);
+        Intent intent = new Intent(mContext, AcCreateCategoryTemp.class);
         intent.putExtra(Constants.OPEN_AS, Category.EDIT_PARENT);
         intent.putExtra(Constants.CATEGORY_ID, id);
         intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.PARENT);

@@ -169,7 +169,7 @@ public class AcCreateCashAccount extends AppCompatActivity
                         .show(getFragmentManager(), "chooseDecorColor");
                 break;
             case R.id.ivIcon:
-                FrDgDecorChooseIcon.newInstance(this, mCurrentIconId)
+                FrDgDecorChooseIcon.newInstance(this, mCurrentIconId, Icon.TYPE_CASH_ACCOUNT)
                         .show(getFragmentManager(), "chooseDecorIcon");
                 break;
         }

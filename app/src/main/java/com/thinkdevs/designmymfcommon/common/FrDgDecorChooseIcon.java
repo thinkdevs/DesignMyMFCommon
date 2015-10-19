@@ -19,11 +19,13 @@ public class FrDgDecorChooseIcon extends DialogFragment
 
     private static ChooseIconDialogListener sListener;
     private static long sCurrentIconId;
+    private static int sTypeIcon;
 
-    public static FrDgDecorChooseIcon newInstance (ChooseIconDialogListener listener, long currentIconId){
+    public static FrDgDecorChooseIcon newInstance (ChooseIconDialogListener listener, long currentIconId, int typeIcon){
 
-        sListener = listener;
+        sListener      = listener;
         sCurrentIconId = currentIconId;
+        sTypeIcon      = typeIcon;
 
         return new FrDgDecorChooseIcon();
 
@@ -36,7 +38,11 @@ public class FrDgDecorChooseIcon extends DialogFragment
         View     view     = inflater.inflate(R.layout.fragment_dialog_choose_decor, null);
         GridView gridView = (GridView) view.findViewById(R.id.gvDecor);
 
-        List<Icon> icons = Icon.getCashAccountIcons();
+        List<Icon> icons;
+        if(sTypeIcon == Icon.TYPE_CASH_ACCOUNT)
+            icons = Icon.getCashAccountIcons();
+        else
+            icons = Icon.getCategoryIcons();
         ArrayAdapter<Icon> adapter = new AdGrIcons(getActivity(), icons, sCurrentIconId);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
