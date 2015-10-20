@@ -52,15 +52,15 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     private final int INDEX_INSERTED = 1;
 
     private List<Color> mColors;
-    private List<Icon> mIcons;
+    private List<Icon>  mIcons;
 
     private Intent mIntent;
     private Bundle mBundle;
 
-    private int mOperations = Category.EXPENSE;
-    private int mHierarchy  = Category.PARENT;
-    private int mHierarchyOld;
-    private int mOpenAs;
+    private int  mOperations = Category.EXPENSE;
+    private int  mHierarchy  = Category.PARENT;
+    private int  mOpenAs;
+    private long mParentId;
 
     private long mCurrentIconId;
     private long mCurrentColorId;
@@ -88,7 +88,6 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
 
         //Название
         mEtName   = ((EditText) findViewById(R.id.et_name));
@@ -137,11 +136,11 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         mAllViews.add(findViewById(R.id.llParent));
 
         mCreateParentViews.add(findViewById(R.id.llDecoration));
+
         mCreateChildViews.add(findViewById(R.id.llParent));
 
         mEditParentViews.add(findViewById(R.id.llDecoration));
 
-        mEditChildViews.add(findViewById(R.id.llHierarchy));
         mEditChildViews.add(findViewById(R.id.llParent));
 
         mSpOperations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -168,16 +167,17 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         mSpHierarchy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("test_test", String.valueOf(position));
                 switch (position) {
                     case INDEX_ROOT:
                         mHierarchy = Category.PARENT;
-                        hideViews(mCreateChildViews);
+                        Log.d("testim", "иерархия - Корневая");
+                        hideViews(mAllViews);
                         showViews(mCreateParentViews);
                         break;
                     case INDEX_INSERTED:
                         mHierarchy = Category.CHILD;
-                        hideViews(mCreateParentViews);
+                        Log.d("testim", "иерархия - Вложенная");
+                        hideViews(mAllViews);
                         showViews(mCreateChildViews);
                         break;
                 }
@@ -223,6 +223,14 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void changeType(int type){
+        if (type == Category.PROFIT)
+            mSpOperations.setSelection(INDEX_PROFITS);
+        else {
+            mSpOperations.setSelection(INDEX_EXPENSES);
+        }
+    }
+
     private void hideViews(List<View> views){
         for(View view : views){
             view.setVisibility(View.GONE);
@@ -235,14 +243,6 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         }
     }
 
-    private void changeType(int type){
-        if (type == Category.PROFIT)
-            mSpOperations.setSelection(INDEX_PROFITS);
-        else {
-            mSpOperations.setSelection(INDEX_EXPENSES);
-        }
-    }
-
     private void openAs(){
         Category category;
         if(mBundle.containsKey(Constants.CATEGORY_ID)) {
@@ -252,25 +252,25 @@ public class AcCreateCategoryTemp extends AppCompatActivity
            category = new Category();
 
         switch (mOpenAs){
+            case Category.CREATE_CATEGORY :
+                Log.d("testim", "openAS : " + "create_category");
+                break;
             case Category.EDIT_PARENT :
                 openParentEditor(category);
-                mHierarchyOld = Category.PARENT;
+                Log.d("testim", "openAS : " + "edit_parent");
                 break;
             case Category.EDIT_CHILD:
                 openChildEditor(category);
-                mHierarchyOld = Category.CHILD;
+                Log.d("testim", "openAS : " + "edit_child");
                 break;
             case Category.CREATE_CHILD:
                 openChildCreator(category);
-                mHierarchyOld = Category.CHILD;
+                Log.d("testim", "openAS : " + "create_child");
                 break;
-            default:
-                mHierarchyOld = Category.PARENT;
         }
     }
 
     private void openParentEditor(Category parent){
-
         //Тип иерархии
         mSpHierarchy.setSelection(INDEX_ROOT);
         //Тип категории
@@ -296,22 +296,21 @@ public class AcCreateCategoryTemp extends AppCompatActivity
                 mIvColor.setColorFilter(getResources().getColor(color.getResourceId()));
             }
         }
-
-        hideViews(mAllViews);
-        showViews(mEditParentViews);
     }
 
     private void openChildEditor(Category child){
-        int type = child.getType();
-        List<Category> parentCategories;
-        //Тип иерархии
-        mSpHierarchy.setSelection(INDEX_INSERTED);
+        //Построение вида активити
+        hideViews(mAllViews);
+        showViews(mEditChildViews);
         //Имя
         mEtName.setText(child.getName());
+        //Тип иерархии
+        mHierarchy = Category.CHILD;
         //Тип категории.
-        changeType(type);
+        mOperations = child.getType();
+        setSpParentAdapter();
         //Категория
-        parentCategories = Category.getParentCategoriesWithoutEmpty(type);
+        List<Category> parentCategories = Category.getParentCategoriesWithoutEmpty(mOperations);
         for (int i = 0; i < parentCategories.size(); i++) {
             if (parentCategories.get(i).getId() == child.getParent().getId()) {
                 mSpParent.setSelection(i);
@@ -323,59 +322,57 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     private void openChildCreator(Category parent){
-        int type = parent.getType();
-        List<Category> parentCategories;
+        //Построение вида активити
+        hideViews(mAllViews);
+        showViews(mEditChildViews);
         //Тип иерархии
-        mSpHierarchy.setSelection(INDEX_INSERTED);
-        //Тип категории.
-        changeType(type);
+        mHierarchy = Category.CHILD;
+        //Тип операций.
+        mOperations = parent.getType();
+        setSpParentAdapter();
         //Категория
-        parentCategories = Category.getParentCategoriesWithoutEmpty(type);
+        List<Category> parentCategories = Category.getParentCategoriesWithoutEmpty(mOperations);
         for (int i = 0; i < parentCategories.size(); i++) {
             if (parentCategories.get(i).getId() == parent.getId()) {
                 mSpParent.setSelection(i);
                 break;
             }
-            hideViews(mAllViews);
-            showViews(mCreateChildViews);
         }
-    }
-
-    private int getSaveAs() {
-        if (isHierarchyChanged() && mOpenAs == Category.EDIT_PARENT)
-            return Category.EDIT_CHILD;
-        else if (isHierarchyChanged() && mOpenAs == Category.EDIT_CHILD)
-            return Category.EDIT_PARENT;
-        else if(isHierarchyChanged() && mOpenAs == Category.CREATE_CHILD)
-            return Category.CREATE_PARENT;
-        else if(isHierarchyChanged() && mOpenAs == Category.CREATE_PARENT)
-            return Category.CREATE_CHILD;
-        else
-            return mOpenAs;
     }
 
     private void save(){
         switch (getSaveAs()){
             case Category.CREATE_PARENT:
                 createParent();
+                Log.d("testim", "saveAS : " + "create_parent");
                 break;
             case Category.EDIT_PARENT :
-                editParent();
+                updateParent();
+                Log.d("testim", "saveAS : " + "edit_parent");
                 break;
             case Category.CREATE_CHILD:
                 createChild();
+                Log.d("testim", "saveAS : " + "create_child");
                 break;
             case Category.EDIT_CHILD:
-                editSub();
+                updateChild();
+                Log.d("testim", "saveAS : " + "edit_child");
                 break;
         }
+    }
+
+    private int getSaveAs() {
+        if (mOpenAs == Category.CREATE_CATEGORY)
+            return mHierarchy == Category.CHILD ? Category.CREATE_CHILD : Category.CREATE_PARENT;
+        else
+            return mOpenAs;
     }
 
     private void createParent(){
         saveAsParent(new Category());
     }
 
-    private void editParent(){
+    private void updateParent(){
         saveAsParent(Category.getById((mBundle.getLong(Constants.CATEGORY_ID))));
     }
 
@@ -383,7 +380,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         saveAsChild(new Category());
     }
 
-    private void editSub(){
+    private void updateChild(){
         saveAsChild(Category.getById(mBundle.getLong(Constants.CATEGORY_ID)));
     }
 
@@ -410,27 +407,26 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         }
     }
 
-    private void saveAsChild(Category sub){
+    private void saveAsChild(Category child){
         //Имя
         String name = String.valueOf(mEtName.getText());
         //Родительская категория
         long parentId = (long)(mSpParent.getSelectedView().findViewById(R.id.cv_parent_category)).getTag(R.string.tag_category_id);
         Category parent = Category.getById(parentId);
+
+        Log.d("testim", "saveAsChild" + " parent = " + parent.getName());
+
         // Проверка условий и сохранение
         if (name == null || name.length() == 0)
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-        else if (parent.isExistSub(name) && !isOpenAsEditor())
+        else if (parent.isExistChild(name) && !isOpenAsEditor())
             Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
         else {
-            sub.setName(name);
-            sub.setParent(parent);
-            sub.save();
-            returnResult(sub.getId());
+            child.setName(name);
+            child.setParent(parent);
+            child.save();
+            returnResult(child.getId());
         }
-    }
-
-    private boolean isHierarchyChanged(){
-        return mHierarchyOld != mHierarchy;
     }
 
     private boolean isOpenAsEditor(){
@@ -477,6 +473,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
      * Update adapter after change mOperations
      */
     private void setSpParentAdapter(){
+        Log.d("testim", "setSpParentAdapter");
         mSpParent.setAdapter(
                 new ListCategoriesSpinnerAdapter(
                         AcCreateCategoryTemp.this,

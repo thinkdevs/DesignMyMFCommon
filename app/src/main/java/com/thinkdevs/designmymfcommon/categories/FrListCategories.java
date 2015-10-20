@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,8 @@ public class FrListCategories extends Fragment {
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    public static final int REQUEST_CODE_ADD          = 0;
-    public static final int REQUEST_CODE_CHANGE       = 1;
+    public static final int REQUEST_CODE_ADD          = 1;
+    public static final int REQUEST_CODE_CHANGE       = 2;
     public static final int REQUEST_CODE_ADD_CHILD    = 3;
     public static final int REQUEST_CODE_CHANGE_CHILD = 4;
 
@@ -83,7 +84,7 @@ public class FrListCategories extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AcCreateCategoryTemp.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt(Constants.OPEN_AS, Category.CREATE_PARENT);
+                bundle.putInt(Constants.OPEN_AS, Category.CREATE_CATEGORY);
                 intent.putExtras(bundle);
                 getActivityStarterFragment().startActivityForResult(intent, REQUEST_CODE_ADD);
             }
@@ -99,12 +100,14 @@ public class FrListCategories extends Fragment {
             return;
         long id;
         int position;
-        switch (REQUEST_CODE_ADD){
-            case 0:
+        switch (requestCode){
+            case REQUEST_CODE_ADD:
+                Log.d("testim", "request code add");
                 id = data.getLongExtra(Constants.CATEGORY_ID, 0);
                 ((AdRvParentCategories)mAdapter).updateAfterAdd(id);
                 break;
             case REQUEST_CODE_CHANGE:
+                Log.d("testim", "request code change");
                 id = data.getLongExtra(Constants.CATEGORY_ID, 0);
                 position = data.getIntExtra(Constants.CATEGORY_POSITION, 0);
                 ((AdRvParentCategories)mAdapter).updateAfterChange(id, position);

@@ -33,10 +33,11 @@ public class Category extends BaseModel {
     public static final int EMPTY_PARENT_PROFIT_ID  = 3;
     public static final int TRANSFER_CATEGORY_ID    = 4;
 
-    public static final int CREATE_PARENT = 0;
-    public static final int CREATE_CHILD = 1;
-    public static final int EDIT_PARENT   = 2;
-    public static final int EDIT_CHILD = 3;
+    public static final int CREATE_CATEGORY = 1;
+    public static final int CREATE_PARENT   = 2;
+    public static final int CREATE_CHILD    = 3;
+    public static final int EDIT_PARENT     = 4;
+    public static final int EDIT_CHILD      = 5;
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -310,7 +311,7 @@ public class Category extends BaseModel {
         return false;
     }
 
-    public static boolean isExistSub(String name, Category parent) {
+    public static boolean isExistChild(String name, Category parent) {
         List<String> existNames = parent.getNamesSubCategories();
         for(String existName : existNames){
             if(existName.trim().toLowerCase().equals(name.trim().toLowerCase()))
@@ -319,8 +320,8 @@ public class Category extends BaseModel {
         return false;
     }
 
-    public boolean isExistSub(String name){
-        return isExistSub(name, this);
+    public boolean isExistChild(String name){
+        return isExistChild(name, this);
     }
 
     private boolean sIsParent(){

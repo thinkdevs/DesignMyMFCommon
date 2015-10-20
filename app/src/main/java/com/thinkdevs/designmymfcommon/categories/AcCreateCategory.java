@@ -385,7 +385,7 @@ public class AcCreateCategory extends AppCompatActivity {
         // Проверка условий и сохранение
         if (name == null || name.length() == 0)
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-        else if (parent.isExistSub(name) && !mIsOpenAsEditor())
+        else if (parent.isExistChild(name) && !mIsOpenAsEditor())
             Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
         else {
             sub.setName(name);

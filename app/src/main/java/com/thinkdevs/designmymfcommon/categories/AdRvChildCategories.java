@@ -39,7 +39,7 @@ public class AdRvChildCategories extends
 
         public SubCategoryViewHolder(View itemView) {
             super(itemView);
-            tvChildCategoryName = (TextView) itemView.findViewById(R.id.tv_sub_category_name);
+            tvChildCategoryName = (TextView) itemView.findViewById(R.id.tv_child_category_name);
         }
     }
 
@@ -130,12 +130,12 @@ public class AdRvChildCategories extends
     @Override
     public boolean onLongClick(final View v) {
         //id подкатегории
-        final long id = (long)(v.findViewById(R.id.tv_sub_category_name).getTag(R.string.tag_category_id));
+        final long id = (long)(v.findViewById(R.id.tv_child_category_name).getTag(R.string.tag_category_id));
         //позиция в rv
-        final int position = (int)(v.findViewById(R.id.tv_sub_category_name).getTag(R.string.tag_position_in_rv));
+        final int position = (int)(v.findViewById(R.id.tv_child_category_name).getTag(R.string.tag_position_in_rv));
         //меню
         final PopupMenu popupMenu = new PopupMenu(
-                mContext, v.findViewById(R.id.tv_sub_category_name));
+                mContext, v.findViewById(R.id.tv_child_category_name));
         popupMenu.inflate(R.menu.menu_popup_sub_categories);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
