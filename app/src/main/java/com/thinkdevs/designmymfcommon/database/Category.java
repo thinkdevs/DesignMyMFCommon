@@ -203,12 +203,12 @@ public class Category extends BaseModel {
 
     public static Category getParentCategory(String name, int type){
         if(type == EXPENSE)
-            return sGetParentCategoryExpense(name);
+            return getParentCategoryExpense(name);
         else
             return sGetParentCategoryProfit(name);
     }
 
-    private static Category sGetParentCategoryExpense(String name){
+    private static Category getParentCategoryExpense(String name){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
@@ -232,12 +232,12 @@ public class Category extends BaseModel {
 
     public static Category getSubCategory(String name, int type){
         if(type == EXPENSE)
-            return sGetSubCategoryExpense(name);
+            return getSubCategoryExpense(name);
         else
-            return sGetSubCategoryProfit(name);
+            return getSubCategoryProfit(name);
     }
 
-    private static Category sGetSubCategoryExpense(String name){
+    private static Category getSubCategoryExpense(String name){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
@@ -248,7 +248,7 @@ public class Category extends BaseModel {
                 .querySingle();
     }
 
-    private static Category sGetSubCategoryProfit(String name){
+    private static Category getSubCategoryProfit(String name){
         return  new Select()
                 .from(Category.class)
                 .where(Condition.CombinedCondition
@@ -290,7 +290,7 @@ public class Category extends BaseModel {
         return categories;
     }
 
-    public static List<Category> getSubCategories(Category parentId){
+    public static List<Category> getChildCategories(Category parentId){
         List<Category> subCategories = new ArrayList<>();
         subCategories.add(getById(EMPTY_CHILD_ID));
         subCategories.addAll(
@@ -324,7 +324,7 @@ public class Category extends BaseModel {
         return isExistChild(name, this);
     }
 
-    private boolean sIsParent(){
+    private boolean isParent(){
         return parent == null;
     }
 
@@ -339,15 +339,15 @@ public class Category extends BaseModel {
     public boolean deleteCategory(){
         if(isEmptyParentCategory(id) || isEmptySubCategory(id))
             return false;
-        if(sIsParent())
-            mPrepToDeleteParent();
+        if(isParent())
+            prepToDeleteParent();
         else
-            mPrepToDeleteSub();
+            prepToDeleteSub();
         delete();
         return true;
     }
 
-    private void mPrepToDeleteSub(){
+    private void prepToDeleteSub(){
         if(operations != null){
             for(Operation operation : operations){
                 operation.setCategory(parent);
@@ -362,7 +362,7 @@ public class Category extends BaseModel {
         }
     }
 
-    private void mPrepToDeleteParent(){
+    private void prepToDeleteParent(){
         List<Operation> operations = getOperationsFromAllHierarchy();
         if(operations.size() != 0){
             for(Operation operation : getOperationsFromAllHierarchy()){
@@ -389,12 +389,12 @@ public class Category extends BaseModel {
 
     public static List<String> getNamesParentCategories(int type){
         if(type == Category.EXPENSE)
-            return sGetNamesExpenseParentCategories();
+            return getNamesExpenseParentCategories();
         else
-            return sGetNamesProfitParentCategories();
+            return getNamesProfitParentCategories();
     }
 
-    private static List<String> sGetNamesExpenseParentCategories(){
+    private static List<String> getNamesExpenseParentCategories(){
         List<String> names = new ArrayList<>();
         for(Category category : getExpenseParentCategories()){
             names.add(category.getName());
@@ -402,7 +402,7 @@ public class Category extends BaseModel {
         return names;
     }
 
-    private static List<String> sGetNamesProfitParentCategories(){
+    private static List<String> getNamesProfitParentCategories(){
         List<String> names = new ArrayList<>();
         for(Category category : getProfitParentCategories()){
             names.add(category.getName());

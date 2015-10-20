@@ -33,33 +33,36 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         implements View.OnClickListener, FrDgDecorChooseColor.ChooseColorDialogListener,
                    FrDgDecorChooseIcon.ChooseIconDialogListener {
 
+    private final String LOG_TAG = "AcCreateCategory";
+    private static boolean mDebug = true;
+
     private Spinner    mSpHierarchy;
-    private Spinner    mSpOperations;
+    private Spinner    mSpTypeOperations;
     private Spinner    mSpParent;
     private EditText   mEtName;
     private ImageView  mIvIcon;
     private ImageView  mIvColor;
 
-    private List<View> mAllViews          = new ArrayList<>(); //Список всех view
+    private List<View> mEditCategoryViews = new ArrayList<>(); //Список view скрываемых при редактировании
     private List<View> mCreateParentViews = new ArrayList<>(); //Список view создания родительской
     private List<View> mCreateChildViews  = new ArrayList<>(); //Список view создания дочерней
-    private List<View> mEditParentViews   = new ArrayList<>(); //Список view для категорий
-    private List<View> mEditChildViews    = new ArrayList<>(); //Список view для подкатегорий
 
+    //позиции в spinners
     private final int INDEX_EXPENSES = 0;
     private final int INDEX_PROFITS  = 1;
-    private final int INDEX_ROOT     = 0;
-    private final int INDEX_INSERTED = 1;
+    private final int INDEX_PARENT   = 0;
+    private final int INDEX_CHILD    = 1;
 
+    //Элементы декора
     private List<Color> mColors;
     private List<Icon>  mIcons;
 
-    private Intent mIntent;
-    private Bundle mBundle;
+    private Bundle mExtras;
 
-    private int  mOperations = Category.EXPENSE;
-    private int  mHierarchy  = Category.PARENT;
+    private int  mTypeOperations = Category.EXPENSE;
+    private int  mHierarchy      = Category.PARENT;
     private int  mOpenAs;
+    private int mHierarchyOld;
     private long mParentId;
 
     private long mCurrentIconId;
@@ -70,126 +73,123 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_create_category);
 
-        mIntent = getIntent();
-        mBundle = mIntent.getExtras();
+        mExtras = getIntent().getExtras();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if(mBundle != null) {
-            mOpenAs = mBundle.getInt(Constants.OPEN_AS);
-            toolbar.setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
-            setTitle(mBundle.getString(Constants.ACTIVITY_TITLE));
-            if (isOpenAsEditor()) {
-                setTitle(getResources().getString(R.string.title_activity_category_editing));
-            }
-            else
-                setTitle(getResources().getString(R.string.title_activity_new_category));
+        if (mExtras != null) {
+            mOpenAs = mExtras.getInt(Constants.OPEN_AS);
+            toolbar.setTitle(mExtras.getString(Constants.ACTIVITY_TITLE));
         }
-
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Название
-        mEtName   = ((EditText) findViewById(R.id.et_name));
-        //Тип операций
-        mSpOperations = (Spinner) findViewById(R.id.spOperations);
-        mSpOperations.setAdapter(
-                new ArrayAdapter<String>(
-                        this,
-                        android.R.layout.simple_list_item_1,
-                        getResources().getStringArray(R.array.operations)
-                ));
-        //Тип иерархии
-        mSpHierarchy = (Spinner) findViewById(R.id.spHierarchy);
-        mSpHierarchy.setAdapter(
-                new ArrayAdapter<String>(
-                        this,
-                        android.R.layout.simple_list_item_1,
-                        getResources().getStringArray(R.array.hierarchy)
-                ));
-
-        //Корневая категория
-        mSpParent = ((Spinner) findViewById(R.id.spParent));
-        setSpParentAdapter();
-
-        //Цвет и логотип по умолчанию
-        mIvColor = (ImageView)findViewById(R.id.ivColor);
-        mIvIcon = (ImageView)findViewById(R.id.ivIcon);
-        mIvIcon.setColorFilter(getResources().getColor(R.color.grey));
-
-        mIvColor.setOnClickListener(this);
-        mIvIcon.setOnClickListener(this);
-
-        mIcons = Icon.getCategoryIcons();
-        Icon defaultIcon = mIcons.get(0);
-        mCurrentIconId   = defaultIcon.getId();
-        mIvIcon.setImageResource(defaultIcon.getResourceId());
-
-        mColors = Color.getColorsWithoutSystems();
-        Color defaultColor = mColors.get(0);
-        mCurrentColorId    = defaultColor.getId();
-        mIvColor.setColorFilter(getResources().getColor(defaultColor.getResourceId()));
-
-        mAllViews.add(findViewById(R.id.llOperations));
-        mAllViews.add(findViewById(R.id.llHierarchy));
-        mAllViews.add(findViewById(R.id.llDecoration));
-        mAllViews.add(findViewById(R.id.llParent));
-
-        mCreateParentViews.add(findViewById(R.id.llDecoration));
-
-        mCreateChildViews.add(findViewById(R.id.llParent));
-
-        mEditParentViews.add(findViewById(R.id.llDecoration));
-
-        mEditChildViews.add(findViewById(R.id.llParent));
-
-        mSpOperations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("test_test", String.valueOf(position));
-                switch (position) {
-                    case INDEX_EXPENSES:
-                        mOperations = Category.EXPENSE;
-                        break;
-                    case INDEX_PROFITS:
-                        mOperations = Category.PROFIT;
-                        break;
+            //Название
+            mEtName = ((EditText) findViewById(R.id.et_name));
+            //Тип операций
+            mSpTypeOperations = (Spinner) findViewById(R.id.spOperations);
+            mSpTypeOperations.setAdapter(
+                    new ArrayAdapter<String>(
+                            this,
+                            android.R.layout.simple_list_item_1,
+                            getResources().getStringArray(R.array.operations)
+                    ));
+            mSpTypeOperations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (mDebug)
+                        Log.d(LOG_TAG, "mSpTypeOperations 'onItemSelected()' " + position);
+                    switch (position) {
+                        case INDEX_EXPENSES:
+                            if (mDebug)
+                                Log.d(LOG_TAG, "    set mTypeOperations = Expenses");
+                            mTypeOperations = Category.EXPENSE;
+                            break;
+                        case INDEX_PROFITS:
+                            if (mDebug)
+                                Log.d(LOG_TAG, "    set mTypeOperations = Profits");
+                            mTypeOperations = Category.PROFIT;
+                            break;
+                    }
+                    setSpParentAdapter();
                 }
-                setSpParentAdapter();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
-
-        mSpHierarchy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case INDEX_ROOT:
-                        mHierarchy = Category.PARENT;
-                        Log.d("testim", "иерархия - Корневая");
-                        hideViews(mAllViews);
-                        showViews(mCreateParentViews);
-                        break;
-                    case INDEX_INSERTED:
-                        mHierarchy = Category.CHILD;
-                        Log.d("testim", "иерархия - Вложенная");
-                        hideViews(mAllViews);
-                        showViews(mCreateChildViews);
-                        break;
                 }
-            }
+            });
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            //Тип иерархии
+            mSpHierarchy = (Spinner) findViewById(R.id.spHierarchy);
+            mSpHierarchy.setAdapter(
+                    new ArrayAdapter<String>(
+                            this,
+                            android.R.layout.simple_list_item_1,
+                            getResources().getStringArray(R.array.hierarchy)
+                    ));
+            mSpHierarchy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (mDebug)
+                        Log.d(LOG_TAG, "mSpHierarchy 'onItemSelected()' " + position);
+                    switch (position) {
+                        case INDEX_PARENT:
+                            if (mDebug)
+                                Log.d(LOG_TAG, "    set mHierarchy = Parent");
+                            mHierarchy = Category.PARENT;
+                            hideViews(mCreateChildViews);
+                            showViews(mCreateParentViews);
+                            break;
+                        case INDEX_CHILD:
+                            mHierarchy = Category.CHILD;
+                            if (mDebug)
+                                Log.d(LOG_TAG, "    set mHierarchy = Child");
+                            hideViews(mCreateParentViews);
+                            showViews(mCreateChildViews);
+                            break;
+                    }
+                }
 
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-        openAs();
+                }
+            });
+
+            //Корневая категория
+            mSpParent = ((Spinner) findViewById(R.id.spParent));
+            setSpParentAdapter();
+
+            //Иконки
+            mIvIcon = (ImageView) findViewById(R.id.ivIcon);
+            mIvIcon.setColorFilter(getResources().getColor(R.color.grey));
+            mIvIcon.setOnClickListener(this);
+            //Список иконок
+            mIcons = Icon.getCategoryIcons();
+            //Иконка по умолчанию
+            Icon defaultIcon = mIcons.get(0);
+            mCurrentIconId = defaultIcon.getId();
+            mIvIcon.setImageResource(defaultIcon.getResourceId());
+
+            //Цвет
+            mIvColor = (ImageView) findViewById(R.id.ivColor);
+            mIvColor.setOnClickListener(this);
+            //Список цветов
+            mColors = Color.getColorsWithoutSystems();
+            //Цвет по умолчанию
+            Color defaultColor = mColors.get(0);
+            mCurrentColorId = defaultColor.getId();
+            mIvColor.setColorFilter(getResources().getColor(defaultColor.getResourceId()));
+
+            //Списки view для смены вида активити
+            mEditCategoryViews.add(findViewById(R.id.llOperations));
+            mCreateParentViews.add(findViewById(R.id.llDecoration));
+            mCreateChildViews.add(findViewById(R.id.llParent));
+
+            openAs();
+        }
     }
 
     @Override
@@ -224,58 +224,69 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     private void changeType(int type){
-        if (type == Category.PROFIT)
-            mSpOperations.setSelection(INDEX_PROFITS);
-        else {
-            mSpOperations.setSelection(INDEX_EXPENSES);
+        if (mDebug)
+            Log.d(LOG_TAG, "'changeType()' type = " + type);
+        switch (type) {
+            case Category.PROFIT:
+                mSpTypeOperations.setSelection(INDEX_PROFITS);
+                break;
+            case Category.EXPENSE:
+                mSpTypeOperations.setSelection(INDEX_EXPENSES);
+                break;
         }
     }
 
     private void hideViews(List<View> views){
+        if (mDebug)
+            Log.d(LOG_TAG, "'hideViews()' " + views);
+        if(views == null)
+            return;
         for(View view : views){
             view.setVisibility(View.GONE);
         }
     }
 
     private void showViews(List<View> views){
+        if (mDebug)
+            Log.d(LOG_TAG, "'showViews()' " + views);
+        if(views == null)
+            return;
         for(View view : views){
             view.setVisibility(View.VISIBLE);
         }
     }
 
     private void openAs(){
+        if(mDebug)
+            Log.d(LOG_TAG, "'openAs()' mOpenAs = " + mOpenAs);
         Category category;
-        if(mBundle.containsKey(Constants.CATEGORY_ID)) {
-           category = Category.getById(mBundle.getLong(Constants.CATEGORY_ID));
+        if(mExtras.containsKey(Constants.CATEGORY_ID)) {
+           category = Category.getById(mExtras.getLong(Constants.CATEGORY_ID));
         }
         else
            category = new Category();
 
         switch (mOpenAs){
             case Category.CREATE_CATEGORY :
-                Log.d("testim", "openAS : " + "create_category");
                 break;
             case Category.EDIT_PARENT :
                 openParentEditor(category);
-                Log.d("testim", "openAS : " + "edit_parent");
                 break;
             case Category.EDIT_CHILD:
                 openChildEditor(category);
-                Log.d("testim", "openAS : " + "edit_child");
                 break;
             case Category.CREATE_CHILD:
                 openChildCreator(category);
-                Log.d("testim", "openAS : " + "create_child");
                 break;
         }
     }
 
     private void openParentEditor(Category parent){
         //Тип иерархии
-        mSpHierarchy.setSelection(INDEX_ROOT);
+        mSpHierarchy.setSelection(INDEX_PARENT);
         //Тип категории
-        mOperations = parent.getType();
-        changeType(mOperations);
+        mTypeOperations = parent.getType();
+        changeType(mTypeOperations);
         //Имя
         mEtName.setText(parent.getName());
         //Логотип
@@ -296,48 +307,51 @@ public class AcCreateCategoryTemp extends AppCompatActivity
                 mIvColor.setColorFilter(getResources().getColor(color.getResourceId()));
             }
         }
+        //Построение вида активити
+        hideViews(mEditCategoryViews);
+        hideViews(mCreateChildViews);
+        showViews(mCreateParentViews);
     }
 
     private void openChildEditor(Category child){
-        //Построение вида активити
-        hideViews(mAllViews);
-        showViews(mEditChildViews);
         //Имя
         mEtName.setText(child.getName());
         //Тип иерархии
         mHierarchy = Category.CHILD;
         //Тип категории.
-        mOperations = child.getType();
+        mTypeOperations = child.getType();
         setSpParentAdapter();
         //Категория
-        List<Category> parentCategories = Category.getParentCategoriesWithoutEmpty(mOperations);
+        List<Category> parentCategories = Category.getParentCategoriesWithoutEmpty(mTypeOperations);
         for (int i = 0; i < parentCategories.size(); i++) {
             if (parentCategories.get(i).getId() == child.getParent().getId()) {
                 mSpParent.setSelection(i);
                 break;
             }
         }
-        hideViews(mAllViews);
-        showViews(mEditChildViews);
+        //Построение вида активити
+        hideViews(mEditCategoryViews);
+        hideViews(mCreateParentViews);
+        showViews(mCreateChildViews);
     }
 
     private void openChildCreator(Category parent){
-        //Построение вида активити
-        hideViews(mAllViews);
-        showViews(mEditChildViews);
         //Тип иерархии
         mHierarchy = Category.CHILD;
         //Тип операций.
-        mOperations = parent.getType();
+        mTypeOperations = parent.getType();
         setSpParentAdapter();
         //Категория
-        List<Category> parentCategories = Category.getParentCategoriesWithoutEmpty(mOperations);
+        List<Category> parentCategories = Category.getParentCategoriesWithoutEmpty(mTypeOperations);
         for (int i = 0; i < parentCategories.size(); i++) {
             if (parentCategories.get(i).getId() == parent.getId()) {
                 mSpParent.setSelection(i);
                 break;
             }
         }
+        //Построение вида активити
+        hideViews(mCreateParentViews);
+        showViews(mCreateChildViews);
     }
 
     private void save(){
@@ -368,12 +382,12 @@ public class AcCreateCategoryTemp extends AppCompatActivity
             return mOpenAs;
     }
 
-    private void createParent(){
+    private void createParent() {
         saveAsParent(new Category());
     }
 
     private void updateParent(){
-        saveAsParent(Category.getById((mBundle.getLong(Constants.CATEGORY_ID))));
+        saveAsParent(Category.getById((mExtras.getLong(Constants.CATEGORY_ID))));
     }
 
     private void createChild(){
@@ -381,7 +395,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     private void updateChild(){
-        saveAsChild(Category.getById(mBundle.getLong(Constants.CATEGORY_ID)));
+        saveAsChild(Category.getById(mExtras.getLong(Constants.CATEGORY_ID)));
     }
 
     private void saveAsParent(Category parent){
@@ -394,11 +408,11 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         // Проверка условий и сохранение
         if (name == null || name.length() == 0) {
             Toast.makeText(this, R.string.msg_write_name, Toast.LENGTH_LONG).show();
-        } else if (Category.isExistParent(name, mOperations) && !isOpenAsEditor()) {
+        } else if (Category.isExistParent(name, mTypeOperations) && !isOpenAsEditor()) {
             Toast.makeText(this, R.string.msg_category_exist, Toast.LENGTH_LONG).show();
         } else {
             parent.setName(name);
-            parent.setType(mOperations);
+            parent.setType(mTypeOperations);
             parent.setColor(color);
             parent.setIcon(icon);
             parent.save();
@@ -436,7 +450,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     private void returnResult (long id){
         Intent result = new Intent();
         result.putExtra(Constants.CATEGORY_ID, id);
-        result.putExtra(Constants.CATEGORY_POSITION, mBundle.getInt(Constants.CATEGORY_POSITION));
+        result.putExtra(Constants.CATEGORY_POSITION, mExtras.getInt(Constants.CATEGORY_POSITION));
         setResult(RESULT_OK, result);
         finish();
     }
@@ -470,14 +484,14 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     /**
-     * Update adapter after change mOperations
+     * Update adapter after change mTypeOperations
      */
     private void setSpParentAdapter(){
-        Log.d("testim", "setSpParentAdapter");
+        Log.d(LOG_TAG, "'setSpParentAdapter()', current mTypeOperations = " + mTypeOperations);
         mSpParent.setAdapter(
                 new ListCategoriesSpinnerAdapter(
                         AcCreateCategoryTemp.this,
-                        Category.getParentCategoriesWithoutEmpty(mOperations)));
+                        Category.getParentCategoriesWithoutEmpty(mTypeOperations)));
     }
 
 }
