@@ -38,7 +38,9 @@
             android:name=".samples.AcCreateCategoryTemp"
             android:label="@string/title_activity_new_category"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main.AcMain" />

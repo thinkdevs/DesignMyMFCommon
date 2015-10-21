@@ -2,6 +2,7 @@ package com.thinkdevs.designmymfcommon.samples;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -47,7 +49,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     private List<View> mCreateParentViews = new ArrayList<>(); //Список view создания родительской
     private List<View> mCreateChildViews  = new ArrayList<>(); //Список view создания дочерней
 
-    //позиции в spinners
+    //Позиции в spinners
     private final int INDEX_EXPENSES = 0;
     private final int INDEX_PROFITS  = 1;
     private final int INDEX_PARENT   = 0;
@@ -62,7 +64,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     private int  mTypeOperations = Category.EXPENSE;
     private int  mHierarchy      = Category.PARENT;
     private int  mOpenAs;
-    private int mHierarchyOld;
+    private int  mHierarchyOld;
     private long mParentId;
 
     private long mCurrentIconId;
@@ -161,6 +163,9 @@ public class AcCreateCategoryTemp extends AppCompatActivity
             //Корневая категория
             mSpParent = ((Spinner) findViewById(R.id.spParent));
             setSpParentAdapter();
+            if(savedInstanceState != null){
+                mSpParent.setSelection(savedInstanceState.getInt("position_parent"));
+            }
 
             //Иконки
             mIvIcon = (ImageView) findViewById(R.id.ivIcon);
@@ -188,8 +193,34 @@ public class AcCreateCategoryTemp extends AppCompatActivity
             mCreateParentViews.add(findViewById(R.id.llDecoration));
             mCreateChildViews.add(findViewById(R.id.llParent));
 
+
+            requestFocus(findViewById(R.id.ll_new_category));
+
             openAs();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onSaveInstanceState()' **********");
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt("position_parent", mSpParent.getSelectedItemPosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onRestoreInstanceState()' **********");
+        super.onRestoreInstanceState(savedInstanceState);
+        mSpParent.setSelection(savedInstanceState.getInt("position_parent"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onDestroy()' **********");
     }
 
     @Override
@@ -236,52 +267,76 @@ public class AcCreateCategoryTemp extends AppCompatActivity
         }
     }
 
-    private void hideViews(List<View> views){
+    private void hideViews(final List<View> views){
         if (mDebug)
             Log.d(LOG_TAG, "'hideViews()' " + views);
         if(views == null)
             return;
-        for(View view : views){
-            view.setVisibility(View.GONE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(View view : views){
+                    view.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
-    private void showViews(List<View> views){
+    private void showViews(final List<View> views){
         if (mDebug)
             Log.d(LOG_TAG, "'showViews()' " + views);
         if(views == null)
             return;
-        for(View view : views){
-            view.setVisibility(View.VISIBLE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(View view : views){
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void openAs(){
         if(mDebug)
             Log.d(LOG_TAG, "'openAs()' mOpenAs = " + mOpenAs);
+
         Category category;
         if(mExtras.containsKey(Constants.CATEGORY_ID)) {
-           category = Category.getById(mExtras.getLong(Constants.CATEGORY_ID));
+            category = Category.getById(mExtras.getLong(Constants.CATEGORY_ID));
         }
-        else
-           category = new Category();
+        else {category = new Category();}
+
+        if(mExtras.containsKey(Constants.CATEGORY_TYPE)){
+            changeType(mExtras.getInt(Constants.CATEGORY_TYPE));
+        }
 
         switch (mOpenAs){
             case Category.CREATE_CATEGORY :
+                if(mDebug)
+                    Log.d(LOG_TAG, "    CREATE_CATEGORY");
                 break;
             case Category.EDIT_PARENT :
+                if(mDebug)
+                    Log.d(LOG_TAG, "    EDIT_PARENT");
                 openParentEditor(category);
                 break;
             case Category.EDIT_CHILD:
+                if(mDebug)
+                    Log.d(LOG_TAG, "    EDIT_CHILD");
                 openChildEditor(category);
                 break;
             case Category.CREATE_CHILD:
+                if(mDebug)
+                    Log.d(LOG_TAG, "    CREATE_CHILD");
                 openChildCreator(category);
                 break;
         }
     }
 
     private void openParentEditor(Category parent){
+        if(mDebug)
+            Log.d(LOG_TAG, "'openParentEditor()' parent = " + parent.getName());
         //Тип иерархии
         mSpHierarchy.setSelection(INDEX_PARENT);
         //Тип категории
@@ -314,10 +369,12 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     private void openChildEditor(Category child){
+        if(mDebug)
+            Log.d(LOG_TAG, "'openChildEditor()' child = " + child.getName());
         //Имя
         mEtName.setText(child.getName());
         //Тип иерархии
-        mHierarchy = Category.CHILD;
+        mSpHierarchy.setSelection(INDEX_CHILD);
         //Тип категории.
         mTypeOperations = child.getType();
         setSpParentAdapter();
@@ -336,8 +393,10 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     private void openChildCreator(Category parent){
+        if(mDebug)
+            Log.d(LOG_TAG, "'openChildCreator()' parent = " + parent.getName());
         //Тип иерархии
-        mHierarchy = Category.CHILD;
+        mSpHierarchy.setSelection(INDEX_CHILD);
         //Тип операций.
         mTypeOperations = parent.getType();
         setSpParentAdapter();
@@ -349,7 +408,6 @@ public class AcCreateCategoryTemp extends AppCompatActivity
                 break;
             }
         }
-        //Построение вида активити
         hideViews(mCreateParentViews);
         showViews(mCreateChildViews);
     }
@@ -487,11 +545,20 @@ public class AcCreateCategoryTemp extends AppCompatActivity
      * Update adapter after change mTypeOperations
      */
     private void setSpParentAdapter(){
-        Log.d(LOG_TAG, "'setSpParentAdapter()', current mTypeOperations = " + mTypeOperations);
+        if(mDebug)
+            Log.d(LOG_TAG, "'setSpParentAdapter()', current mTypeOperations = " + mTypeOperations);
         mSpParent.setAdapter(
                 new ListCategoriesSpinnerAdapter(
                         AcCreateCategoryTemp.this,
                         Category.getParentCategoriesWithoutEmpty(mTypeOperations)));
+    }
+
+    private void requestFocus(View view) {
+        if(mDebug)
+            Log.d(LOG_TAG, "'requestFocus()', " + view);
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 
 }

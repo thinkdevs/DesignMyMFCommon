@@ -93,6 +93,7 @@ public class FrDgChildCategories extends DialogFragment
         Intent intent = new Intent(getActivity(), AcCreateCategoryTemp.class);
         intent.putExtra(Constants.OPEN_AS, Category.CREATE_CHILD);
         intent.putExtra(Constants.CATEGORY_ID, parent.getId());
+        intent.putExtra(Constants.CATEGORY_TYPE, parent.getType());
         intent.putExtra(Constants.ACTIVITY_TITLE, getResources().getString(R.string.title_activity_new_category));
         this.startActivityForResult(intent, REQUEST_CODE_ADD_CHILD);
     }

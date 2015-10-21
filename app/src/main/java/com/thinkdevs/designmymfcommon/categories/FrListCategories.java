@@ -85,6 +85,7 @@ public class FrListCategories extends Fragment {
                 Intent intent = new Intent(getActivity(), AcCreateCategoryTemp.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt(Constants.OPEN_AS, Category.CREATE_CATEGORY);
+                bundle.putInt(Constants.CATEGORY_TYPE, mType);
                 intent.putExtras(bundle);
                 getActivityStarterFragment().startActivityForResult(intent, REQUEST_CODE_ADD);
             }

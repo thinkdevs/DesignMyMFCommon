@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_new_cash_account">
+    android:id="@+id/ll_new_category">
 
     <include
         android:layout_width="match_parent"
@@ -77,7 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/llOperations"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:paddingLeft="8dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -93,7 +94,7 @@
                 android:id="@+id/spOperations"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
-                android:spinnerMode="dialog" />
+                android:spinnerMode="dropdown" />
         </LinearLayout>
 
         <LinearLayout
@@ -102,7 +103,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/llHierarchy"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:paddingLeft="8dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -118,7 +120,7 @@
                 android:id="@+id/spHierarchy"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
-                android:spinnerMode="dialog" />
+                android:spinnerMode="dropdown" />
         </LinearLayout>
 
         <LinearLayout
@@ -127,7 +129,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:id="@+id/llDecoration"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:paddingLeft="8dp">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -193,7 +196,8 @@
             android:layout_weight="1"
             android:id="@+id/llParent"
             android:layout_marginTop="16dp"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:paddingLeft="8dp">
 
             <TextView
                 android:layout_width="match_parent"
