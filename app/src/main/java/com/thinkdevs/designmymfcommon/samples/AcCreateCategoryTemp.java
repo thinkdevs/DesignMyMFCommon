@@ -1,6 +1,7 @@
 package com.thinkdevs.designmymfcommon.samples;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.NavUtils;
@@ -72,6 +73,8 @@ public class AcCreateCategoryTemp extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onCreate()' **********");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_create_category);
 
@@ -162,6 +165,19 @@ public class AcCreateCategoryTemp extends AppCompatActivity
 
             //Корневая категория
             mSpParent = ((Spinner) findViewById(R.id.spParent));
+            mSpParent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (mDebug) {
+                        Log.d(LOG_TAG, "mSpParent 'onItemSelected()' " + position);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
             setSpParentAdapter();
             if(savedInstanceState != null){
                 mSpParent.setSelection(savedInstanceState.getInt("position_parent"));
@@ -197,6 +213,7 @@ public class AcCreateCategoryTemp extends AppCompatActivity
             requestFocus(findViewById(R.id.ll_new_category));
 
             openAs();
+
         }
     }
 
@@ -217,10 +234,31 @@ public class AcCreateCategoryTemp extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onPause()' **********");
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (mDebug)
             Log.d(LOG_TAG, "********** 'onDestroy()' **********");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onResume()' **********");
+        super.onResume();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (mDebug)
+            Log.d(LOG_TAG, "********** 'onConfigurationChanged' **********");
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
