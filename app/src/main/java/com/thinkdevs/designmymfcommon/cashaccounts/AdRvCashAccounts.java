@@ -22,7 +22,7 @@ import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Category;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.common.FrDgDelete;
+import com.thinkdevs.designmymfcommon.common.FrDgNotice;
 import com.thinkdevs.designmymfcommon.operationtemplates.FrDgOperationTemplates;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 import com.thinkdevs.designmymfcommon.utills.Formatter;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class AdRvCashAccounts extends
         RecyclerView.Adapter<AdRvCashAccounts.CashAccountViewHolder>
-        implements View.OnLongClickListener, FrDgDelete.NoticeDialogListener{
+        implements View.OnLongClickListener, FrDgNotice.NoticeDialogListener{
 
     private List<CashAccount> mCashAccounts;
     private Activity          mContext;
@@ -203,7 +203,10 @@ public class AdRvCashAccounts extends
 
     @Override
     public void onDialogNegativeClick() {
+    }
 
+    @Override
+    public void onDialogNeutralClick() {
     }
 
     public void updateAfterChangeData(){
@@ -231,9 +234,13 @@ public class AdRvCashAccounts extends
                     case R.id.remove:
                         idToDelete = id;
                         positionToDelete = position;
-                        dialogDelete = FrDgDelete.newInstance(
+                        dialogDelete = FrDgNotice.newInstance(
                                 AdRvCashAccounts.this,
-                                mContext.getString(R.string.msg_delete_cash_account));
+                                mContext.getString(R.string.dg_title_delete),
+                                mContext.getString(R.string.msg_delete_cash_account),
+                                mContext.getString(R.string.dg_btn_positive),
+                                mContext.getString(R.string.dg_btn_negative),
+                                null);
                         dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;
                     default:

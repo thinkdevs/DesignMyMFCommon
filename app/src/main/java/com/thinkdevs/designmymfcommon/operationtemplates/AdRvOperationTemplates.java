@@ -19,14 +19,14 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.cashaccounts.AdRvCashAccounts;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.common.FrDgDelete;
+import com.thinkdevs.designmymfcommon.common.FrDgNotice;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
 public class AdRvOperationTemplates extends
         RecyclerView.Adapter<AdRvOperationTemplates.OperationTemplateViewHolder>
-        implements View.OnLongClickListener, View.OnClickListener, FrDgDelete.NoticeDialogListener {
+        implements View.OnLongClickListener, View.OnClickListener, FrDgNotice.NoticeDialogListener {
 
     private boolean IS_DIALOG = false;
 
@@ -173,7 +173,10 @@ public class AdRvOperationTemplates extends
 
     @Override
     public void onDialogNegativeClick() {
+    }
 
+    @Override
+    public void onDialogNeutralClick() {
     }
 
     @Override
@@ -197,9 +200,13 @@ public class AdRvOperationTemplates extends
                     case R.id.remove:
                         idToDelete = id;
                         positionToDelete = position;
-                        dialogDelete = FrDgDelete.newInstance(
+                        dialogDelete = FrDgNotice.newInstance(
                                 AdRvOperationTemplates.this,
-                                mContext.getString(R.string.msg_delete_operation_template));
+                                mContext.getString(R.string.dg_title_delete),
+                                mContext.getString(R.string.msg_delete_operation),
+                                mContext.getString(R.string.dg_btn_positive),
+                                mContext.getString(R.string.dg_btn_negative),
+                                null);
                         dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;
                     default:

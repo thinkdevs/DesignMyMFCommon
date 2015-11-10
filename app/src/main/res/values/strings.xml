@@ -62,31 +62,37 @@
     <string name="tag_position_in_rv">position_in_rv</string>
 
     <!-- Dialog messages-->
+    <string name="dg_title_delete">Удалить?</string>
+    <string name="dg_title_attention">Внимание!</string>
+    <string name="dg_title_change_hierarchy">Сменить иерхию?</string>
+    <string name="dg_btn_positive">Да</string>
+    <string name="dg_btn_negative">Нет</string>
+    <string name="dg_btn_neutral">Ок</string>
     <string name="msg_delete_cash_account">
-        "При удалении счета будут удалены все операции"
+        Будут удалены все операции
     </string>
     <string name="msg_delete_operation">Вы уверены ?</string>
-    <string name="msg_delete_parent_category">"
-        При удалении, будут удаленны все подкатегории,
-        операциям и шаблонам данных категорий будет присвоена категория прочее"
+    <string name="msg_delete_parent_category">
+        Будут удаленны вложенные категории, операциям и шаблонам будет присвоена категория прочее
     </string>
-    <string name="msg_delete_sub_category">
-        "При удалении, операциям и шаблонам будет присвоена родительская категория"
+    <string name="msg_delete_child_category">
+        Операциям и шаблонам будет присвоена корневая категория
     </string>
-        <string name="msg_delete_operation_template">
-        "При удалении, операциям и шаблонам будет присвоена родительская категория"
-    </string>
-    <string name="msg_can_not_be_removed">
-        "Невозможно удалить"
-    </string>
+    <string name="msg_change_hierarchy_category">
+        Операциям и шаблонам вложенных категорий будет присвоенна корневая категория</string>
+        <string name="msg_delete_operation_template">"Вы уверены ?"</string>
+    <string name="msg_can_not_be_removed">Невозможно удалить</string>
     <string name="msg_write_name">
-        "Введите название"
+        Введите название
     </string>
     <string name="msg_cash_account_exist">
-        "Счет с таким именем уже существует"
+        Счет с таким именем уже существует
     </string>
-        <string name="msg_category_exist">
-        "Категория с таким именем уже существует"
+    <string name="msg_child_category_exist">
+        Вложенная категория с таким именем уже существует
+    </string>
+    <string name="msg_parent_category_exist">
+        Корневая категория с таким именем уже существует
     </string>
 
     <string name="unit_thousand">ТЫС.</string>

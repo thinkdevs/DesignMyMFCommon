@@ -58,5 +58,9 @@ public class Constants {
     public static final String COLOR_ID          = "60";
     public static final String COLOR_RESOURCE_ID = "61";
 
+    //Update Category Lists
+    public static final String RESULT             = "70";
+    public static final String PARENT_ID_UPDATE_1 = "71";
+    public static final String PARENT_ID_UPDATE_2 = "72";
 
 }

@@ -14,12 +14,14 @@ import android.view.ViewGroup;
 import com.melnykov.fab.FloatingActionButton;
 import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.samples.AcCreateCategoryTemp;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
 public class FrListCategories extends Fragment {
+
+    private static final String LOG_TAG = "FrListCategories";
+    private static boolean mDebug = true;
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
@@ -30,7 +32,7 @@ public class FrListCategories extends Fragment {
 
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private AdRvParentCategories mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private List<Category> mCategories;
@@ -82,7 +84,7 @@ public class FrListCategories extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AcCreateCategoryTemp.class);
+                Intent intent = new Intent(getActivity(), AcCreateCategory.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt(Constants.OPEN_AS, Category.CREATE_CATEGORY);
                 bundle.putInt(Constants.CATEGORY_TYPE, mType);
@@ -97,29 +99,59 @@ public class FrListCategories extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(mDebug) {
+            Log.d(LOG_TAG, "'onActivityResult()'");
+        }
         if(data == null)
             return;
         long id;
-        int position;
         switch (requestCode){
             case REQUEST_CODE_ADD:
-                Log.d("testim", "request code add");
+                if(mDebug) {
+                    Log.d(LOG_TAG, "REQUEST_CODE_ADD");
+                }
                 id = data.getLongExtra(Constants.CATEGORY_ID, 0);
-                ((AdRvParentCategories)mAdapter).updateAfterAdd(id);
+                mAdapter.updateAfterAdd(id);
                 break;
             case REQUEST_CODE_CHANGE:
-                Log.d("testim", "request code change");
-                id = data.getLongExtra(Constants.CATEGORY_ID, 0);
-                position = data.getIntExtra(Constants.CATEGORY_POSITION, 0);
-                ((AdRvParentCategories)mAdapter).updateAfterChange(id, position);
+                if(mDebug) {
+                    Log.d(LOG_TAG, "REQUEST_CODE_CHANGE");
+                }
+                updateAfterChange(data);
                 break;
         }
 
         callOnActivityResultOnChildFragments(this, requestCode, resultCode, data);
     }
 
+    private void updateAfterChange(Intent data) {
+        if(mDebug) {
+            Log.d(LOG_TAG, "'updateAfterChange()'");
+        }
+        int  resultCode = data.getIntExtra(Constants.RESULT, 0);
+        long id         = data.getLongExtra(Constants.CATEGORY_ID, 0);
+
+        if(resultCode == AcCreateCategory.RESULT_UPDATE_PARENT){
+            if(mDebug) {
+                Log.d(LOG_TAG, "         UPDATE_PARENT");
+            }
+            mAdapter.updateAfterChange(id);
+        }
+        else if(resultCode == AcCreateCategory.RESULT_PARENT_TO_CHILD){
+            if(mDebug) {
+                Log.d(LOG_TAG, "         RESULT_PARENT_TO_CHILD");
+            }
+            mAdapter.updateAfterDelete(id);
+            long parentIdUpdate1 = data.getLongExtra(Constants.PARENT_ID_UPDATE_1, 0);
+            mAdapter.updateAfterChange(parentIdUpdate1);
+        }
+    }
+
 
     private Fragment getActivityStarterFragment() {
+        if(mDebug) {
+            Log.d(LOG_TAG, "'getActivityStarterFragment()'");
+        }
         if (getParentFragment() != null) {
             return getParentFragment();
         }
@@ -127,6 +159,9 @@ public class FrListCategories extends Fragment {
     }
 
     public static void callOnActivityResultOnChildFragments(Fragment parent, int requestCode, int resultCode, Intent data) {
+        if(mDebug) {
+            Log.d(LOG_TAG, "'callOnActivityResultOnChildFragments()'");
+        }
         FragmentManager childFragmentManager = parent.getChildFragmentManager();
         if (childFragmentManager != null) {
             List<Fragment> childFragments = childFragmentManager.getFragments();
@@ -141,7 +176,7 @@ public class FrListCategories extends Fragment {
         }
     }
 
-    public RecyclerView.Adapter getAdapter() {
+    public AdRvParentCategories getAdapter() {
         return mAdapter;
     }
 }

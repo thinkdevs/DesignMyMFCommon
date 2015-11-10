@@ -139,7 +139,7 @@ public class AcCreateOperationTemplate extends AppCompatActivity {
 
         List<String> subCategoryNames;
         if(listCategoriesExpense.size() != 0)
-            subCategoryNames = listCategoriesExpense.get(0).getNamesSubCategories();
+            subCategoryNames = listCategoriesExpense.get(0).getNamesChildCategories();
         else
             subCategoryNames = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class AcCreateOperationTemplate extends AppCompatActivity {
                         typeOperation = Category.EXPENSE;
                         spCategory.setAdapter(adapterExpense);
                         if(listCategoriesExpense.size() != 0)
-                            subCategoryNameList = listCategoriesExpense.get(0).getNamesSubCategories();
+                            subCategoryNameList = listCategoriesExpense.get(0).getNamesChildCategories();
                         else
                             subCategoryNameList = new ArrayList<String>();
                         spSubCategory.setAdapter(new ArrayAdapter<String>(
@@ -168,7 +168,7 @@ public class AcCreateOperationTemplate extends AppCompatActivity {
                     case R.id.rb_profit:
                         typeOperation = Category.PROFIT;
                         if(listCategoriesExpense.size() != 0)
-                            subCategoryNameList = listCategoriesProfit.get(0).getNamesSubCategories();
+                            subCategoryNameList = listCategoriesProfit.get(0).getNamesChildCategories();
                         else
                             subCategoryNameList = new ArrayList<String>();
                         spCategory.setAdapter(adapterProfit);
@@ -186,9 +186,9 @@ public class AcCreateOperationTemplate extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> listNames;
                 if(typeOperation == Category.EXPENSE)
-                    listNames = listCategoriesExpense.get(position).getNamesSubCategories();
+                    listNames = listCategoriesExpense.get(position).getNamesChildCategories();
                 else
-                    listNames = listCategoriesProfit.get(position).getNamesSubCategories();
+                    listNames = listCategoriesProfit.get(position).getNamesChildCategories();
                 spSubCategory.setAdapter(
                         new ArrayAdapter<String>(
                                 AcCreateOperationTemplate.this,

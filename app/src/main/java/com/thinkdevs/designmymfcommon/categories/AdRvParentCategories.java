@@ -18,16 +18,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thinkdevs.designmymfcommon.R;
-import com.thinkdevs.designmymfcommon.common.FrDgDelete;
+import com.thinkdevs.designmymfcommon.common.FrDgNotice;
 import com.thinkdevs.designmymfcommon.database.Category;
-import com.thinkdevs.designmymfcommon.samples.AcCreateCategoryTemp;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 
 import java.util.List;
 
 public class AdRvParentCategories extends
         RecyclerView.Adapter<AdRvParentCategories.CategoryViewHolder>
-        implements View.OnLongClickListener, View.OnClickListener, FrDgDelete.NoticeDialogListener{
+        implements View.OnLongClickListener, View.OnClickListener, FrDgNotice.NoticeDialogListener{
 
     private List<Category> mCategories;
     private Activity       mContext;
@@ -103,7 +102,7 @@ public class AdRvParentCategories extends
     }
 
     private void openEditor(long id, int position){
-        Intent intent = new Intent(mContext, AcCreateCategoryTemp.class);
+        Intent intent = new Intent(mContext, AcCreateCategory.class);
         intent.putExtra(Constants.OPEN_AS, Category.EDIT_PARENT);
         intent.putExtra(Constants.CATEGORY_ID, id);
         intent.putExtra(Constants.CATEGORY_HIERARCHY, Category.PARENT);
@@ -127,16 +126,40 @@ public class AdRvParentCategories extends
         notifyItemRangeChanged(mSelectedPosition, getItemCount());
     }
 
-    public void updateAfterChange(long id, int position){
+    void updateAfterDelete(long id){
+        int position = getPosition(id);
+        mCategories.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount());
+    }
+
+    void updateAfterChange(long id){
         Category category = Category.getById(id);
+        int position = getPosition(id);
         mCategories.remove(position);
         mCategories.add(position, category);
         notifyItemChanged(position);
     }
 
-    public void updateAfterAdd(long id){
+    void updateAfterAdd(long id){
         mCategories.add(Category.getById(id));
         notifyItemInserted(getItemCount());
+    }
+
+    /**
+     *
+     * @param id Category
+     * @return position, if(1_000_000) then find mistake
+     */
+    private int getPosition(long id){
+        int pos = 1_000_000;
+        for(int i = 0; i < mCategories.size(); i++){
+            if(mCategories.get(i).getId() == id){
+                pos = i;
+                break;
+            }
+        }
+        return pos;
     }
 
     @Override
@@ -147,15 +170,20 @@ public class AdRvParentCategories extends
 
     @Override
     public void onDialogNegativeClick() {
+    }
 
+    @Override
+    public void onDialogNeutralClick() {
     }
 
     @Override
     public boolean onLongClick(final View v) {
         //id категории
-        final long id = (long)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_id));
+        final long id =
+                (long)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_id));
         //позиция в rv
-        final int position = (int)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_position_in_rv));
+        final int position =
+                (int)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_position_in_rv));
         //меню
         final PopupMenu popupMenu = new PopupMenu(
                 mContext, v.findViewById(R.id.tv_category_name));
@@ -170,9 +198,13 @@ public class AdRvParentCategories extends
                     case R.id.remove:
                         mSelectedCategoryId = id;
                         mSelectedPosition = position;
-                        mDialogDelete = FrDgDelete.newInstance(
+                        mDialogDelete = FrDgNotice.newInstance(
                                 AdRvParentCategories.this,
-                                mContext.getString(R.string.msg_delete_parent_category));
+                                mContext.getString(R.string.dg_title_delete),
+                                mContext.getString(R.string.msg_delete_parent_category),
+                                mContext.getString(R.string.dg_btn_positive),
+                                mContext.getString(R.string.dg_btn_negative),
+                                null);
                         mDialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;
                     default:
@@ -187,10 +219,13 @@ public class AdRvParentCategories extends
     @Override
     public void onClick(View v) {
         //id категории
-        long idParentCategory = (long)v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_id);
+        long id = (long)v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_category_id);
+        //position категории
+        int position =
+                (int)(v.findViewById(R.id.cv_parent_category).getTag(R.string.tag_position_in_rv));
         //диалог подкатегорий
         FrDgChildCategories frDgChildCategories =
-                FrDgChildCategories.newInstance(idParentCategory);
+                FrDgChildCategories.newInstance(id, position, this);
         frDgChildCategories.show(mContext.getFragmentManager(), "dialog_sub_categories");
     }
 }

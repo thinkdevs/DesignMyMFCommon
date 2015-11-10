@@ -19,7 +19,7 @@ import com.thinkdevs.designmymfcommon.R;
 import com.thinkdevs.designmymfcommon.database.CashAccount;
 import com.thinkdevs.designmymfcommon.database.Operation;
 import com.thinkdevs.designmymfcommon.database.OperationTemplate;
-import com.thinkdevs.designmymfcommon.common.FrDgDelete;
+import com.thinkdevs.designmymfcommon.common.FrDgNotice;
 import com.thinkdevs.designmymfcommon.utills.Constants;
 import com.thinkdevs.designmymfcommon.utills.Formatter;
 
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class AdRvOperations extends
         RecyclerView.Adapter<AdRvOperations.OperationViewHolder>
-        implements View.OnLongClickListener, FrDgDelete.NoticeDialogListener{
+        implements View.OnLongClickListener, FrDgNotice.NoticeDialogListener{
 
     private List<Operation> mOperations;
     private Activity        mContext;
@@ -160,7 +160,10 @@ public class AdRvOperations extends
 
     @Override
     public void onDialogNegativeClick() {
+    }
 
+    @Override
+    public void onDialogNeutralClick() {
     }
 
     @Override
@@ -182,8 +185,13 @@ public class AdRvOperations extends
                     case R.id.remove:
                         idToDelete = id;
                         positionToDelete = position;
-                        dialogDelete = FrDgDelete.newInstance(
-                                AdRvOperations.this, mContext.getString(R.string.msg_delete_operation));
+                        dialogDelete = FrDgNotice.newInstance(
+                                AdRvOperations.this,
+                                mContext.getString(R.string.dg_title_delete),
+                                mContext.getString(R.string.msg_delete_operation),
+                                mContext.getString(R.string.dg_btn_positive),
+                                mContext.getString(R.string.dg_btn_negative),
+                                null);
                         dialogDelete.show(mContext.getFragmentManager(), "dialog_delete");
                         return true;
                     case R.id.add_to_templates:

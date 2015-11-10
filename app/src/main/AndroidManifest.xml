@@ -35,7 +35,7 @@
                 android:value=".main.AcMain" />
         </activity>
         <activity
-            android:name=".samples.AcCreateCategoryTemp"
+            android:name=".categories.AcCreateCategory"
             android:label="@string/title_activity_new_category"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden"
@@ -56,10 +56,10 @@
 
         <activity
             android:name=".operationtemplates.AcCreateOperationTemplate"
-            android:fitsSystemWindows="true"
             android:label="@string/title_activity_new_operation_template"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:configChanges="keyboard|keyboardHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main.AcMain" />

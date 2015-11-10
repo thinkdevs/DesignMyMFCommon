@@ -1,5 +1,7 @@
 package com.thinkdevs.designmymfcommon.database;
 
+import android.util.Log;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
@@ -19,6 +21,9 @@ import java.util.List;
  */
 @Table(databaseName = MoneyFlowDataBase.NAME)
 public class Category extends BaseModel {
+
+    private static final String LOG_TAG = "AcCreateCategory";
+    private static boolean mDebug = true;
 
     public static final int PARENT = 0;
     public static final int CHILD  = 1;
@@ -291,15 +296,15 @@ public class Category extends BaseModel {
     }
 
     public static List<Category> getChildCategories(Category parentId){
-        List<Category> subCategories = new ArrayList<>();
-        subCategories.add(getById(EMPTY_CHILD_ID));
-        subCategories.addAll(
+        List<Category> childCategories = new ArrayList<>();
+        childCategories.add(getById(EMPTY_CHILD_ID));
+        childCategories.addAll(
                 new Select()
                         .from(Category.class)
                         .where(Condition.column(Category$Table.PARENT_PARENT_ID)
                                 .is(parentId))
                         .queryList());
-       return subCategories;
+       return childCategories;
     }
 
     public static boolean isExistParent(String name, int type){
@@ -312,7 +317,7 @@ public class Category extends BaseModel {
     }
 
     public static boolean isExistChild(String name, Category parent) {
-        List<String> existNames = parent.getNamesSubCategories();
+        List<String> existNames = parent.getNamesChildCategories();
         for(String existName : existNames){
             if(existName.trim().toLowerCase().equals(name.trim().toLowerCase()))
                 return true;
@@ -328,7 +333,7 @@ public class Category extends BaseModel {
         return parent == null;
     }
 
-    public static boolean isEmptySubCategory(long id){
+    public static boolean isEmptyChildCategory(long id){
         return id == EMPTY_CHILD_ID;
     }
 
@@ -337,17 +342,26 @@ public class Category extends BaseModel {
     }
 
     public boolean deleteCategory(){
-        if(isEmptyParentCategory(id) || isEmptySubCategory(id))
+        if(isEmptyParentCategory(id) || isEmptyChildCategory(id))
             return false;
         if(isParent())
             prepToDeleteParent();
         else
-            prepToDeleteSub();
+            prepToDeleteChild();
         delete();
         return true;
     }
 
-    private void prepToDeleteSub(){
+    public void deleteChilds(){
+        if(!isParent()){
+            return;
+        }
+        for(Category category : getChilds()){
+            category.deleteCategory();
+        }
+    }
+
+    private void prepToDeleteChild(){
         if(operations != null){
             for(Operation operation : operations){
                 operation.setCategory(parent);
@@ -379,7 +393,7 @@ public class Category extends BaseModel {
         }
     }
 
-    public List<String> getNamesSubCategories(){
+    public List<String> getNamesChildCategories(){
         List<String> names = new ArrayList<>();
         for(Category category : getChilds()){
             names.add(category.getName());
@@ -418,4 +432,9 @@ public class Category extends BaseModel {
         }
     }
 
+    @Override
+    public void delete() {
+        setParent(null);
+        super.delete();
+    }
 }
